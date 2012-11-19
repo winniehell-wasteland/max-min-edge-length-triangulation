@@ -9,8 +9,11 @@
 
 class NaiveIntersectionAlgorithm
 {
+  typedef std::map<Point, IntersectionGroup, STLPointOrder>  Intersections;
 public:
-  NaiveIntersectionAlgorithm(IntersectionGraph* graph, const PointSet& points)
+  NaiveIntersectionAlgorithm(IntersectionGraph* graph, const PointSet& points) :
+    empty_group_(CGAL::compare_to_less(SegmentOrder())),
+    intersections_(CGAL::compare_to_less(PointOrder()))
   {
     CGAL_precondition_msg(graph != 0, "IntersectionGraph has to be initialized!");
 
@@ -54,6 +57,9 @@ public:
                                   .arg(to_string(*t))
                                   .arg(CGAL::to_double(ipoint->x()))
                                   .arg(CGAL::to_double(ipoint->y())));
+
+                    add_intersecting_segment(*ipoint, *s);
+                    add_intersecting_segment(*ipoint, *t);
                   }
               }
             else if (const CGAL::Segment_2<Kernel>* iseg
@@ -82,6 +88,35 @@ public:
               }
           }
       }
+
+    for(Intersections::const_iterator intersection = intersections_.begin();
+        intersection != intersections_.end(); ++intersection)
+      {
+        logger->debug("intersection group:");
+
+        for(IntersectionGroup::const_iterator segment = intersection->second.begin();
+            segment != intersection->second.end(); ++segment)
+          {
+            logger->debug(to_string(*segment));
+          }
+
+        logger->debug("");
+
+        graph->add_intersection_group(intersection->second);
+      }
+  }
+private:
+  IntersectionGroup empty_group_;
+  Intersections intersections_;
+
+  void add_intersecting_segment(const Point& point, const Segment& segment)
+  {
+    // insert key if it does not exist
+    Intersections::iterator key =
+        intersections_.insert(std::make_pair(point, empty_group_)).first;
+
+    // add segment to group
+    key->second.insert(segment);
   }
 };
 

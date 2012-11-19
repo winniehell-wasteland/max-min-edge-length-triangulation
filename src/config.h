@@ -28,8 +28,6 @@ typedef std::set<Point, STLPointOrder>     PointSet;
 typedef CGAL::Arr_segment_traits_2<Kernel>  SegmentTraits;
 typedef CGAL::Arr_segment_2<Kernel>         Segment;
 
-typedef std::vector<Segment>  Segments;
-
 class SegmentOrder
 {
 public:
@@ -61,7 +59,18 @@ private:
 };
 typedef CGAL::Compare_to_less<SegmentOrder>  STLSegmentOrder;
 
-typedef std::map<Segment, Segments, STLSegmentOrder>  IntersectionMap;
+/**
+ * @name intersection defines
+ * @{
+ */
+typedef std::set<Segment, STLSegmentOrder>  IntersectionGroup;
+typedef IntersectionGroup::size_type        IntersectionGroupIndex;
+typedef std::set<IntersectionGroupIndex>    IntersectionGroups;
+
+typedef std::map<Segment, IntersectionGroups, STLSegmentOrder>  IntersectionMap;
+/**
+ * @}
+ */
 
 // logger
 #include <QxtLogger>

@@ -1,7 +1,6 @@
 #include <CGAL/bounding_box.h>
 
 #include <QPainter>
-#include <QSvgGenerator>
 #include <QTextStream>
 
 #include "utils.h"
@@ -12,6 +11,7 @@
 
 #include "intersection_graph.h"
 
+/** select intersection algorithm */
 // typedef SweepIntersectionAlgorithm  IntersectionAlgorithm;
 // typedef ArrIntersectionAlgorithm  IntersectionAlgorithm;
 typedef NaiveIntersectionAlgorithm  IntersectionAlgorithm;
@@ -20,8 +20,12 @@ const double IntersectionGraph::SCALE = 4.0;
 
 IntersectionGraph::IntersectionGraph(const PointSet& points) :
     IntersectionMap(CGAL::compare_to_less(SegmentOrder())),
-    bounding_box_(CGAL::bounding_box(points.begin(), points.end()))
+    bounding_box_(CGAL::bounding_box(points.begin(), points.end())),
+    intersection_groups_(),
+    point_order_()
 {
+    IntersectionGroups empty;
+
     for(PointSet::const_iterator it = points.begin(); it != points.end(); ++it)
     {
         PointSet::const_iterator jt = it;
@@ -29,7 +33,7 @@ IntersectionGraph::IntersectionGraph(const PointSet& points) :
         {
             CGAL_precondition_msg(point_order_(*it, *jt) == CGAL::SMALLER, "PointSet is not ordered!");
 
-            insert(std::make_pair(Segment(*it, *jt), Segments()));
+            this->insert(std::make_pair(Segment(*it, *jt), empty));
         }
     }
 
@@ -44,11 +48,57 @@ IntersectionGraph::mapped_type& IntersectionGraph::operator[] ( const Intersecti
     return IntersectionMap::operator [](segment);
 }
 
-void IntersectionGraph::draw(const QString& fileName) const
+void IntersectionGraph::add_intersection_group(const IntersectionGroup& group)
 {
-  QSvgGenerator generator;
-  generator.setFileName(fileName);
+  intersection_groups_.push_back(group);
+  IntersectionGroupIndex group_index = intersection_groups_.size() - 1;
 
+  for(IntersectionGroup::const_iterator segment = group.begin();
+      segment != group.end(); ++segment)
+    {
+      (*this)[*segment].insert(group_index);
+    }
+}
+
+void IntersectionGraph::draw(const QString& prefix) const
+{
+  {
+    QSvgGenerator generator;
+    generator.setFileName(prefix + "_igraph.svg");
+
+    init_generator(generator);
+
+    QPainter painter;
+    painter.begin(&generator);
+    painter.scale(SCALE, SCALE);
+    draw_graph(painter);
+    painter.end();
+  }
+
+  IntersectionGroupIndex group_index = 0;
+
+  for(IntersectionGroupVector::const_iterator group = intersection_groups_.begin();
+      group != intersection_groups_.end(); ++group)
+    {
+      QSvgGenerator generator;
+      generator.setFileName((prefix + "_igroup_%1.svg")
+                            .arg(group_index, 4, 10, QChar('0')));
+
+      init_generator(generator);
+
+      QPainter painter;
+      painter.begin(&generator);
+      painter.scale(SCALE, SCALE);
+      draw_graph(painter);
+      draw_intersection_group(painter, *group);
+      painter.end();
+
+      ++group_index;
+    }
+}
+
+void IntersectionGraph::init_generator(QSvgGenerator& generator) const
+{
   generator.setSize(QSize(to_int(bounding_box_.xmax()) - to_int(bounding_box_.xmin()) + 20,
                           to_int(bounding_box_.ymax()) - to_int(bounding_box_.ymin()) + 20) * SCALE);
 
@@ -56,11 +106,10 @@ void IntersectionGraph::draw(const QString& fileName) const
                              to_int(SCALE*(bounding_box_.ymin()-10)),
                              generator.size().width(),
                              generator.size().height()));
+}
 
-  QPainter painter;
-  painter.begin(&generator);
-  painter.scale(SCALE, SCALE);
-
+void IntersectionGraph::draw_graph(QPainter& painter) const
+{
   QPen pen(QColor(0, 0, 0));
   painter.setPen(pen);
 
@@ -72,7 +121,21 @@ void IntersectionGraph::draw(const QString& fileName) const
             to_int(segment->target().x()),
             to_int(segment->target().y()));
     }
+}
 
-  //painter.fillRect(5, 5, 100, 100, QColor(255, 0, 0));
-  painter.end();
+void IntersectionGraph::draw_intersection_group(QPainter& painter,
+                                                const IntersectionGroup& group) const
+{
+  QPen pen(QColor(255, 0, 0));
+  painter.setPen(pen);
+
+  for(IntersectionGroup::const_iterator segment = group.begin();
+      segment != group.end(); ++segment)
+    {
+      painter.drawLine(
+            to_int(segment->source().x()),
+            to_int(segment->source().y()),
+            to_int(segment->target().x()),
+            to_int(segment->target().y()));
+    }
 }
