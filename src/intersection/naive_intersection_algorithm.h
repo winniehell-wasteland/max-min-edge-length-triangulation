@@ -10,20 +10,20 @@
 class NaiveIntersectionAlgorithm
 {
   typedef std::map<Point, IntersectionGroup, STLPointOrder>  Intersections;
+  typedef std::set<Segment, STLSegmentOrder>                 Overlaps;
 public:
   NaiveIntersectionAlgorithm(IntersectionGraph* graph, const PointSet& points) :
     empty_group_(CGAL::compare_to_less(SegmentOrder())),
-    intersections_(CGAL::compare_to_less(PointOrder()))
+    intersections_(CGAL::compare_to_less(PointOrder())),
+    overlaps_(CGAL::compare_to_less(SegmentOrder()))
   {
     CGAL_precondition_msg(graph != 0, "IntersectionGraph has to be initialized!");
 
     for(IntersectionGraph::SegmentIterator s = graph->segments_begin();
         s != graph->segments_end(); ++s)
       {
-        IntersectionGraph::SegmentIterator t = s;
-        ++t;
-
-        for( ; t != graph->segments_end(); ++t)
+        IntersectionGraph::SegmentIterator t;
+        for( t = s, ++t; t != graph->segments_end(); ++t)
           {
             CGAL::Object result = CGAL::intersection(
               static_cast<CGAL::Segment_2<Kernel> >(*s),
@@ -67,17 +67,21 @@ public:
               {
                 if(*iseg == *s)
                   {
-                    logger->debug(msg("segment %1 is invalid")
-                                  .arg(to_string(*s)));
+                    logger->debug(msg("segment %1 contains %2")
+                                  .arg(to_string(*s))
+                                  .arg(to_string(*t)));
+                    overlaps_.insert(*s);
                   }
                 else if(*iseg == *t)
                   {
-                    logger->debug(msg("segment %1 is invalid")
-                                  .arg(to_string(*t)));
+                    logger->debug(msg("segment %1 contains %2")
+                                  .arg(to_string(*t))
+                                  .arg(to_string(*s)));
+                    overlaps_.insert(*s);
                   }
                 else
                   {
-                    logger->debug(msg("segments %1 and %2 are invalid")
+                    logger->debug(msg("segments %1 and %2 overlap")
                                   .arg(to_string(*s))
                                   .arg(to_string(*t)));
                   }
@@ -104,10 +108,17 @@ public:
 
         graph->add_intersection_group(intersection->second);
       }
+
+    for(Overlaps::const_iterator segment = overlaps_.begin();
+        segment != overlaps_.end(); ++segment)
+      {
+        graph->remove_overlap(*segment);
+      }
   }
 private:
   IntersectionGroup empty_group_;
   Intersections intersections_;
+  Overlaps overlaps_;
 
   void add_intersecting_segment(const Point& point, const Segment& segment)
   {

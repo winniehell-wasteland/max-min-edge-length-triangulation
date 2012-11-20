@@ -1,79 +1,101 @@
+#include "config.h"
+
 #include <QtCore>
 
 #include <QxtLogger>
 
-#include "config.h"
 #include "controller.h"
-#include "json_parser.h"
+#include "parameters.h"
 
 class Application : public QCoreApplication
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    Application(int &argc, char **argv) :
-        QCoreApplication(argc, argv)
-    {
-    }
+  Application(int &argc, char **argv) :
+    QCoreApplication(argc, argv),
+    parameters_()
+  {
+  }
 
 public slots:
-    void processInputFiles()
-    {
-        QStringListIterator it(this->arguments());
+  void processArguments()
+  {
+    QStringListIterator it(this->arguments());
 
-        if(it.hasNext())
-        {
-            it.next();
-        }
+    // ignore execution path
+    if(it.hasNext())
+      {
+        it.next();
+      }
 
-        while(it.hasNext())
-        {
-            QFile file(it.next());
+    while(it.hasNext())
+      {
+        QString argument = it.next();
+
+        if(argument.startsWith("--"))
+          {
+            if(argument == "--draw-igraph")
+              {
+                parameters_.draw_igraph = true;
+              }
+            else if(argument == "--draw-igroups")
+              {
+                parameters_.draw_igroups = true;
+              }
+            else
+              {
+                logger->error(msg("Unknown argument: %1").arg(argument));
+              }
+          }
+        else
+          {
+            QFile file(argument);
 
             if(!file.exists())
-            {
-                logger->error(msg("File %1 does not exist!").arg(file.fileName()));
-            }
+              {
+                logger->error(msg("File %1 does not exist!").arg(argument));
+              }
             else
-            {
+              {
                 logger->info(msg("Reading file %1...").arg(file.fileName()));
 
                 if(QFileInfo(file).suffix() != "json")
-                {
+                  {
                     logger->warning(tr("Only JSON files are supported!"));
-                }
+                  }
 
-                JSONParser parser(file);
+                qxtLog->info("Starting pre-processing...");
+                Controller controller(file, parameters_);
 
-                PointSet points(CGAL::compare_to_less(PointOrder()));
-                parser.parse(points);
-
-                qxtLog->info(msg("Read %1 points.").arg(points.size()));
-
-                Controller controller(points);
-
-                qxtLog->info(msg("Starting controller..."));
+                qxtLog->info(msg("Running algorithm..."));
                 controller.start();
-            }
-        }
 
-        emit quit();
-    }
+                qxtLog->info(msg("Done."));
+              }
+          }
+      }
+
+    // processed all files
+    emit quit();
+  }
+private:
+  Parameters parameters_;
 };
 
 int main(int argc, char *argv[])
 {
 #ifdef NDEBUG
-    qxtLog->enableLogLevels(QxtLogger::ErrorLevel);
+  qxtLog->enableLogLevels(QxtLogger::ErrorLevel);
 #else
-    qxtLog->enableLogLevels(QxtLogger::DebugLevel);
+  qxtLog->enableLogLevels(QxtLogger::DebugLevel);
 #endif
 
-    Application application(argc, argv);
+  Application application(argc, argv);
 
-    QTimer::singleShot(0, &application, SLOT(processInputFiles()));
-    
-    return application.exec();
+  QTimer::singleShot(0, &application, SLOT(processArguments()));
+
+  return application.exec();
 }
 
 #include "main.moc"

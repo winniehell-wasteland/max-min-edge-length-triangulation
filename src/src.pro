@@ -42,7 +42,8 @@ HEADERS += \
     intersection/sweep_intersection_algorithm.h \
     intersection/intersection_graph.h \
     intersection/sweep_line_visitor.h \
-    intersection/naive_intersection_algorithm.h
+    intersection/naive_intersection_algorithm.h \
+    parameters.h
 
 CONFIG(debug, debug|release) {
     message("debug mode")

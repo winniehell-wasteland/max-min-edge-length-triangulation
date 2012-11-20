@@ -60,7 +60,7 @@ public:
     sl->sweep(begin, end);
   }
 
-  void update_event(Event* evt,
+  void update_event(Event* /*evt*/,
                     Subcurve* s,
                     Subcurve* t,
                     bool /* is_new */)
@@ -71,7 +71,7 @@ public:
     ++m_found;
   }
 
-  void update_event(Event* evt,
+  void update_event(Event* /*evt*/,
                     Subcurve* s)
   {
     logger->debug(msg("hitting segment: %1")

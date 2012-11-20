@@ -8,6 +8,8 @@
 #include <QString>
 #include <QSvgGenerator>
 
+#include "parameters.h"
+
 class IntersectionGraph :
         public IntersectionMap
 {
@@ -44,7 +46,9 @@ public:
     void add_intersection_group(const IntersectionGroup& group);
 
     /** output intersection graph to SVG */
-    void draw(const QString &prefix) const;
+    void draw(const QString &prefix, const Parameters &parameters) const;
+
+    void remove_overlap(const Segment& segment);
 
     SegmentIterator segments_begin() const
     {

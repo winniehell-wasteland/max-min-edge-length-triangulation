@@ -3,16 +3,21 @@
 
 #include "config.h"
 
+#include <QFile>
+
+#include "parameters.h"
+
 #include "intersection/intersection_graph.h"
 
 class Controller
 {
 public:
-    Controller(const PointSet& points);
+    Controller(QFile &input_file, const Parameters& parameters);
     void start();
 private:
+    const PointSet points_;
     const IntersectionGraph intersection_graph_;
-    const PointSet& points_;
+    const Parameters& parameters_;
 };
 
 #endif // MMT_CONTROLLER_H

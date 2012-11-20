@@ -11,7 +11,7 @@ class SweepIntersectionAlgorithm
   typedef Sweep_line_visitor<SegmentTraits>           Visitor;
   typedef CGAL::Sweep_line_2<SegmentTraits, Visitor>  Sweep_line;
 public:
-  SweepIntersectionAlgorithm(IntersectionGraph& graph, const PointSet& points)
+  SweepIntersectionAlgorithm(IntersectionGraph& graph, const PointSet& /*points*/)
   {
 
     Visitor     visitor;

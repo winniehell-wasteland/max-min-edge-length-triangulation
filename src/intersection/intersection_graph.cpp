@@ -60,29 +60,13 @@ void IntersectionGraph::add_intersection_group(const IntersectionGroup& group)
     }
 }
 
-void IntersectionGraph::draw(const QString& prefix) const
+void IntersectionGraph::draw(const QString& prefix,
+                             const Parameters& parameters) const
 {
-  {
-    QSvgGenerator generator;
-    generator.setFileName(prefix + "_igraph.svg");
-
-    init_generator(generator);
-
-    QPainter painter;
-    painter.begin(&generator);
-    painter.scale(SCALE, SCALE);
-    draw_graph(painter);
-    painter.end();
-  }
-
-  IntersectionGroupIndex group_index = 0;
-
-  for(IntersectionGroupVector::const_iterator group = intersection_groups_.begin();
-      group != intersection_groups_.end(); ++group)
+  if(parameters.draw_igraph)
     {
       QSvgGenerator generator;
-      generator.setFileName((prefix + "_igroup_%1.svg")
-                            .arg(group_index, 4, 10, QChar('0')));
+      generator.setFileName(prefix + "_igraph.svg");
 
       init_generator(generator);
 
@@ -90,11 +74,46 @@ void IntersectionGraph::draw(const QString& prefix) const
       painter.begin(&generator);
       painter.scale(SCALE, SCALE);
       draw_graph(painter);
-      draw_intersection_group(painter, *group);
       painter.end();
-
-      ++group_index;
     }
+
+  if(parameters.draw_igroups)
+    {
+      IntersectionGroupIndex group_index = 0;
+
+      for(IntersectionGroupVector::const_iterator group
+          = intersection_groups_.begin();
+          group != intersection_groups_.end(); ++group)
+        {
+          QSvgGenerator generator;
+          generator.setFileName((prefix + "_igroup_%1.svg")
+                                .arg(group_index, 5, 10, QChar('0')));
+
+          init_generator(generator);
+
+          QPainter painter;
+          painter.begin(&generator);
+          painter.scale(SCALE, SCALE);
+          draw_graph(painter);
+          draw_intersection_group(painter, *group);
+          painter.end();
+
+          ++group_index;
+        }
+    }
+}
+
+void IntersectionGraph::remove_overlap(const Segment& segment)
+{
+  iterator pos = this->find(segment);
+
+  for(IntersectionGroups::const_iterator group = pos->second.begin();
+      group != pos->second.end(); ++group)
+    {
+      intersection_groups_[*group].erase(segment);
+    }
+
+  this->erase(pos);
 }
 
 void IntersectionGraph::init_generator(QSvgGenerator& generator) const
@@ -111,6 +130,7 @@ void IntersectionGraph::init_generator(QSvgGenerator& generator) const
 void IntersectionGraph::draw_graph(QPainter& painter) const
 {
   QPen pen(QColor(0, 0, 0));
+  pen.setWidthF(0.25);
   painter.setPen(pen);
 
   for(SegmentIterator segment = segments_begin(); segment != segments_end(); ++segment)
@@ -127,6 +147,7 @@ void IntersectionGraph::draw_intersection_group(QPainter& painter,
                                                 const IntersectionGroup& group) const
 {
   QPen pen(QColor(255, 0, 0));
+  pen.setWidthF(0.25);
   painter.setPen(pen);
 
   for(IntersectionGroup::const_iterator segment = group.begin();

@@ -5,70 +5,71 @@
 
 #include "json_parser.h"
 
-JSONParser::JSONParser(QFile& file) :
-    file_(file)
+const PointSet& JSONParser::parse(QFile& file)
 {
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+  static PointSet points(CGAL::compare_to_less(PointOrder()));
+
+  if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        logger->error(msg("Could not open %1!").arg(file.fileName()));
-        return;
-    }
-}
-
-void JSONParser::parse(PointSet& point_set)
-{
-
-    QVariant points = QxtJSON::parse(QTextStream(&file_).readAll());
-
-    if(!points.canConvert(QVariant::List))
-    {
-        logger->error(msg("Expected point list!"));
-        return;
+      logger->error(msg("Could not open %1!").arg(file.fileName()));
+      return points;
     }
 
-    QVariant point;
-    foreach(point, points.value<QVariantList>())
+  QVariant json_points = QxtJSON::parse(QTextStream(&file).readAll());
+
+  if(!json_points.canConvert(QVariant::List))
     {
-        if(!point.canConvert(QVariant::List))
+      logger->error(msg("Expected point list!"));
+      return points;
+    }
+
+  QVariant json_point;
+  foreach(json_point, json_points.value<QVariantList>())
+    {
+      if(!json_point.canConvert(QVariant::List))
         {
-            logger->error(msg("Expected point, got %1!").arg(point.toString()));
-            continue;
+          logger->error(msg("Expected point, got %1!")
+                        .arg(json_point.toString()));
+          continue;
         }
 
-        QVariantList coordinates = point.value<QVariantList>();
+      QVariantList coordinates = json_point.value<QVariantList>();
 
-        if(coordinates.size() == 2)
+      if(coordinates.size() == 2)
         {
-            Point cgal_point(parse_number(coordinates[0]),
-                             parse_number(coordinates[1]));
+          Point point(parse_number(coordinates[0]),
+              parse_number(coordinates[1]));
 
-            logger->debug(msg("Created point (%1, %2)")
-                          .arg(CGAL::to_double(cgal_point.x()))
-                          .arg(CGAL::to_double(cgal_point.y())));
+          logger->debug(msg("Created point (%1, %2)")
+                        .arg(CGAL::to_double(point.x()))
+                        .arg(CGAL::to_double(point.y())));
 
-            point_set.insert(cgal_point);
+          points.insert(point);
         }
-        else
+      else
         {
-            logger->error(msg("Point has invalid dimension (%1)!").arg(coordinates.size()));
+          logger->error(msg("Point has invalid dimension (%1)!")
+                        .arg(coordinates.size()));
         }
     }
+
+  return points;
 }
 
 Number JSONParser::parse_number(const QVariant& value)
 {
-    if(value.canConvert(QVariant::Int))
+  if(value.canConvert(QVariant::Int))
     {
-        return value.toInt();
+      return value.toInt();
     }
-    else if(value.canConvert(QVariant::Double))
+  else if(value.canConvert(QVariant::Double))
     {
-        return value.toDouble();
+      return value.toDouble();
     }
-    else
+  else
     {
-        logger->error(msg("Can not parse coordinate %1!").arg(value.toString()));
-        return Number();
+      logger->error(msg("Can not parse coordinate %1!").arg(value.toString()));
+      return Number();
     }
 }
 
