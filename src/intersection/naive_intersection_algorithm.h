@@ -3,28 +3,33 @@
 
 #include <CGAL/intersections.h>
 
-#include "utils.h"
+#include "cgal_utils.h"
 
 #include "intersection_graph.h"
 
 class NaiveIntersectionAlgorithm
 {
   typedef std::map<Point, IntersectionGroup, STLPointOrder>  Intersections;
-  typedef std::set<Segment, STLSegmentOrder>                 Overlaps;
+  typedef std::set<SegmentIndex>                             Overlaps;
 public:
   NaiveIntersectionAlgorithm(IntersectionGraph* graph, const PointSet& points) :
-    empty_group_(CGAL::compare_to_less(SegmentOrder())),
-    intersections_(CGAL::compare_to_less(PointOrder())),
-    overlaps_(CGAL::compare_to_less(SegmentOrder()))
+    empty_group_(),
+    intersections_(point_order)
   {
     CGAL_precondition_msg(graph != 0, "IntersectionGraph has to be initialized!");
 
-    for(IntersectionGraph::SegmentIterator s = graph->segments_begin();
-        s != graph->segments_end(); ++s)
+    SegmentIndex overlaps = 0;
+
+    for(SegmentVector::iterator s = graph->segments().begin();
+        s != graph->segments().end(); ++s)
       {
-        IntersectionGraph::SegmentIterator t;
-        for( t = s, ++t; t != graph->segments_end(); ++t)
+        SegmentVector::iterator t = s;
+        for( ++t; t != graph->segments().end(); ++t)
           {
+            logger->debug(msg("check segment %1 and %2")
+                          .arg(to_string(*s))
+                          .arg(to_string(*t)));
+
             CGAL::Object result = CGAL::intersection(
               static_cast<CGAL::Segment_2<Kernel> >(*s),
               static_cast<CGAL::Segment_2<Kernel> >(*t)
@@ -65,19 +70,19 @@ public:
             else if (const CGAL::Segment_2<Kernel>* iseg
                      = CGAL::object_cast<CGAL::Segment_2<Kernel> >(&result))
               {
+                CGAL_precondition(*iseg != *t);
+
                 if(*iseg == *s)
-                  {
-                    logger->debug(msg("segment %1 contains %2")
-                                  .arg(to_string(*s))
-                                  .arg(to_string(*t)));
-                    overlaps_.insert(*s);
-                  }
-                else if(*iseg == *t)
                   {
                     logger->debug(msg("segment %1 contains %2")
                                   .arg(to_string(*t))
                                   .arg(to_string(*s)));
-                    overlaps_.insert(*s);
+
+                    if(!s->data().overlapping)
+                      {
+                        s->data().overlapping = true;
+                        ++overlaps;
+                      }
                   }
                 else
                   {
@@ -93,15 +98,18 @@ public:
           }
       }
 
+    SegmentIndex intersecting_segments = 0;
+
     for(Intersections::const_iterator intersection = intersections_.begin();
         intersection != intersections_.end(); ++intersection)
       {
         logger->debug("intersection group:");
 
-        for(IntersectionGroup::const_iterator segment = intersection->second.begin();
-            segment != intersection->second.end(); ++segment)
+        for(IntersectionGroup::const_iterator segment_index = intersection->second.begin();
+            segment_index != intersection->second.end(); ++segment_index)
           {
-            logger->debug(to_string(*segment));
+            ++intersecting_segments;
+            logger->debug(to_string(graph->segments()[*segment_index]));
           }
 
         logger->debug("");
@@ -109,16 +117,14 @@ public:
         graph->add_intersection_group(intersection->second);
       }
 
-    for(Overlaps::const_iterator segment = overlaps_.begin();
-        segment != overlaps_.end(); ++segment)
-      {
-        graph->remove_overlap(*segment);
-      }
+    logger->write(msg("segments: total=%1 intersections=%2 overlaps=%3")
+                  .arg(graph->segments().size(), 5, 10, QChar('0'))
+                  .arg(intersecting_segments, 10, 10, QChar('0'))
+                  .arg(overlaps, 3, 10, QChar('0')));
   }
 private:
   IntersectionGroup empty_group_;
   Intersections intersections_;
-  Overlaps overlaps_;
 
   void add_intersecting_segment(const Point& point, const Segment& segment)
   {
@@ -127,7 +133,7 @@ private:
         intersections_.insert(std::make_pair(point, empty_group_)).first;
 
     // add segment to group
-    key->second.insert(segment);
+    key->second.insert(segment.data().index);
   }
 };
 

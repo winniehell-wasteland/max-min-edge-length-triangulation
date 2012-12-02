@@ -29,7 +29,7 @@ SOURCES += main.cpp \
     controller.cpp \
     graph.cpp \
     intersection/intersection_graph.cpp \
-    utils.cpp
+    cgal_utils.cpp
 
 HEADERS += \
     json_parser.h \
@@ -37,13 +37,13 @@ HEADERS += \
     config.h \
     graphviz.h \
     graph.h \
-    utils.h \
     intersection/arr_intersection_algorithm.h \
     intersection/sweep_intersection_algorithm.h \
     intersection/intersection_graph.h \
     intersection/sweep_line_visitor.h \
     intersection/naive_intersection_algorithm.h \
-    parameters.h
+    parameters.h \
+    cgal_utils.h
 
 CONFIG(debug, debug|release) {
     message("debug mode")

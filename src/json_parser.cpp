@@ -5,9 +5,9 @@
 
 #include "json_parser.h"
 
-const PointSet& JSONParser::parse(QFile& file)
+PointSet JSONParser::parse(QFile& file)
 {
-  static PointSet points(CGAL::compare_to_less(PointOrder()));
+  PointSet points(CGAL::compare_to_less(PointOrder()));
 
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -52,6 +52,8 @@ const PointSet& JSONParser::parse(QFile& file)
                         .arg(coordinates.size()));
         }
     }
+
+  qxtLog->info(msg("Read %1 points.").arg(points.size()));
 
   return points;
 }

@@ -1,2 +1,5 @@
+tests/*.dat
 tests/*.json
+tests/*.log
+tests/*.pdf
 

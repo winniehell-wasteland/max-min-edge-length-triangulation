@@ -1,4 +1,8 @@
-#include "utils.h"
+#include "cgal_utils.h"
+
+LineOrder line_order = LineOrder();
+PointOrder point_order = CGAL::compare_to_less(PointOrder());
+SegmentOrder segment_order = CGAL::compare_to_less(SegmentOrder());
 
 long to_int(const Number& number)
 {

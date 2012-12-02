@@ -6,7 +6,7 @@
 #include <CGAL/Arr_extended_dcel.h>
 
 #include "intersection_graph.h"
-#include "utils.h"
+#include "cgal_utils.h"
 
 class ArrIntersectionAlgorithm
 {
@@ -45,7 +45,7 @@ public:
       }
 
     // insert segments
-    CGAL::insert(arrangement_, graph->segments_begin(), graph->segments_end());
+    CGAL::insert(arrangement_, graph->segments().begin(), graph->segments().end());
 
     for(Arrangement_2::Vertex_const_iterator vertex = arrangement_.vertices_begin();
         vertex != arrangement_.vertices_end();

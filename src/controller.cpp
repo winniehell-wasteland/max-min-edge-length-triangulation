@@ -9,12 +9,9 @@ Controller::Controller(QFile &input_file, const Parameters &parameters) :
   intersection_graph_(points_),
   parameters_(parameters)
 {
-  qxtLog->info(msg("Read %1 points.").arg(points_.size()));
   qxtLog->info(msg("Constructed intersection graph with %1 segments.")
-               .arg(std::distance(intersection_graph_.segments_begin(),
-                                  intersection_graph_.segments_end())));
+               .arg(intersection_graph_.segments().size()));
 
-  qxtLog->info(msg("Drawing intersection graph..."));
   intersection_graph_.draw(QFileInfo(input_file).completeBaseName(), parameters_);
 }
 

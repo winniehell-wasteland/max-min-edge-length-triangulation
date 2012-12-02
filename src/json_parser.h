@@ -10,7 +10,7 @@
 class JSONParser
 {
 public:
-    static const PointSet &parse(QFile& file);
+    static PointSet parse(QFile& file);
     static Number parse_number(const QVariant& value);
 };
 

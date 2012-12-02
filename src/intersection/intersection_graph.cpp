@@ -3,11 +3,12 @@
 #include <QPainter>
 #include <QTextStream>
 
-#include "utils.h"
+#include "cgal_utils.h"
 
-#include "arr_intersection_algorithm.h"
 #include "naive_intersection_algorithm.h"
-#include "sweep_intersection_algorithm.h"
+
+//#include "arr_intersection_algorithm.h"
+//#include "sweep_intersection_algorithm.h"
 
 #include "intersection_graph.h"
 
@@ -19,33 +20,40 @@ typedef NaiveIntersectionAlgorithm  IntersectionAlgorithm;
 const double IntersectionGraph::SCALE = 4.0;
 
 IntersectionGraph::IntersectionGraph(const PointSet& points) :
-    IntersectionMap(CGAL::compare_to_less(SegmentOrder())),
     bounding_box_(CGAL::bounding_box(points.begin(), points.end())),
     intersection_groups_(),
-    point_order_()
+    segments_()
 {
-    IntersectionGroups empty;
+    SegmentIndex seg_index = 0;
 
+    // allocate space
+    //segments_.reserve(points.size()*(points.size() - 1)/2);
+
+    // generate segments
     for(PointSet::const_iterator it = points.begin(); it != points.end(); ++it)
     {
-        PointSet::const_iterator jt = it;
-        for(++jt; jt != points.end(); ++jt)
+        PointSet::const_iterator jt;
+        for(jt = it, ++jt; jt != points.end(); ++jt)
         {
-            CGAL_precondition_msg(point_order_(*it, *jt) == CGAL::SMALLER, "PointSet is not ordered!");
+            CGAL_precondition_msg(point_order(*it, *jt) == CGAL::SMALLER, "PointSet is not ordered!");
 
-            this->insert(std::make_pair(Segment(*it, *jt), empty));
+            Segment s(*it, *jt);
+            s.data().index = seg_index;
+
+            segments_.push_back(s);
+
+            logger->debug(msg("Created segment %1 with index %2")
+                          .arg(to_string(segments_.back()))
+                          .arg(segments_.back().data().index));
+
+            ++seg_index;
         }
     }
 
+    CGAL_postcondition(seg_index == segments_.size());
+
     // find intersections
     IntersectionAlgorithm(this, points);
-}
-
-IntersectionGraph::mapped_type& IntersectionGraph::operator[] ( const IntersectionGraph::key_type& segment )
-{
-    CGAL_precondition_msg(point_order_(segment.source(), segment.target()) == CGAL::SMALLER, "Segment in wrong order!");
-
-    return IntersectionMap::operator [](segment);
 }
 
 void IntersectionGraph::add_intersection_group(const IntersectionGroup& group)
@@ -53,10 +61,10 @@ void IntersectionGraph::add_intersection_group(const IntersectionGroup& group)
   intersection_groups_.push_back(group);
   IntersectionGroupIndex group_index = intersection_groups_.size() - 1;
 
-  for(IntersectionGroup::const_iterator segment = group.begin();
-      segment != group.end(); ++segment)
+  for(IntersectionGroup::const_iterator segment_index = group.begin();
+      segment_index != group.end(); ++segment_index)
     {
-      (*this)[*segment].insert(group_index);
+      segments_[*segment_index].data().intersection_groups.push_back(group_index);
     }
 }
 
@@ -65,6 +73,8 @@ void IntersectionGraph::draw(const QString& prefix,
 {
   if(parameters.draw_igraph)
     {
+      qxtLog->info(msg("Drawing intersection graph..."));
+
       QSvgGenerator generator;
       generator.setFileName(prefix + "_igraph.svg");
 
@@ -79,6 +89,8 @@ void IntersectionGraph::draw(const QString& prefix,
 
   if(parameters.draw_igroups)
     {
+      qxtLog->info(msg("Drawing intersection groups..."));
+
       IntersectionGroupIndex group_index = 0;
 
       for(IntersectionGroupVector::const_iterator group
@@ -103,19 +115,6 @@ void IntersectionGraph::draw(const QString& prefix,
     }
 }
 
-void IntersectionGraph::remove_overlap(const Segment& segment)
-{
-  iterator pos = this->find(segment);
-
-  for(IntersectionGroups::const_iterator group = pos->second.begin();
-      group != pos->second.end(); ++group)
-    {
-      intersection_groups_[*group].erase(segment);
-    }
-
-  this->erase(pos);
-}
-
 void IntersectionGraph::init_generator(QSvgGenerator& generator) const
 {
   generator.setSize(QSize(to_int(bounding_box_.xmax()) - to_int(bounding_box_.xmin()) + 20,
@@ -133,7 +132,7 @@ void IntersectionGraph::draw_graph(QPainter& painter) const
   pen.setWidthF(0.25);
   painter.setPen(pen);
 
-  for(SegmentIterator segment = segments_begin(); segment != segments_end(); ++segment)
+  for(SegmentVector::const_iterator segment = segments_.begin(); segment != segments_.end(); ++segment)
     {
       painter.drawLine(
             to_int(segment->source().x()),
@@ -150,13 +149,13 @@ void IntersectionGraph::draw_intersection_group(QPainter& painter,
   pen.setWidthF(0.25);
   painter.setPen(pen);
 
-  for(IntersectionGroup::const_iterator segment = group.begin();
-      segment != group.end(); ++segment)
+  for(IntersectionGroup::const_iterator segment_index = group.begin();
+      segment_index != group.end(); ++segment_index)
     {
       painter.drawLine(
-            to_int(segment->source().x()),
-            to_int(segment->source().y()),
-            to_int(segment->target().x()),
-            to_int(segment->target().y()));
+          to_int(segments_[*segment_index].source().x()),
+          to_int(segments_[*segment_index].source().y()),
+          to_int(segments_[*segment_index].target().x()),
+          to_int(segments_[*segment_index].target().y()));
     }
 }
