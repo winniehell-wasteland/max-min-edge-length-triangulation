@@ -55,6 +55,8 @@ class TestClass(object):
 
 	def run(self):
 		for point_generator in self.point_generators:
+			print 'Running point generator: {generator}'.format(generator=str(point_generator))
+
 			with open(self.output_dir + '/' + self.data_file_name(point_generator), 'w') as data_file:
 
 				data_file.write('# '+DATA_LINE)
@@ -108,9 +110,9 @@ class TestClass(object):
 				sys.exit('Failed!')
 
 		with open(base_file_name + '.log', 'r') as log_file:
-			for line in log_file:
-				last_line = '[00:00:00.000]'
+			last_line = '[00:00:00.000]'
 
+			for line in log_file:
 				match = RE_STAT_LINE.match(line)
 				if match:
 					results['intersections'].append(int(match.group('intersections')))
@@ -155,7 +157,6 @@ plot \\
 
 			gnuplot_file.write('''
 
-unset logscale y
 set output "{name}_overlaps.pdf"
 set ylabel "Number of overlapping segments"
 
@@ -171,7 +172,6 @@ plot \\
 
 			gnuplot_file.write('''
 
-set logscale y
 set output "{name}_times.pdf"
 set ylabel "Execution time (in seconds)"
 
