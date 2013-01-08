@@ -42,9 +42,9 @@ IntersectionGraph::IntersectionGraph(const PointSet& points) :
 
             segments_.push_back(s);
 
-            logger->debug(msg("Created segment %1 with index %2")
-                          .arg(to_string(segments_.back()))
-                          .arg(segments_.back().data().index));
+            qDebug() << msg("Created segment %1 with index %2")
+                        .arg(to_string(segments_.back()))
+                        .arg(segments_.back().data().index);
 
             ++seg_index;
         }
@@ -73,7 +73,7 @@ void IntersectionGraph::draw(const QString& prefix,
 {
   if(parameters.draw_igraph)
     {
-      qxtLog->info(msg("Drawing intersection graph..."));
+      qWarning() << msg("Drawing intersection graph...");
 
       QSvgGenerator generator;
       generator.setFileName(prefix + "_igraph.svg");
@@ -89,7 +89,7 @@ void IntersectionGraph::draw(const QString& prefix,
 
   if(parameters.draw_igroups)
     {
-      qxtLog->info(msg("Drawing intersection groups..."));
+      qWarning() << msg("Drawing intersection groups...");
 
       IntersectionGroupIndex group_index = 0;
 

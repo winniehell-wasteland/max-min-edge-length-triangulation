@@ -1,3 +1,4 @@
+#include <QDebug>
 #include <QFileInfo>
 
 #include "json_parser.h"
@@ -9,8 +10,8 @@ Controller::Controller(QFile &input_file, const Parameters &parameters) :
   intersection_graph_(points_),
   parameters_(parameters)
 {
-  qxtLog->info(msg("Constructed intersection graph with %1 segments.")
-               .arg(intersection_graph_.segments().size()));
+  qWarning() << msg("Constructed intersection graph with %1 segments.")
+                .arg(intersection_graph_.segments().size());
 
   intersection_graph_.draw(QFileInfo(input_file).completeBaseName(), parameters_);
 }

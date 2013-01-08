@@ -2,8 +2,6 @@
 
 #include <QtCore>
 
-#include <QxtLogger>
-
 #include "controller.h"
 #include "parameters.h"
 
@@ -45,7 +43,7 @@ public slots:
               }
             else
               {
-                logger->error(msg("Unknown argument: %1").arg(argument));
+                qCritical() << msg("Unknown argument: %1").arg(argument);
               }
           }
         else
@@ -54,24 +52,24 @@ public slots:
 
             if(!file.exists())
               {
-                logger->error(msg("File %1 does not exist!").arg(argument));
+                qCritical() << msg("File %1 does not exist!").arg(argument);
               }
             else
               {
-                logger->info(msg("Reading file %1...").arg(file.fileName()));
+                qWarning() << msg("Reading file %1...").arg(file.fileName());
 
                 if(QFileInfo(file).suffix() != "json")
                   {
-                    logger->warning(tr("Only JSON files are supported!"));
+                    qWarning() << msg("Only JSON files are supported!");
                   }
 
-                qxtLog->info("Starting pre-processing...");
+                qWarning() << msg("Starting pre-processing...");
                 Controller controller(file, parameters_);
 
-                qxtLog->info(msg("Running algorithm..."));
+                qWarning() << msg("Running algorithm...");
                 controller.start();
 
-                qxtLog->info(msg("Done."));
+                qWarning() << msg("Done.");
               }
           }
       }
@@ -85,12 +83,6 @@ private:
 
 int main(int argc, char *argv[])
 {
-#ifdef NDEBUG
-  qxtLog->enableLogLevels(QxtLogger::ErrorLevel);
-#else
-  qxtLog->enableLogLevels(QxtLogger::DebugLevel);
-#endif
-
   Application application(argc, argv);
 
   QTimer::singleShot(0, &application, SLOT(processArguments()));

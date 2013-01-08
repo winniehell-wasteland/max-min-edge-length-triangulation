@@ -1,6 +1,8 @@
 #ifndef MMT_CONFIG_H
 #define MMT_CONFIG_H
 
+#define CGAL_USE_LONG_LONG
+
 #include <map>
 #include <set>
 #include <vector>
@@ -17,6 +19,7 @@
 #include <CGAL/MP_Float.h>
 #include <CGAL/Quotient.h>
 
+#include <QObject>
 
 typedef CGAL::Quotient<CGAL::MP_Float>  Number;
 typedef CGAL::Cartesian<Number>         Kernel;
@@ -46,8 +49,8 @@ typedef std::set<Point, STLPointOrder>     PointSet;
  * @name index definitions
  * @{
  */
-typedef size_t  IntersectionGroupIndex;
-typedef size_t  SegmentIndex;
+typedef size_t IntersectionGroupIndex;
+typedef size_t SegmentIndex;
 
 /** vector of intersection group indices */
 typedef std::vector<IntersectionGroupIndex>    IntersectionGroupIndices;
@@ -120,7 +123,19 @@ struct SegmentOrder
 {
   CGAL::Comparison_result operator() (const Segment& s, const Segment& t) const
   {
-    return CGAL::compare(s.data().index, t.data().index);
+    //return CGAL::compare(s.data().index, t.data().index);
+      if(s.data().index < t.data().index)
+      {
+          return CGAL::SMALLER;
+      }
+      else if(s.data().index < t.data().index)
+      {
+          return CGAL::LARGER;
+      }
+      else
+      {
+          return CGAL::EQUAL;
+      }
   }
 };
 
@@ -139,10 +154,6 @@ typedef std::set<SegmentIndex>  IntersectionGroup;
 /**
  * @}
  */
-
-// logger
-#include <QxtLogger>
-#define logger qxtLog
 
 // helper class for string literals
 class Messages : QObject

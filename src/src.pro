@@ -13,16 +13,9 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-# qxt library
-CONFIG  += qxt
-QXT     += core gui
-
 # CGAL library
 LIBS += -lCGAL
 QMAKE_CXXFLAGS += -frounding-math
-
-# JSON library
-LIBS += -ljson
 
 SOURCES += main.cpp \
     json_parser.cpp \

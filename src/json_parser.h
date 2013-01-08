@@ -11,7 +11,7 @@ class JSONParser
 {
 public:
     static PointSet parse(QFile& file);
-    static Number parse_number(const QVariant& value);
+    static Number parse_number(const QJsonValue &value);
 };
 
 #endif // MMT_JSON_PARSER_H

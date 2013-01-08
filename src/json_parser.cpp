@@ -1,7 +1,8 @@
+#include <QDebug>
 #include <QFileInfo>
+#include <QJsonArray>
+#include <QJsonDocument>
 #include <QTextStream>
-
-#include <QxtJSON>
 
 #include "json_parser.h"
 
@@ -11,66 +12,62 @@ PointSet JSONParser::parse(QFile& file)
 
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-      logger->error(msg("Could not open %1!").arg(file.fileName()));
+      qCritical() << msg("Could not open %1!").arg(file.fileName());
       return points;
     }
 
-  QVariant json_points = QxtJSON::parse(QTextStream(&file).readAll());
+  QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
 
-  if(!json_points.canConvert(QVariant::List))
+  if(!doc.isArray())
     {
-      logger->error(msg("Expected point list!"));
+      qCritical() << msg("Expected point list!");
       return points;
     }
 
-  QVariant json_point;
-  foreach(json_point, json_points.value<QVariantList>())
+  QJsonValue json_point;
+  foreach(json_point, doc.array())
     {
-      if(!json_point.canConvert(QVariant::List))
+      if(!json_point.isArray())
         {
-          logger->error(msg("Expected point, got %1!")
-                        .arg(json_point.toString()));
+          qCritical() << msg("Expected point, got %1!")
+                         .arg(json_point.toString());
           continue;
         }
 
-      QVariantList coordinates = json_point.value<QVariantList>();
+      QJsonArray coordinates = json_point.toArray(QJsonArray());
 
       if(coordinates.size() == 2)
         {
           Point point(parse_number(coordinates[0]),
               parse_number(coordinates[1]));
 
-          logger->debug(msg("Created point (%1, %2)")
-                        .arg(CGAL::to_double(point.x()))
-                        .arg(CGAL::to_double(point.y())));
+          qDebug() << msg("Created point (%1, %2)")
+                      .arg(CGAL::to_double(point.x()))
+                      .arg(CGAL::to_double(point.y()));
 
           points.insert(point);
         }
       else
         {
-          logger->error(msg("Point has invalid dimension (%1)!")
-                        .arg(coordinates.size()));
+          qCritical() << msg("Point has invalid dimension (%1)!")
+                         .arg(coordinates.size());
         }
     }
 
-  qxtLog->info(msg("Read %1 points.").arg(points.size()));
+  qWarning() << msg("Read %1 points.").arg(points.size());
 
   return points;
 }
 
-Number JSONParser::parse_number(const QVariant& value)
+Number JSONParser::parse_number(const QJsonValue& value)
 {
-  if(value.canConvert(QVariant::Int))
-    {
-      return value.toInt();
-    }
-  else if(value.canConvert(QVariant::Double))
+  if(value.isDouble())
     {
       return value.toDouble();
     }
   else
     {
-      logger->error(msg("Can not parse coordinate %1!").arg(value.toString()));
+      qCritical() << msg("Can not parse coordinate %1!").arg(value.toString());
       return Number();
     }
 }
