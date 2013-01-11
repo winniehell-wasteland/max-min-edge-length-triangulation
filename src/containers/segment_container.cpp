@@ -4,6 +4,25 @@
 
 #include "segment_container.h"
 
+class STLSegmentLengthComparator :
+        public std::binary_function<Segment, Segment, bool>
+{
+public:
+    STLSegmentLengthComparator(const SegmentContainer& segments) :
+        segments_(segments)
+    {
+
+    }
+
+    bool operator() (const SegmentIndex& s, const SegmentIndex& t) const
+    {
+        return segments_[s].squared_length() < segments_[t].squared_length();
+    }
+
+private:
+    const SegmentContainer& segments_;
+};
+
 SegmentContainer::SegmentContainer(const PointSet& points)
 {
     SegmentIndex seg_index = 0;
@@ -26,4 +45,12 @@ SegmentContainer::SegmentContainer(const PointSet& points)
     }
 
     CGAL_postcondition(seg_index == size());
+
+    for(seg_index = 0; seg_index < size(); ++seg_index)
+    {
+        by_length_.push_back(seg_index);
+    }
+
+    // sort segments by length
+    std::sort(by_length_.begin(), by_length_.end(), STLSegmentLengthComparator(*this));
 }
