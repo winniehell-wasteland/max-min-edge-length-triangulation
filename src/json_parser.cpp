@@ -1,10 +1,10 @@
-#include <QDebug>
 #include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QTextStream>
 
 #include "json_parser.h"
+#include "mmt_utils.h"
 
 PointSet JSONParser::parse(QFile& file)
 {
@@ -12,7 +12,7 @@ PointSet JSONParser::parse(QFile& file)
 
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-      qCritical() << msg("Could not open %1!").arg(file.fileName());
+      logger.error(msg("Could not open %1!").arg(file.fileName()));
       return points;
     }
 
@@ -20,7 +20,7 @@ PointSet JSONParser::parse(QFile& file)
 
   if(!doc.isArray())
     {
-      qCritical() << msg("Expected point list!");
+      logger.error(msg("Expected point list!"));
       return points;
     }
 
@@ -29,8 +29,8 @@ PointSet JSONParser::parse(QFile& file)
     {
       if(!json_point.isArray())
         {
-          qCritical() << msg("Expected point, got %1!")
-                         .arg(json_point.toString());
+          logger.error(msg("Expected point, got %1!")
+                       .arg(json_point.toString()));
           continue;
         }
 
@@ -41,20 +41,18 @@ PointSet JSONParser::parse(QFile& file)
           Point point(parse_number(coordinates[0]),
               parse_number(coordinates[1]));
 
-          qDebug() << msg("Created point (%1, %2)")
-                      .arg(CGAL::to_double(point.x()))
-                      .arg(CGAL::to_double(point.y()));
+          logger.debug(msg("Created point (%1, %2)")
+                       .arg(CGAL::to_double(point.x()))
+                       .arg(CGAL::to_double(point.y())));
 
           points.insert(point);
         }
       else
         {
-          qCritical() << msg("Point has invalid dimension (%1)!")
-                         .arg(coordinates.size());
+          logger.error(msg("Point has invalid dimension (%1)!")
+                       .arg(coordinates.size()));
         }
     }
-
-  qWarning() << msg("Read %1 points.").arg(points.size());
 
   return points;
 }
@@ -67,7 +65,7 @@ Number JSONParser::parse_number(const QJsonValue& value)
     }
   else
     {
-      qCritical() << msg("Can not parse coordinate %1!").arg(value.toString());
+      logger.error(msg("Can not parse coordinate %1!").arg(value.toString()));
       return Number();
     }
 }

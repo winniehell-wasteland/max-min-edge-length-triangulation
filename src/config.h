@@ -83,11 +83,11 @@ class Segment :
 public:
 
   /** default constructor */
-  Segment(const Point& source, const Point& target) :
+  Segment(const Point& source, const Point& target, SegmentIndex index) :
     Base(source, target),
     data_()
   {
-
+    data().index = index;
   }
 
   Segment(const Segment& other) :
@@ -140,7 +140,6 @@ struct SegmentOrder
 };
 
 typedef CGAL::Compare_to_less<SegmentOrder>  STLSegmentOrder;
-typedef std::vector<Segment>                 SegmentVector;
 
 /**
  * @}

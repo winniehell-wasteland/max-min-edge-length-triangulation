@@ -3,7 +3,7 @@
 
 #include <CGAL/intersections.h>
 
-#include "cgal_utils.h"
+#include "mmt_utils.h"
 
 #include "intersection_graph.h"
 
@@ -14,7 +14,9 @@ class NaiveIntersectionAlgorithm
   typedef std::map<Point, IntersectionGroup, STLPointOrder>  Intersections;
   typedef std::set<SegmentIndex>                             Overlaps;
 public:
-  NaiveIntersectionAlgorithm(IntersectionGraph* graph, const PointSet& points) :
+  NaiveIntersectionAlgorithm(IntersectionGraph* graph,
+                             const PointSet& points,
+                             SegmentContainer& segments) :
     empty_group_(),
     intersections_(point_order)
   {
@@ -22,15 +24,16 @@ public:
 
     SegmentIndex overlaps = 0;
 
-    for(SegmentVector::iterator s = graph->segments().begin();
-        s != graph->segments().end(); ++s)
+    for(SegmentContainer::iterator s = segments.begin();
+        s != segments.end();
+        ++s)
       {
-        SegmentVector::iterator t = s;
-        for( ++t; t != graph->segments().end(); ++t)
+        SegmentContainer::iterator t = s;
+        for( ++t; t != segments.end(); ++t)
           {
-            qDebug() << msg("check segment %1 and %2")
-                        .arg(to_string(*s))
-                        .arg(to_string(*t));
+            logger.debug(msg("check segment %1 and %2")
+                         .arg(print_segment(*s))
+                         .arg(print_segment(*t)));
 
             CGAL::Object result = CGAL::intersection(
               static_cast<CGAL::Segment_2<Kernel> >(*s),
@@ -38,36 +41,33 @@ public:
             );
 
             if(const CGAL::Point_2<Kernel>* ipoint
-               = CGAL::object_cast<CGAL::Point_2<Kernel> >(&result))
-              {
-                if((s->source() == *ipoint) || (s->target() == *ipoint))
-                  {
-                    qDebug() << msg("segment %1 and %2 share point (%3,%4)")
-                                .arg(to_string(*s))
-                                .arg(to_string(*t))
-                                .arg(CGAL::to_double(ipoint->x()))
-                                .arg(CGAL::to_double(ipoint->y()));
-                  }
-                else if(points.find(*ipoint) != points.end())
-                  {
-                    qDebug() << msg("segment %1 intersects %2 in input point"
-                                    " (%3,%4)")
-                                .arg(to_string(*s))
-                                .arg(to_string(*t))
-                                .arg(CGAL::to_double(ipoint->x()))
-                                .arg(CGAL::to_double(ipoint->y()));
-                  }
+                    = CGAL::object_cast<CGAL::Point_2<Kernel> >(&result))
+            {
+                if(points.find(*ipoint) != points.end())
+                {
+                    logger.debug(msg("segment %1 intersects %2"
+                                     " in input point %3")
+                                 .arg(print_segment(*s))
+                                 .arg(print_segment(*t))
+                                 .arg(print_point(*ipoint)));
+                }
+                else if((s->source() == *ipoint) || (s->target() == *ipoint))
+                {
+                    logger.debug(msg("segment %1 and %2 share point %3")
+                                 .arg(print_segment(*s))
+                                 .arg(print_segment(*t))
+                                 .arg(print_point(*ipoint)));
+                }
                 else
-                  {
-                    qDebug() << msg("segment %1 intersects %2 in (%3,%4)")
-                                .arg(to_string(*s))
-                                .arg(to_string(*t))
-                                .arg(CGAL::to_double(ipoint->x()))
-                                .arg(CGAL::to_double(ipoint->y()));
+                {
+                    logger.debug(msg("segment %1 intersects %2 in %3")
+                                 .arg(print_segment(*s))
+                                 .arg(print_segment(*t))
+                                 .arg(print_point(*ipoint)));
 
                     add_intersecting_segment(*ipoint, *s);
                     add_intersecting_segment(*ipoint, *t);
-                  }
+                }
               }
             else if (const CGAL::Segment_2<Kernel>* iseg
                      = CGAL::object_cast<CGAL::Segment_2<Kernel> >(&result))
@@ -76,9 +76,9 @@ public:
 
                 if(*iseg == *s)
                   {
-                    qDebug() << msg("segment %1 contains %2")
-                                .arg(to_string(*t))
-                                .arg(to_string(*s));
+                    logger.debug(msg("segment %1 contains %2")
+                                 .arg(print_segment(*t))
+                                 .arg(print_segment(*s)));
 
                     if(!s->data().overlapping)
                       {
@@ -88,9 +88,9 @@ public:
                   }
                 else
                   {
-                    qDebug() << msg("segments %1 and %2 overlap")
-                                .arg(to_string(*s))
-                                .arg(to_string(*t));
+                    logger.debug(msg("segments %1 and %2 overlap")
+                                 .arg(print_segment(*s))
+                                 .arg(print_segment(*t)));
                   }
               }
             else
@@ -105,24 +105,16 @@ public:
     for(Intersections::const_iterator intersection = intersections_.begin();
         intersection != intersections_.end(); ++intersection)
       {
-        qDebug() << msg("intersection group:");
+        logger.debug(msg("intersection group: %1")
+                     .arg(print_igroup(segments, intersection->second)));
 
-        for(IntersectionGroup::const_iterator segment_index = intersection->second.begin();
-            segment_index != intersection->second.end(); ++segment_index)
-          {
-            ++intersecting_segments;
-            qDebug() << to_string(graph->segments()[*segment_index]);
-          }
-
-        qDebug() << "";
-
+        intersecting_segments += intersection->second.size();
         graph->add_intersection_group(intersection->second);
       }
 
-    qWarning() << msg("segments: total=%1 intersections=%2 overlaps=%3")
-                  .arg(graph->segments().size(), 5, 10, QChar('0'))
-                  .arg(intersecting_segments, 10, 10, QChar('0'))
-                  .arg(overlaps, 3, 10, QChar('0'));
+    logger.print(msg("intersections=%1 overlaps=%2")
+                 .arg(intersecting_segments, 10, 10, QChar('0'))
+                 .arg(overlaps, 3, 10, QChar('0')));
   }
 private:
   IntersectionGroup empty_group_;

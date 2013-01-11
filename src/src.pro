@@ -22,7 +22,9 @@ SOURCES += main.cpp \
     controller.cpp \
     graph.cpp \
     intersection/intersection_graph.cpp \
-    cgal_utils.cpp
+    containers/segment_container.cpp \
+    mmt_utils.cpp \
+    logger.cpp
 
 HEADERS += \
     json_parser.h \
@@ -36,7 +38,9 @@ HEADERS += \
     intersection/sweep_line_visitor.h \
     intersection/naive_intersection_algorithm.h \
     parameters.h \
-    cgal_utils.h
+    containers/segment_container.h \
+    mmt_utils.h \
+    logger.h
 
 CONFIG(debug, debug|release) {
     message("debug mode")

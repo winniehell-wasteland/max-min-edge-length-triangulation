@@ -8,6 +8,8 @@
 
 #include "parameters.h"
 
+#include "containers/segment_container.h"
+
 class IntersectionGraph
 {
   /** for drawing */
@@ -17,26 +19,19 @@ class IntersectionGraph
 public:
 
     /** default constructor */
-    IntersectionGraph(const PointSet& points);
+    IntersectionGraph(const PointSet& points, SegmentContainer& segments);
 
     void add_intersection_group(const IntersectionGroup& group);
 
     /** output intersection graph to SVG */
-    void draw(const QString &prefix, const Parameters &parameters) const;
+    void draw_igraph(const QString &prefix) const;
 
-    SegmentVector& segments()
-    {
-      return segments_;
-    }
-
-    const SegmentVector& segments() const
-    {
-      return segments_;
-    }
+    /** output intersection groups to SVG */
+    void draw_igroups(const QString &prefix) const;
 private:
     const CGAL::Iso_rectangle_2<Kernel>  bounding_box_;
     IntersectionGroupVector              intersection_groups_;
-    SegmentVector                        segments_;
+    SegmentContainer&                    segments_;
 
     void init_generator(QSvgGenerator& generator) const;
     void draw_graph(QPainter &painter) const;

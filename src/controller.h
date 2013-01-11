@@ -7,6 +7,8 @@
 
 #include "parameters.h"
 
+#include "containers/segment_container.h"
+
 #include "intersection/intersection_graph.h"
 
 class Controller
@@ -16,6 +18,8 @@ public:
     void start();
 private:
     const PointSet points_;
+    SegmentContainer segments_;
+
     const IntersectionGraph intersection_graph_;
     const Parameters& parameters_;
 };

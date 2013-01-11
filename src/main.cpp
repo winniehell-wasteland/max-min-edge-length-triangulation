@@ -4,6 +4,7 @@
 
 #include "controller.h"
 #include "parameters.h"
+#include "mmt_utils.h"
 
 class Application : public QCoreApplication
 {
@@ -43,7 +44,7 @@ public slots:
               }
             else
               {
-                qCritical() << msg("Unknown argument: %1").arg(argument);
+                logger.error(msg("Unknown argument: %1").arg(argument));
               }
           }
         else
@@ -52,24 +53,24 @@ public slots:
 
             if(!file.exists())
               {
-                qCritical() << msg("File %1 does not exist!").arg(argument);
+                logger.error(msg("File %1 does not exist!").arg(argument));
               }
             else
               {
-                qWarning() << msg("Reading file %1...").arg(file.fileName());
+                logger.info(msg("Reading file %1...").arg(file.fileName()));
 
                 if(QFileInfo(file).suffix() != "json")
                   {
-                    qWarning() << msg("Only JSON files are supported!");
+                    logger.warn(msg("Only JSON files are supported!"));
                   }
 
-                qWarning() << msg("Starting pre-processing...");
+                logger.info(msg("Starting pre-processing..."));
                 Controller controller(file, parameters_);
 
-                qWarning() << msg("Running algorithm...");
+                logger.info(msg("Running algorithm..."));
                 controller.start();
 
-                qWarning() << msg("Done.");
+                logger.info(msg("Done."));
               }
           }
       }
