@@ -2,18 +2,20 @@
 #include <QFileInfo>
 
 #include "json_parser.h"
-#include "mmt_utils.h"
+#include "logger.h"
 
 #include "controller.h"
 
 Controller::Controller(QFile &input_file, const Parameters &parameters) :
   points_(JSONParser::parse(input_file)),
   segments_(points_),
+  convex_hull_(points_),
   intersection_graph_(points_, segments_),
   parameters_(parameters)
 {
-    logger.info(msg("Read %1 points.").arg(points_.size()));
-    logger.info(msg("Constructed %1 segments.").arg(segments_.size()));
+    logger.print(msg("points: %1").arg(points_.size()));
+    logger.print(msg("segments: %1").arg(segments_.size()));
+    logger.print(msg("convex hull: %1").arg(convex_hull_.size()));
 
     if(parameters.draw_igraph)
     {

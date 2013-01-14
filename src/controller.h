@@ -7,6 +7,7 @@
 
 #include "parameters.h"
 
+#include "containers/convex_hull.h"
 #include "containers/segment_container.h"
 
 #include "intersection/intersection_graph.h"
@@ -20,8 +21,9 @@ private:
     const PointSet points_;
     SegmentContainer segments_;
 
-    const IntersectionGraph intersection_graph_;
-    const Parameters& parameters_;
+    const ConvexHull         convex_hull_;
+    const IntersectionGraph  intersection_graph_;
+    const Parameters&        parameters_;
 };
 
 #endif // MMT_CONTROLLER_H

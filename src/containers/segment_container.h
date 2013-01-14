@@ -1,9 +1,13 @@
-#ifndef SEGMENT_CONTAINER_H
-#define SEGMENT_CONTAINER_H
+#ifndef CONTAINERS__SEGMENT_CONTAINER_H
+#define CONTAINERS__SEGMENT_CONTAINER_H
 
-#include "config.h"
+#include <vector>
 
 #include <QString>
+
+#include "segment.h"
+
+#include "containers/types.h"
 
 class SegmentContainer :
         public std::vector<Segment>
@@ -24,4 +28,4 @@ private:
     std::vector<SegmentIndex> by_length_;
 };
 
-#endif // SEGMENT_CONTAINER_H
+#endif // CONTAINERS__SEGMENT_CONTAINER_H

@@ -5,6 +5,8 @@ static QTextStream qout(stdout);
 
 #include "logger.h"
 
+const Logger logger;
+
 Logger::Logger()
 {
 }

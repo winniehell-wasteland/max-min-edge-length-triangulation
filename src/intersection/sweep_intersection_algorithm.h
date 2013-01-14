@@ -128,7 +128,7 @@ private:
                     StatusStructure::iterator>      SegmentRange;
 
   IntersectionGraph&   intersection_graph_;
-  SegmentIndexVector   overlaps_;
+  SegmentIndices   overlaps_;
   const PointSet&      points_;
   StatusOrder          status_order_;
   StatusStructure      status_structure_;
@@ -150,13 +150,13 @@ private:
     PointSet::const_iterator event_it = points_.find(event);
     bool is_input_point = (event_it != points_.end());
 
-    SegmentIndexVector incident_segments;
+    SegmentIndices incident_segments;
     move_incident_segments(event, incident_segments);
 
     // generate intersection group only if there are intersecting segments
     bool generate_igroup = false;
 
-    for(SegmentIndexVector::const_iterator si = incident_segments.begin();
+    for(SegmentIndices::const_iterator si = incident_segments.begin();
         si != incident_segments.end(); ++si)
       {
         const CGAL::Segment_2<Kernel> s = intersection_graph_.segments()[*si];
@@ -216,7 +216,7 @@ private:
   }
 
   void move_incident_segments(const Point& point,
-                              SegmentIndexVector& incident_segments)
+                              SegmentIndices& incident_segments)
   {
     SegmentRange range = std::equal_range(status_structure_.begin(),
                                           status_structure_.end(),

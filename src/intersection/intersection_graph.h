@@ -10,12 +10,12 @@
 
 #include "containers/segment_container.h"
 
+#include "intersection/types.h"
+
 class IntersectionGraph
 {
   /** for drawing */
   static const double SCALE;
-
-  typedef std::vector<IntersectionGroup>  IntersectionGroupVector;
 public:
 
     /** default constructor */
@@ -28,6 +28,12 @@ public:
 
     /** output intersection groups to SVG */
     void draw_igroups(const QString &prefix) const;
+
+    const IntersectionGroupVector& intersection_groups() const
+    {
+        return intersection_groups_;
+    }
+
 private:
     const CGAL::Iso_rectangle_2<Kernel>  bounding_box_;
     IntersectionGroupVector              intersection_groups_;

@@ -4,7 +4,7 @@
 #include <QTextStream>
 
 #include "json_parser.h"
-#include "mmt_utils.h"
+#include "logger.h"
 
 PointSet JSONParser::parse(QFile& file)
 {

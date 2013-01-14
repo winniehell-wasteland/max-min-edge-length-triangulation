@@ -5,7 +5,7 @@
 
 #include "config.h"
 
-//Q_DECLARE_METATYPE(Number);
+#include "containers/types.h"
 
 class JSONParser
 {

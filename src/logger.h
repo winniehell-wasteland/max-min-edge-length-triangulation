@@ -15,4 +15,6 @@ public:
     void print(const QString& message) const;
 };
 
+extern const Logger  logger;
+
 #endif // MMT_LOGGER_H

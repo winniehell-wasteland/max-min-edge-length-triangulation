@@ -3,8 +3,8 @@
 #include <QtCore>
 
 #include "controller.h"
+#include "logger.h"
 #include "parameters.h"
-#include "mmt_utils.h"
 
 class Application : public QCoreApplication
 {

@@ -3,11 +3,9 @@
 
 #include <CGAL/intersections.h>
 
-#include "mmt_utils.h"
+#include "logger.h"
 
-#include "intersection_graph.h"
-
-#include <QDebug>
+#include "intersection/intersection_graph.h"
 
 class NaiveIntersectionAlgorithm
 {

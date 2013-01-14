@@ -3,15 +3,9 @@
 
 #include "config.h"
 
-#include "logger.h"
+#include "segment.h"
 
 #include "containers/segment_container.h"
-
-extern Logger logger;
-
-extern LineOrder       line_order;
-extern PointOrder      point_order;
-extern SegmentOrder    segment_order;
 
 long to_int(const Number& number);
 

@@ -1,5 +1,4 @@
-#include <QDebug>
-
+#include "logger.h"
 #include "mmt_utils.h"
 
 #include "segment_container.h"
