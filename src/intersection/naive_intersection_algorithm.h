@@ -29,7 +29,7 @@ public:
         SegmentContainer::iterator t = s;
         for( ++t; t != segments.end(); ++t)
           {
-            logger.debug(msg("check segment %1 and %2")
+            logger.debug(mmt_msg("check segment %1 and %2")
                          .arg(print_segment(*s))
                          .arg(print_segment(*t)));
 
@@ -43,7 +43,7 @@ public:
             {
                 if(points.find(*ipoint) != points.end())
                 {
-                    logger.debug(msg("segment %1 intersects %2"
+                    logger.debug(mmt_msg("segment %1 intersects %2"
                                      " in input point %3")
                                  .arg(print_segment(*s))
                                  .arg(print_segment(*t))
@@ -51,14 +51,14 @@ public:
                 }
                 else if((s->source() == *ipoint) || (s->target() == *ipoint))
                 {
-                    logger.debug(msg("segment %1 and %2 share point %3")
+                    logger.debug(mmt_msg("segment %1 and %2 share point %3")
                                  .arg(print_segment(*s))
                                  .arg(print_segment(*t))
                                  .arg(print_point(*ipoint)));
                 }
                 else
                 {
-                    logger.debug(msg("segment %1 intersects %2 in %3")
+                    logger.debug(mmt_msg("segment %1 intersects %2 in %3")
                                  .arg(print_segment(*s))
                                  .arg(print_segment(*t))
                                  .arg(print_point(*ipoint)));
@@ -74,7 +74,7 @@ public:
 
                 if(*iseg == *s)
                   {
-                    logger.debug(msg("segment %1 contains %2")
+                    logger.debug(mmt_msg("segment %1 contains %2")
                                  .arg(print_segment(*t))
                                  .arg(print_segment(*s)));
 
@@ -86,7 +86,7 @@ public:
                   }
                 else
                   {
-                    logger.debug(msg("segments %1 and %2 overlap")
+                    logger.debug(mmt_msg("segments %1 and %2 overlap")
                                  .arg(print_segment(*s))
                                  .arg(print_segment(*t)));
                   }
@@ -103,14 +103,14 @@ public:
     for(Intersections::const_iterator intersection = intersections_.begin();
         intersection != intersections_.end(); ++intersection)
       {
-        logger.debug(msg("intersection group: %1")
+        logger.debug(mmt_msg("intersection group: %1")
                      .arg(print_igroup(segments, intersection->second)));
 
         intersecting_segments += intersection->second.size();
         graph->add_intersection_group(intersection->second);
       }
 
-    logger.print(msg("intersections=%1 overlaps=%2")
+    logger.print(mmt_msg("intersections=%1 overlaps=%2")
                  .arg(intersecting_segments, 10, 10, QChar('0'))
                  .arg(overlaps, 3, 10, QChar('0')));
   }

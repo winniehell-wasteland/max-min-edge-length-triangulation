@@ -1,36 +1,69 @@
 #include <QDebug>
 #include <QFileInfo>
 
+#include <CGAL/bounding_box.h>
+
 #include "json_parser.h"
 #include "logger.h"
+
+#include "cplex/sat_problem.h"
 
 #include "controller.h"
 
 Controller::Controller(QFile &input_file, const Parameters &parameters) :
-  points_(JSONParser::parse(input_file)),
-  segments_(points_),
-  convex_hull_(points_),
-  intersection_graph_(points_, segments_),
-  parameters_(parameters)
+    file_prefix_(QFileInfo(input_file).completeBaseName()),
+    parameters_(parameters),
+    points_(JSONParser::parse(input_file)),
+    svg_generator_(),
+    bounding_box_(CGAL::bounding_box(points_.begin(), points_.end())),
+    convex_hull_(points_),
+    segments_(points_),
+    intersection_graph_(points_, segments_)
 {
-    logger.print(msg("points: %1").arg(points_.size()));
-    logger.print(msg("segments: %1").arg(segments_.size()));
-    logger.print(msg("convex hull: %1").arg(convex_hull_.size()));
+    svg_generator_.setSize(QSize(CGAL::to_double(bounding_box_.xmax()) - CGAL::to_double(bounding_box_.xmin()) + 20,
+                                 CGAL::to_double(bounding_box_.ymax()) - CGAL::to_double(bounding_box_.ymin()) + 20) * MMT_SVG_SCALE);
+
+    svg_generator_.setViewBox(QRect(CGAL::to_double(MMT_SVG_SCALE*(bounding_box_.xmin()-10)),
+                                    CGAL::to_double(MMT_SVG_SCALE*(bounding_box_.ymin()-10)),
+                                    svg_generator_.size().width(),
+                                    svg_generator_.size().height()));
+
+    logger.print(mmt_msg("points: %1").arg(points_.size()));
+    logger.print(mmt_msg("segments: %1").arg(segments_.size()));
+    logger.print(mmt_msg("convex hull: %1").arg(convex_hull_.size()));
 
     if(parameters.draw_igraph)
     {
-        logger.info(msg("Drawing intersection graph..."));
-        intersection_graph_.draw_igraph(QFileInfo(input_file).completeBaseName());
+        logger.info(mmt_msg("Drawing intersection graph..."));
+        SVGPainter painter(this, "_igraph.svg");
+        intersection_graph_.draw_igraph(painter);
     }
 
     if(parameters.draw_igroups)
     {
-        logger.info(msg("Drawing intersection groups..."));
-        intersection_graph_.draw_igroups(QFileInfo(input_file).completeBaseName());
+        logger.info(mmt_msg("Drawing intersection groups..."));
+
+        IntersectionGroupIndex igroup_index = 0;
+
+        foreach(const IntersectionGroup& igroup, intersection_graph_.intersection_groups())
+        {
+            SVGPainter painter(this, QString("_%1_igroup.svg").arg(igroup_index, 5, 10));
+            intersection_graph_.draw_igraph(painter);
+            intersection_graph_.draw_igroup(painter, igroup);
+
+            ++igroup_index;
+        }
     }
 }
 
 void Controller::start()
 {
+    SATProblem sat_problem(points_.size(), segments_.size(), convex_hull_.size(), intersection_graph_.intersection_groups());
+    const SATSolution& sat_solution = sat_problem.solve();
 
+    {
+        SVGPainter painter(this, "_sat.svg");
+        intersection_graph_.draw_igraph(painter);
+        sat_solution.draw(painter, segments_);
+    }
 }

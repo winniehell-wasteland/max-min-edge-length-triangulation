@@ -30,7 +30,8 @@ SOURCES += main.cpp \
     containers/convex_hull.cpp \
     cplex/sat_problem.cpp \
     orders.cpp \
-    segment.cpp
+    segment.cpp \
+    cplex/sat_solution.cpp
 
 HEADERS += \
     json_parser.h \
@@ -55,7 +56,10 @@ HEADERS += \
     orders.h \
     index_types.h \
     containers/sorted_vector.h \
-    assertions.h
+    assertions.h \
+    cplex/sat_solution.h \
+    cplex/concert.h \
+    stats.h
 
 CONFIG(debug, debug|release) {
     message("debug mode")

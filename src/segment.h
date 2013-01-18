@@ -1,5 +1,7 @@
-#ifndef SEGMENT_H
-#define SEGMENT_H
+#ifndef MMT__SEGMENT_H
+#define MMT__SEGMENT_H
+
+#include <QPainter>
 
 #include <CGAL/Segment_2.h>
 
@@ -65,6 +67,9 @@ public:
     return data_;
   }
 
+  /** output segment using QPainter */
+  void draw(QPainter& painter) const;
+
 private:
   /** attached data */
   SegmentData data_;
@@ -108,4 +113,4 @@ extern const STLSegmentOrder  stl_segment_order;
  * @}
  */
 
-#endif // SEGMENT_H
+#endif // MMT__SEGMENT_H

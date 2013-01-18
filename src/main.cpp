@@ -1,18 +1,19 @@
 #include "config.h"
 
 #include <QtCore>
+#include <QGuiApplication>
 
 #include "controller.h"
 #include "logger.h"
 #include "parameters.h"
 
-class Application : public QCoreApplication
+class Application : public QGuiApplication
 {
   Q_OBJECT
 
 public:
   Application(int &argc, char **argv) :
-    QCoreApplication(argc, argv),
+    QGuiApplication(argc, argv),
     parameters_()
   {
   }
@@ -44,7 +45,7 @@ public slots:
               }
             else
               {
-                logger.error(msg("Unknown argument: %1").arg(argument));
+                logger.error(mmt_msg("Unknown argument: %1").arg(argument));
               }
           }
         else
@@ -53,24 +54,24 @@ public slots:
 
             if(!file.exists())
               {
-                logger.error(msg("File %1 does not exist!").arg(argument));
+                logger.error(mmt_msg("File %1 does not exist!").arg(argument));
               }
             else
               {
-                logger.info(msg("Reading file %1...").arg(file.fileName()));
+                logger.info(mmt_msg("Reading file %1...").arg(file.fileName()));
 
                 if(QFileInfo(file).suffix() != "json")
                   {
-                    logger.warn(msg("Only JSON files are supported!"));
+                    logger.warn(mmt_msg("Only JSON files are supported!"));
                   }
 
-                logger.info(msg("Starting pre-processing..."));
+                logger.info(mmt_msg("Starting pre-processing..."));
                 Controller controller(file, parameters_);
 
-                logger.info(msg("Running algorithm..."));
+                logger.info(mmt_msg("Running algorithm..."));
                 controller.start();
 
-                logger.info(msg("Done."));
+                logger.info(mmt_msg("Done."));
               }
           }
       }

@@ -3,8 +3,7 @@
 
 #include "config.h"
 
-#include <QString>
-#include <QSvgGenerator>
+#include <QPainter>
 
 #include "parameters.h"
 
@@ -14,8 +13,6 @@
 
 class IntersectionGraph
 {
-  /** for drawing */
-  static const double SCALE;
 public:
 
     /** default constructor */
@@ -23,11 +20,12 @@ public:
 
     void add_intersection_group(const IntersectionGroup& group);
 
-    /** output intersection graph to SVG */
-    void draw_igraph(const QString &prefix) const;
+    /** output intersection graph using QPainter */
+    void draw_igraph(QPainter& painter) const;
 
-    /** output intersection groups to SVG */
-    void draw_igroups(const QString &prefix) const;
+    /** output intersection group using QPainter */
+    void draw_igroup(QPainter& painter,
+                     const IntersectionGroup& igroup) const;
 
     const IntersectionGroupVector& intersection_groups() const
     {
@@ -35,14 +33,8 @@ public:
     }
 
 private:
-    const CGAL::Iso_rectangle_2<Kernel>  bounding_box_;
-    IntersectionGroupVector              intersection_groups_;
-    SegmentContainer&                    segments_;
-
-    void init_generator(QSvgGenerator& generator) const;
-    void draw_graph(QPainter &painter) const;
-    void draw_intersection_group(QPainter& painter,
-                                 const IntersectionGroup& group) const;
+    IntersectionGroupVector  intersection_groups_;
+    SegmentContainer&        segments_;
 };
 
 #endif // MMT_INTERSECTION_GRAPH_H

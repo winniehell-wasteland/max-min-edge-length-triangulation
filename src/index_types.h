@@ -4,9 +4,9 @@
 #include <cstring>
 
 /** index type for intersection groups */
-typedef size_t IntersectionGroupIndex;
+typedef unsigned int IntersectionGroupIndex;
 
 /** index type for segments */
-typedef size_t SegmentIndex;
+typedef unsigned int SegmentIndex;
 
 #endif // INDEX_TYPES_H

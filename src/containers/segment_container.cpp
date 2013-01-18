@@ -39,7 +39,7 @@ SegmentContainer::SegmentContainer(const PointSet& points)
 
             push_back(Segment(*it, *jt, seg_index++));
 
-            logger.debug(msg("Created segment %1").arg(print_segment(back())));
+            logger.debug(mmt_msg("Created segment %1").arg(print_segment(back())));
         }
     }
 

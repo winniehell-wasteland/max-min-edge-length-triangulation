@@ -1,19 +1,5 @@
 #include "mmt_utils.h"
 
-long to_int(const Number& number)
-{
-  double d = CGAL::to_double(number);
-
-  if(d > 0.0)
-    {
-      return std::floor(d + 0.5);
-    }
-  else
-    {
-      return std::ceil(d - 0.5);
-    }
-}
-
 QString print_point(const Point& point)
 {
     return QString("(%2,%3)")

@@ -6,6 +6,7 @@ static QTextStream qout(stdout);
 #include "logger.h"
 
 const Logger logger;
+Messages mmt_msg;
 
 Logger::Logger()
 {

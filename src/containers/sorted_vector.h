@@ -40,7 +40,7 @@ public:
                 size_type __n,
                 const value_type &__x)
     {
-        precondition(sorted_position(__position, __x));
+        mmt_precondition(sorted_position(__position, __x));
         base::insert(__position, __n, __x);
     }
 
@@ -50,7 +50,7 @@ public:
     template<typename _InputIterator>
     void insert(iterator __position, _InputIterator __first, _InputIterator __last)
     {
-        precondition(sorted_position(__position, *__first)
+        mmt_precondition(sorted_position(__position, *__first)
                      && sorted_position(__position, *__last)
                      && (std::adjacent_find(this->begin(), this->end(), neg_comp_) == this->end()));
         base::insert(__position, __first, __last);
@@ -61,7 +61,7 @@ public:
      */
     void push_back(const value_type& __x)
     {
-        precondition(sorted_position(this->end(), __x));
+        mmt_precondition(sorted_position(this->end(), __x));
         base::push_back(__x);
     }
 private:

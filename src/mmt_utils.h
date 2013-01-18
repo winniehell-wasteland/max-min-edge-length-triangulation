@@ -7,8 +7,6 @@
 
 #include "containers/segment_container.h"
 
-long to_int(const Number& number);
-
 QString print_point(const Point& point);
 QString print_segment(const Segment& segment);
 QString print_igroup(const SegmentContainer& segments,

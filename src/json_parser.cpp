@@ -12,7 +12,7 @@ PointSet JSONParser::parse(QFile& file)
 
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-      logger.error(msg("Could not open %1!").arg(file.fileName()));
+      logger.error(mmt_msg("Could not open %1!").arg(file.fileName()));
       return points;
     }
 
@@ -20,7 +20,7 @@ PointSet JSONParser::parse(QFile& file)
 
   if(!doc.isArray())
     {
-      logger.error(msg("Expected point list!"));
+      logger.error(mmt_msg("Expected point list!"));
       return points;
     }
 
@@ -29,7 +29,7 @@ PointSet JSONParser::parse(QFile& file)
     {
       if(!json_point.isArray())
         {
-          logger.error(msg("Expected point, got %1!")
+          logger.error(mmt_msg("Expected point, got %1!")
                        .arg(json_point.toString()));
           continue;
         }
@@ -41,7 +41,7 @@ PointSet JSONParser::parse(QFile& file)
           Point point(parse_number(coordinates[0]),
               parse_number(coordinates[1]));
 
-          logger.debug(msg("Created point (%1, %2)")
+          logger.debug(mmt_msg("Created point (%1, %2)")
                        .arg(CGAL::to_double(point.x()))
                        .arg(CGAL::to_double(point.y())));
 
@@ -49,7 +49,7 @@ PointSet JSONParser::parse(QFile& file)
         }
       else
         {
-          logger.error(msg("Point has invalid dimension (%1)!")
+          logger.error(mmt_msg("Point has invalid dimension (%1)!")
                        .arg(coordinates.size()));
         }
     }
@@ -65,7 +65,7 @@ Number JSONParser::parse_number(const QJsonValue& value)
     }
   else
     {
-      logger.error(msg("Can not parse coordinate %1!").arg(value.toString()));
+      logger.error(mmt_msg("Can not parse coordinate %1!").arg(value.toString()));
       return Number();
     }
 }

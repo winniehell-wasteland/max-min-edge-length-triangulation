@@ -4,6 +4,7 @@
 #include "config.h"
 
 #include <QFile>
+#include <QSvgGenerator>
 
 #include "parameters.h"
 
@@ -15,15 +16,32 @@
 class Controller
 {
 public:
-    Controller(QFile &input_file, const Parameters& parameters);
+    Controller(QFile& input_file, const Parameters& parameters);
     void start();
 private:
-    const PointSet points_;
-    SegmentContainer segments_;
+    const QString                        file_prefix_;
+    const Parameters&                    parameters_;
+    const PointSet                       points_;
+    QSvgGenerator                        svg_generator_;
 
-    const ConvexHull         convex_hull_;
-    const IntersectionGraph  intersection_graph_;
-    const Parameters&        parameters_;
+    const CGAL::Iso_rectangle_2<Kernel>  bounding_box_;
+    const ConvexHull                     convex_hull_;
+    SegmentContainer                     segments_;
+
+    const IntersectionGraph              intersection_graph_;
+
+    class SVGPainter :
+            public QPainter
+    {
+    public:
+        SVGPainter(Controller* controller, const QString& file_name) :
+            QPainter()
+        {
+            controller->svg_generator_.setFileName(controller->file_prefix_ + file_name);
+            this->begin(&controller->svg_generator_);
+            this->scale(MMT_SVG_SCALE, MMT_SVG_SCALE);
+        }
+    };
 };
 
 #endif // MMT_CONTROLLER_H
