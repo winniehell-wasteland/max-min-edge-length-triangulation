@@ -24,6 +24,7 @@ PointSet JSONParser::parse(QFile& file)
       return points;
     }
 
+  // loop over JSON array
   QJsonValue json_point;
   foreach(json_point, doc.array())
     {
@@ -36,22 +37,17 @@ PointSet JSONParser::parse(QFile& file)
 
       QJsonArray coordinates = json_point.toArray(QJsonArray());
 
-      if(coordinates.size() == 2)
-        {
-          Point point(parse_number(coordinates[0]),
-              parse_number(coordinates[1]));
+      MMT_precondition_msg((coordinates.size() == 2), mmt_msg("Point has invalid dimension (%1)!")
+                           .arg(coordinates.size()).toUtf8());
 
-          logger.debug(mmt_msg("Created point (%1, %2)")
-                       .arg(CGAL::to_double(point.x()))
-                       .arg(CGAL::to_double(point.y())));
+      Point point(parse_number(coordinates[0]),
+          parse_number(coordinates[1]));
 
-          points.insert(point);
-        }
-      else
-        {
-          logger.error(mmt_msg("Point has invalid dimension (%1)!")
-                       .arg(coordinates.size()));
-        }
+      logger.debug(mmt_msg("Created point (%1, %2)")
+                   .arg(CGAL::to_double(point.x()))
+                   .arg(CGAL::to_double(point.y())));
+
+      points.insert(point);
     }
 
   return points;

@@ -1,15 +1,12 @@
-#ifndef MMT_INTERSECTION_GRAPH_H
-#define MMT_INTERSECTION_GRAPH_H
-
-#include "config.h"
+#ifndef MMT__INTERSECTION__INTERSECTION_GRAPH_H
+#define MMT__INTERSECTION__INTERSECTION_GRAPH_H
 
 #include <QPainter>
 
+#include "config.h"
 #include "parameters.h"
-
 #include "containers/segment_container.h"
-
-#include "intersection/types.h"
+#include "intersection/intersection_group.h"
 
 class IntersectionGraph
 {
@@ -37,4 +34,4 @@ private:
     SegmentContainer&        segments_;
 };
 
-#endif // MMT_INTERSECTION_GRAPH_H
+#endif // MMT__INTERSECTION__INTERSECTION_GRAPH_H

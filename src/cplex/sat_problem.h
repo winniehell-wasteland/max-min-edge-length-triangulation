@@ -1,14 +1,10 @@
-#ifndef SAT_PROBLEM_H
-#define SAT_PROBLEM_H
+#ifndef MMT__CPLEX__SAT_PROBLEM_H
+#define MMT__CPLEX__SAT_PROBLEM_H
 
-#include <vector>
-
-#include "index_types.h"
-
+#include "config.h"
 #include "cplex/concert.h"
 #include "cplex/sat_solution.h"
-
-#include "intersection/types.h"
+#include "intersection/intersection_group.h"
 
 class SATProblem
 {
@@ -27,4 +23,4 @@ private:
     SATSolution solution_;
 };
 
-#endif // SAT_PROBLEM_H
+#endif // MMT__CPLEX__SAT_PROBLEM_H

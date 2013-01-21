@@ -3,17 +3,16 @@
 
 #include <vector>
 
-#include "index_types.h"
-
 #include "cplex/concert.h"
-
 #include "intersection/intersection_graph.h"
 
+typedef std::vector<SegmentIndex>  SegmentIndexVector;
+
 class SATSolution :
-        public std::vector<SegmentIndex>
+        public SegmentIndexVector
 {
 public:
-    typedef std::vector<SegmentIndex>  base;
+    typedef SegmentIndexVector  base;
 
     IloAlgorithm::Status status;
 

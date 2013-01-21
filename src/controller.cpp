@@ -3,10 +3,9 @@
 
 #include <CGAL/bounding_box.h>
 
-#include "json_parser.h"
-#include "logger.h"
-
 #include "cplex/sat_problem.h"
+#include "utils/json_parser.h"
+#include "utils/logger.h"
 
 #include "controller.h"
 

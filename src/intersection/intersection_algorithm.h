@@ -1,24 +1,24 @@
-#ifndef MMT_INTERSECTION_NAIVE_INTERSECTION_ALGORITHM_H
-#define MMT_INTERSECTION_NAIVE_INTERSECTION_ALGORITHM_H
+#ifndef MMT__INTERSECTION__INTERSECTION_ALGORITHM_H
+#define MMT__INTERSECTION__INTERSECTION_ALGORITHM_H
 
 #include <CGAL/intersections.h>
 
-#include "logger.h"
+#include "utils/logger.h"
 
 #include "intersection/intersection_graph.h"
 
-class NaiveIntersectionAlgorithm
+class IntersectionAlgorithm
 {
   typedef std::map<Point, IntersectionGroup, STLPointOrder>  Intersections;
   typedef std::set<SegmentIndex>                             Overlaps;
 public:
-  NaiveIntersectionAlgorithm(IntersectionGraph* graph,
-                             const PointSet& points,
-                             SegmentContainer& segments) :
+  IntersectionAlgorithm(IntersectionGraph* graph,
+                        const PointSet& points,
+                        SegmentContainer& segments) :
     empty_group_(),
     intersections_(point_order)
   {
-    CGAL_precondition_msg(graph != 0, "IntersectionGraph has to be initialized!");
+    MMT_precondition_msg(graph != 0, "IntersectionGraph has to be initialized!");
 
     SegmentIndex overlaps = 0;
 
@@ -30,38 +30,37 @@ public:
         for( ++t; t != segments.end(); ++t)
           {
             logger.debug(mmt_msg("check segment %1 and %2")
-                         .arg(print_segment(*s))
-                         .arg(print_segment(*t)));
+                         .arg(s->to_string())
+                         .arg(t->to_string()));
 
             CGAL::Object result = CGAL::intersection(
               static_cast<CGAL::Segment_2<Kernel> >(*s),
               static_cast<CGAL::Segment_2<Kernel> >(*t)
             );
 
-            if(const CGAL::Point_2<Kernel>* ipoint
-                    = CGAL::object_cast<CGAL::Point_2<Kernel> >(&result))
+            if(const Point* ipoint = CGAL::object_cast<Point>(&result))
             {
                 if(points.find(*ipoint) != points.end())
                 {
                     logger.debug(mmt_msg("segment %1 intersects %2"
                                      " in input point %3")
-                                 .arg(print_segment(*s))
-                                 .arg(print_segment(*t))
-                                 .arg(print_point(*ipoint)));
+                                 .arg(s->to_string())
+                                 .arg(t->to_string())
+                                 .arg(ipoint->to_string()));
                 }
                 else if((s->source() == *ipoint) || (s->target() == *ipoint))
                 {
                     logger.debug(mmt_msg("segment %1 and %2 share point %3")
-                                 .arg(print_segment(*s))
-                                 .arg(print_segment(*t))
-                                 .arg(print_point(*ipoint)));
+                                 .arg(s->to_string())
+                                 .arg(t->to_string())
+                                 .arg(ipoint->to_string()));
                 }
                 else
                 {
                     logger.debug(mmt_msg("segment %1 intersects %2 in %3")
-                                 .arg(print_segment(*s))
-                                 .arg(print_segment(*t))
-                                 .arg(print_point(*ipoint)));
+                                 .arg(s->to_string())
+                                 .arg(t->to_string())
+                                 .arg(ipoint->to_string()));
 
                     add_intersecting_segment(*ipoint, *s);
                     add_intersecting_segment(*ipoint, *t);
@@ -70,13 +69,13 @@ public:
             else if (const CGAL::Segment_2<Kernel>* iseg
                      = CGAL::object_cast<CGAL::Segment_2<Kernel> >(&result))
               {
-                CGAL_precondition(*iseg != *t);
+                MMT_precondition(*iseg != *t);
 
                 if(*iseg == *s)
                   {
                     logger.debug(mmt_msg("segment %1 contains %2")
-                                 .arg(print_segment(*t))
-                                 .arg(print_segment(*s)));
+                                 .arg(t->to_string())
+                                 .arg(s->to_string()));
 
                     if(!s->data().overlapping)
                       {
@@ -87,8 +86,8 @@ public:
                 else
                   {
                     logger.debug(mmt_msg("segments %1 and %2 overlap")
-                                 .arg(print_segment(*s))
-                                 .arg(print_segment(*t)));
+                                 .arg(s->to_string())
+                                 .arg(t->to_string()));
                   }
               }
             else
@@ -104,7 +103,7 @@ public:
         intersection != intersections_.end(); ++intersection)
       {
         logger.debug(mmt_msg("intersection group: %1")
-                     .arg(print_igroup(segments, intersection->second)));
+                     .arg(intersection->second.to_string(segments)));
 
         intersecting_segments += intersection->second.size();
         graph->add_intersection_group(intersection->second);
@@ -129,4 +128,4 @@ private:
   }
 };
 
-#endif // MMT_INTERSECTION_NAIVE_INTERSECTION_ALGORITHM_H
+#endif // MMT__INTERSECTION__INTERSECTION_ALGORITHM_H

@@ -1,16 +1,6 @@
-#include "mmt_utils.h"
-
-#include "naive_intersection_algorithm.h"
-
-//#include "arr_intersection_algorithm.h"
-//#include "sweep_intersection_algorithm.h"
+#include "intersection/intersection_algorithm.h"
 
 #include "intersection_graph.h"
-
-/** select intersection algorithm */
-// typedef SweepIntersectionAlgorithm  IntersectionAlgorithm;
-// typedef ArrIntersectionAlgorithm  IntersectionAlgorithm;
-typedef NaiveIntersectionAlgorithm  IntersectionAlgorithm;
 
 IntersectionGraph::IntersectionGraph(const PointSet& points, SegmentContainer& segments) :
     intersection_groups_(),

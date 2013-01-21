@@ -1,5 +1,5 @@
-#include "logger.h"
-#include "mmt_utils.h"
+#include "utils/assertions.h"
+#include "utils/logger.h"
 
 #include "segment_container.h"
 
@@ -22,7 +22,8 @@ private:
     const SegmentContainer& segments_;
 };
 
-SegmentContainer::SegmentContainer(const PointSet& points)
+SegmentContainer::SegmentContainer(const PointSet& points) :
+    SegmentVector()
 {
     SegmentIndex seg_index = 0;
 
@@ -35,11 +36,13 @@ SegmentContainer::SegmentContainer(const PointSet& points)
         PointSet::const_iterator jt;
         for(jt = it, ++jt; jt != points.end(); ++jt)
         {
-            CGAL_precondition_msg(point_order(*it, *jt) == CGAL::SMALLER, "PointSet is not ordered!");
+            MMT_precondition_msg(point_order(*it, *jt) == CGAL::SMALLER, "PointSet is not ordered!");
 
-            push_back(Segment(*it, *jt, seg_index++));
+            Segment segment(*it, *jt);
+            segment.data().index = seg_index++;
+            logger.debug(mmt_msg("Created segment %1").arg(segment.to_string()));
 
-            logger.debug(mmt_msg("Created segment %1").arg(print_segment(back())));
+            push_back(segment);
         }
     }
 

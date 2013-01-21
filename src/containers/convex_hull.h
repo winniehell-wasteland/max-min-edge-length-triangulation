@@ -8,8 +8,6 @@ class ConvexHull :
 {
 public:
     ConvexHull(const PointSet& points);
-private:
-    typedef PointVector  base;
 };
 
 #endif // CONTAINERS__CONVEX_HULL_H

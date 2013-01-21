@@ -1,6 +1,6 @@
 #include <QString>
 
-#include "logger.h"
+#include "utils/logger.h"
 
 #include "sat_problem.h"
 

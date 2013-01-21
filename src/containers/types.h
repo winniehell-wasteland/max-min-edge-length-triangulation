@@ -1,14 +1,12 @@
-#ifndef CONTAINERS__TYPES_H
-#define CONTAINERS__TYPES_H
+#ifndef MMT__CONTAINERS__TYPES_H
+#define MMT__CONTAINERS__TYPES_H
 
 #include "config.h"
 
 #include <set>
 #include <vector>
 
-#include "index_types.h"
-#include "orders.h"
-
+#include "cgal/orders.h"
 #include "containers/sorted_vector.h"
 
 /**
@@ -26,16 +24,4 @@ typedef std::vector<Point>                   PointVector;
  * @}
  */
 
-/**
- * @name segment containers
- * @{
- */
-
-/** sorted container of segment indices */
-typedef SortedVector<SegmentIndex>           SegmentIndices;
-
-/**
- * @}
- */
-
-#endif // CONTAINERS__TYPES_H
+#endif // MMT__CONTAINERS__TYPES_H

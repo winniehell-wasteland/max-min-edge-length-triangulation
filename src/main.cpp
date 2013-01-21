@@ -4,8 +4,9 @@
 #include <QGuiApplication>
 
 #include "controller.h"
-#include "logger.h"
 #include "parameters.h"
+
+#include "utils/logger.h"
 
 class Application : public QGuiApplication
 {
