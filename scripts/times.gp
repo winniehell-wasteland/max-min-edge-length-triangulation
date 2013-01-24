@@ -2,6 +2,7 @@ set terminal pdf size 30cm, 21cm
 
 set key top left
 set logscale y
+set xrange [4:100]
 set xlabel 'Number of input points'
 
 set output "times.pdf"
