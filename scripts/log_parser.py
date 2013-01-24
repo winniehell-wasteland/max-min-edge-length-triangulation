@@ -5,7 +5,7 @@ import re
 
 RE_FILE_NAME  = re.compile(r'(?P<prefix>[^\d]+)_(?P<num_points>\d+)_(?P<parameters>.+)\.log')
 #RE_TIME_STAMP = re.compile(r'\[(?P<hour>\d{2}):(?P<minute>\d{2}):(?P<second>\d{2}).(?P<millisecond>\d{3})\]')
-RE_TIMES      = re.compile(r'Total .+(?P<time>\d+\.\d+) sec.')
+RE_TIMES      = re.compile(r'Total [^\d]+(?P<time>\d+\.\d+) sec.')
 
 times = {}
 
