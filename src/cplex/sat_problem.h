@@ -17,6 +17,8 @@ public:
     void solve(SATSolution& solution, const SegmentIndex& lower_bound);
 private:
     IloEnv           env_;
+
+    IloCplex         cplex_;
     IloModel         model_;
     IloBoolVarArray  variables_;
 };

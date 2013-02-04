@@ -29,6 +29,8 @@ public:
         return intersection_groups_;
     }
 
+    SegmentIndex shortest_segment() const;
+
 private:
     IntersectionGroupVector  intersection_groups_;
     SegmentContainer&        segments_;

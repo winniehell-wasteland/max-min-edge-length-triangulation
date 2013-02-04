@@ -52,6 +52,8 @@ private:
             this->scale(MMT_SVG_SCALE, MMT_SVG_SCALE);
         }
     };
+
+    void pre_solving();
 };
 
 #endif // MMT__CONTROLLER_H

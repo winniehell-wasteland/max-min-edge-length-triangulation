@@ -61,10 +61,9 @@ void Controller::init()
 {
     logger.info(mmt_msg("Initializing controller..."));
 
-    // shortest segment of convex hull must be part of triangulation
-    stats_.upper_bound = convex_hull_.shortest_segment(segments_);
+    pre_solving();
 
-    sat_problem_.solve(sat_solution_, stats_.lower_bound);
+    sat_problem_.solve(sat_solution_, stats_.lower_bound());
 
     if(sat_solution_.empty())
     {
@@ -73,37 +72,67 @@ void Controller::init()
     }
     else
     {
-        stats_.lower_bound = sat_solution_.shortest_segment();
+        stats_.add_lower_bound(sat_solution_.shortest_segment());
 
         SVGPainter painter(this, "_sat.svg");
         intersection_graph_.draw_igraph(painter);
         sat_solution_.draw(painter, segments_);
 
-        QTimer::singleShot(0, this, SLOT(iteration()));
+        if(stats_.gap() < 1)
+        {
+            logger.stats(stats_);
+            emit done();
+        }
+        else
+        {
+            QTimer::singleShot(0, this, SLOT(iteration()));
+        }
     }
+
 }
 
 void Controller::iteration()
 {
     logger.stats(stats_);
 
-    sat_problem_.solve(sat_solution_, (stats_.lower_bound + stats_.upper_bound)/2 + 1);
+    {
+        SVGPainter painter(this, QString("_bounds_%1.svg").arg(stats_.iteration));
+        intersection_graph_.draw_igraph(painter);
+
+        painter.setPen(QPen(QColor(0, 255, 0), 1.0/MMT_SVG_SCALE));
+        segments_[stats_.lower_bound()].draw(painter);
+        painter.setPen(QPen(QColor(255, 0, 0), 1.0/MMT_SVG_SCALE));
+        segments_[stats_.upper_bound()].draw(painter);
+    }
+
+    sat_problem_.solve(sat_solution_, (stats_.lower_bound() + stats_.upper_bound())/2 + 1);
 
     if(sat_solution_.empty())
     {
-        stats_.upper_bound = (stats_.lower_bound + stats_.upper_bound)/2;
+        stats_.add_upper_bound((stats_.lower_bound() + stats_.upper_bound())/2);
     }
     else
     {
-        stats_.lower_bound = sat_solution_.shortest_segment();
+        stats_.add_lower_bound(sat_solution_.shortest_segment());
     }
 
-    if((stats_.lower_bound == stats_.upper_bound) || (stats_.iteration > 20))
+    if((stats_.gap() < 1) || (stats_.iteration > 20))
     {
         logger.stats(stats_);
         emit done();
     }
+    else
+    {
+        ++stats_.iteration;
+        QTimer::singleShot(0, this, SLOT(iteration()));
+    }
+}
 
-    ++stats_.iteration;
-    QTimer::singleShot(0, this, SLOT(iteration()));
+void Controller::pre_solving()
+{
+    // shortest segment of convex hull must be part of triangulation
+    stats_.add_upper_bound(convex_hull_.shortest_segment(segments_));
+
+    // each non-intersected segment must be part of the triangulation
+    stats_.add_upper_bound(intersection_graph_.shortest_segment());
 }

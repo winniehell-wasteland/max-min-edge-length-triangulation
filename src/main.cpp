@@ -65,6 +65,7 @@ public Q_SLOTS:
               if(!file.exists())
               {
                   logger.error(mmt_msg("File %1 does not exist!").arg(argument));
+                  emit quit();
               }
               else
               {
