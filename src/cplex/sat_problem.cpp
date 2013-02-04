@@ -10,8 +10,7 @@ SATProblem::SATProblem(SegmentIndex num_points,
                        const IntersectionGroupVector& igroups) :
     env_(),
     model_(env_, "SAT"),
-    variables_(env_),
-    solution_()
+    variables_(env_)
 {
     QString var_name("x_%1");
 
@@ -38,8 +37,14 @@ SATProblem::SATProblem(SegmentIndex num_points,
     model_.add(IloObjective(env_, objective, IloObjective::Maximize));
 }
 
-const SATSolution& SATProblem::solve()
+void SATProblem::solve(SATSolution& solution, const SegmentIndex& lower_bound)
 {
+    // disable variables
+    for(SegmentIndex i = 0; i < lower_bound; ++i)
+    {
+        variables_[i].setMax(0);
+    }
+
     IloCplex cplex(model_);
     cplex.setOut(env_.getNullStream());
     cplex.setError(env_.getNullStream());
@@ -47,36 +52,36 @@ const SATSolution& SATProblem::solve()
     cplex.setParam(IloCplex::SimDisplay, 2);
     cplex.solve();
 
-    solution_.clear();
-    solution_.status = cplex.getStatus();
+    solution.clear();
+    auto status = cplex.getStatus();
 
-    switch (solution_.status) {
+    switch (status) {
     case IloAlgorithm::Feasible:
-        logger.info(mmt_msg("Found feasible solution"));
+        logger.debug(mmt_msg("Found feasible solution"));
         break;
     case IloAlgorithm::Optimal:
-        logger.info(mmt_msg("Found optimal solution"));
+        logger.debug(mmt_msg("Found optimal solution"));
         break;
     case IloAlgorithm::Infeasible:
-        logger.info(mmt_msg("Solution is infeasible"));
+        logger.debug(mmt_msg("Solution is infeasible"));
         break;
     case IloAlgorithm::Unbounded:
-        logger.info(mmt_msg("Solution is unbounded"));
+        logger.debug(mmt_msg("Solution is unbounded"));
         break;
     case IloAlgorithm::InfeasibleOrUnbounded:
-        logger.info(mmt_msg("Solution is infeasible or unbounded"));
+        logger.debug(mmt_msg("Solution is infeasible or unbounded"));
         break;
     case IloAlgorithm::Unknown:
-        logger.info(mmt_msg("Unknown solution status?!?"));
+        logger.debug(mmt_msg("Unknown solution status?!?"));
         break;
     case IloAlgorithm::Error:
-        logger.info(mmt_msg("Error"));
+        logger.debug(mmt_msg("Error"));
         break;
     }
 
-    if(solution_.status == IloAlgorithm::Optimal)
+    if(status == IloAlgorithm::Optimal)
     {
-        logger.info(mmt_msg("Objective: %0").arg(cplex.getObjValue()));
+        logger.debug(mmt_msg("Objective: %0").arg(cplex.getObjValue()));
 
         for(SegmentIndex segment_index = 0;
             segment_index < variables_.getSize();
@@ -88,10 +93,14 @@ const SATSolution& SATProblem::solve()
 
             if(cplex.getValue(variables_[segment_index]))
             {
-                solution_.push_back(segment_index);
+                solution.push_back(segment_index);
             }
         }
     }
 
-    return solution_;
+    // reset
+    for(SegmentIndex i = 0; i < lower_bound; ++i)
+    {
+        variables_[i].setMax(1);
+    }
 }

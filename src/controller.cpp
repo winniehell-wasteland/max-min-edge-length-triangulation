@@ -18,7 +18,8 @@ Controller::Controller(QFile &input_file, const Parameters &parameters) :
     bounding_box_(CGAL::bounding_box(points_.begin(), points_.end())),
     convex_hull_(points_),
     segments_(points_),
-    intersection_graph_(points_, segments_)
+    intersection_graph_(points_, segments_),
+    sat_problem_(points_.size(), segments_.size(), convex_hull_.size(), intersection_graph_.intersection_groups())
 {
     svg_generator_.setSize(QSize(CGAL::to_double(bounding_box_.xmax()) - CGAL::to_double(bounding_box_.xmin()) + 20,
                                  CGAL::to_double(bounding_box_.ymax()) - CGAL::to_double(bounding_box_.ymin()) + 20) * MMT_SVG_SCALE);
@@ -62,23 +63,47 @@ void Controller::init()
 
     // shortest segment of convex hull must be part of triangulation
     stats_.upper_bound = convex_hull_.shortest_segment(segments_);
-    logger.stats(stats_);
 
-    SATProblem sat_problem(points_.size(), segments_.size(), convex_hull_.size(), intersection_graph_.intersection_groups());
-    const SATSolution& sat_solution = sat_problem.solve();
+    sat_problem_.solve(sat_solution_, stats_.lower_bound);
 
+    if(sat_solution_.empty())
     {
+        logger.error(mmt_msg("No feasible solution could be found!"));
+        emit done();
+    }
+    else
+    {
+        stats_.lower_bound = sat_solution_.shortest_segment();
+
         SVGPainter painter(this, "_sat.svg");
         intersection_graph_.draw_igraph(painter);
-        sat_solution.draw(painter, segments_);
-    }
+        sat_solution_.draw(painter, segments_);
 
-    QTimer::singleShot(0, this, SLOT(iteration()));
+        QTimer::singleShot(0, this, SLOT(iteration()));
+    }
 }
 
 void Controller::iteration()
 {
     logger.stats(stats_);
 
-    emit done();
+    sat_problem_.solve(sat_solution_, (stats_.lower_bound + stats_.upper_bound)/2 + 1);
+
+    if(sat_solution_.empty())
+    {
+        stats_.upper_bound = (stats_.lower_bound + stats_.upper_bound)/2;
+    }
+    else
+    {
+        stats_.lower_bound = sat_solution_.shortest_segment();
+    }
+
+    if((stats_.lower_bound == stats_.upper_bound) || (stats_.iteration > 20))
+    {
+        logger.stats(stats_);
+        emit done();
+    }
+
+    ++stats_.iteration;
+    QTimer::singleShot(0, this, SLOT(iteration()));
 }

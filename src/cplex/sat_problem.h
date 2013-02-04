@@ -14,13 +14,11 @@ public:
                SegmentIndex num_convex_hull,
                const IntersectionGroupVector& igroups);
 
-    const SATSolution &solve();
+    void solve(SATSolution& solution, const SegmentIndex& lower_bound);
 private:
     IloEnv           env_;
     IloModel         model_;
     IloBoolVarArray  variables_;
-
-    SATSolution solution_;
 };
 
 #endif // MMT__CPLEX__SAT_PROBLEM_H

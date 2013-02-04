@@ -1,5 +1,5 @@
-#ifndef MMT_CONTROLLER_H
-#define MMT_CONTROLLER_H
+#ifndef MMT__CONTROLLER_H
+#define MMT__CONTROLLER_H
 
 #include "config.h"
 
@@ -10,6 +10,8 @@
 #include "stats.h"
 #include "containers/convex_hull.h"
 #include "containers/segment_container.h"
+#include "cplex/sat_problem.h"
+#include "cplex/sat_solution.h"
 #include "intersection/intersection_graph.h"
 
 class Controller :
@@ -35,6 +37,8 @@ private:
     SegmentContainer                     segments_;
 
     const IntersectionGraph              intersection_graph_;
+    SATProblem                           sat_problem_;
+    SATSolution                          sat_solution_;
 
     class SVGPainter :
             public QPainter
@@ -50,4 +54,4 @@ private:
     };
 };
 
-#endif // MMT_CONTROLLER_H
+#endif // MMT__CONTROLLER_H

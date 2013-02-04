@@ -34,8 +34,5 @@ const SegmentIndex& ConvexHull::shortest_segment(const SegmentContainer& segment
     logger.debug(mmt_msg("shortest convex hull segment: %1 (len=%2)")
                  .arg(min_segment.to_string())
                  .arg(CGAL::to_double(min_dist)));
-
-    auto result = std::lower_bound(segments.begin(), segments.end(), min_segment, stl_segment_length_order);
-    logger.debug(mmt_msg("lower bound: %1").arg(result->to_string()));
-    return result->data().index;
+    return std::lower_bound(segments.begin(), segments.end(), min_segment, stl_segment_length_order)->data().index;
 }

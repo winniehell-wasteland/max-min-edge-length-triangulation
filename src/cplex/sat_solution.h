@@ -14,23 +14,14 @@ class SATSolution :
 public:
     typedef SegmentIndexVector  base;
 
-    IloAlgorithm::Status status;
-
     SATSolution() :
-        base(),
-        status(IloAlgorithm::Unknown)
+        base()
     {
 
-    }
-
-    void clear()
-    {
-        base::clear();
-        status = IloAlgorithm::Unknown;
     }
 
     void draw(QPainter& painter, const SegmentContainer& segments) const;
-    const SegmentIndex& value() const;
+    const SegmentIndex& shortest_segment() const;
 };
 
 #endif // MMT__CPLEX__SAT_SOLUTION_H
