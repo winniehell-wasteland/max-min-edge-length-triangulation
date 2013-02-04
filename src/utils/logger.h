@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QString>
 
+#include "stats.h"
+
 class Logger
 {
 public:
@@ -14,6 +16,7 @@ public:
     void warn(const QString& message) const;
     void error(const QString& message) const;
     void print(const QString& message) const;
+    void stats(const Stats& stats) const;
 };
 
 /** helper class for string literals */

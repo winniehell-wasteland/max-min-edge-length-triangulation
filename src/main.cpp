@@ -15,73 +15,82 @@ class Application : public QGuiApplication
 public:
   Application(int &argc, char **argv) :
     QGuiApplication(argc, argv),
+    controller_(0),
     parameters_()
   {
   }
 
-public slots:
+public Q_SLOTS:
+  void clean_up()
+  {
+      if(controller_)
+      {
+          delete controller_;
+      }
+  }
+
   void processArguments()
   {
-    QStringListIterator it(this->arguments());
+      QStringListIterator it(this->arguments());
 
-    // ignore execution path
-    if(it.hasNext())
+      // ignore execution path
+      if(it.hasNext())
       {
-        it.next();
+          it.next();
       }
 
-    while(it.hasNext())
+      while(it.hasNext())
       {
-        QString argument = it.next();
+          QString argument = it.next();
 
-        if(argument.startsWith("--"))
+          if(argument.startsWith("--"))
           {
-            if(argument == "--draw-igraph")
+              if(argument == "--draw-igraph")
               {
-                parameters_.draw_igraph = true;
+                  parameters_.draw_igraph = true;
               }
-            else if(argument == "--draw-igroups")
+              else if(argument == "--draw-igroups")
               {
-                parameters_.draw_igroups = true;
+                  parameters_.draw_igroups = true;
               }
-            else
+              else
               {
-                logger.error(mmt_msg("Unknown argument: %1").arg(argument));
+                  logger.error(mmt_msg("Unknown argument: %1").arg(argument));
               }
           }
-        else
+          else
           {
-            QFile file(argument);
+              QFile file(argument);
 
-            if(!file.exists())
+              if(!file.exists())
               {
-                logger.error(mmt_msg("File %1 does not exist!").arg(argument));
+                  logger.error(mmt_msg("File %1 does not exist!").arg(argument));
               }
-            else
+              else
               {
-                logger.info(mmt_msg("Reading file %1...").arg(file.fileName()));
+                  logger.info(mmt_msg("Reading file %1...").arg(file.fileName()));
 
-                if(QFileInfo(file).suffix() != "json")
+                  if(QFileInfo(file).suffix() != "json")
                   {
-                    logger.warn(mmt_msg("Only JSON files are supported!"));
+                      logger.warn(mmt_msg("Only JSON files are supported!"));
                   }
 
-                logger.info(mmt_msg("Starting pre-processing..."));
-                Controller controller(file, parameters_);
+                  logger.info(mmt_msg("Starting pre-processing..."));
+                  controller_ = new Controller(file, parameters_);
+                  QObject::connect(this, SIGNAL(aboutToQuit()), this, SLOT(clean_up()));
 
-                logger.info(mmt_msg("Running algorithm..."));
-                controller.start();
+                  QObject::connect(controller_, SIGNAL(done()), this, SLOT(quit()));
+                  QTimer::singleShot(0, controller_, SLOT(init()));
 
-                logger.info(mmt_msg("Done."));
+                  // process only first file
+                  break;
               }
           }
       }
-
-    // processed all files
-    emit quit();
   }
 private:
-  Parameters parameters_;
+  Controller* controller_;
+  Parameters  parameters_;
 };
 
 int main(int argc, char *argv[])

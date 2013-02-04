@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QFileInfo>
+#include <QTimer>
 
 #include <CGAL/bounding_box.h>
 
@@ -55,8 +56,14 @@ Controller::Controller(QFile &input_file, const Parameters &parameters) :
     }
 }
 
-void Controller::start()
+void Controller::init()
 {
+    logger.info(mmt_msg("Initializing controller..."));
+
+    // shortest segment of convex hull must be part of triangulation
+    stats_.upper_bound = convex_hull_.shortest_segment(segments_);
+    logger.stats(stats_);
+
     SATProblem sat_problem(points_.size(), segments_.size(), convex_hull_.size(), intersection_graph_.intersection_groups());
     const SATSolution& sat_solution = sat_problem.solve();
 
@@ -65,4 +72,13 @@ void Controller::start()
         intersection_graph_.draw_igraph(painter);
         sat_solution.draw(painter, segments_);
     }
+
+    QTimer::singleShot(0, this, SLOT(iteration()));
+}
+
+void Controller::iteration()
+{
+    logger.stats(stats_);
+
+    emit done();
 }

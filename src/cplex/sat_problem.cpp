@@ -24,14 +24,14 @@ SATProblem::SATProblem(SegmentIndex num_points,
 
     foreach(IntersectionGroup igroup, igroups)
     {
-        IloOr restr_intersection(env_);
+        IloExpr restr_intersection(env_);
 
         foreach(SegmentIndex seg_index, igroup)
         {
-            restr_intersection.add(variables_[seg_index] == false);
+            restr_intersection += variables_[seg_index];
         }
 
-        model_.add(restr_intersection);
+        model_.add(restr_intersection <= 1);
     }
 
     IloIntExpr objective(env_, 1);
@@ -41,6 +41,8 @@ SATProblem::SATProblem(SegmentIndex num_points,
 const SATSolution& SATProblem::solve()
 {
     IloCplex cplex(model_);
+    cplex.setOut(env_.getNullStream());
+    cplex.setError(env_.getNullStream());
     cplex.setParam(IloCplex::RootAlg, IloCplex::AutoAlg);
     cplex.setParam(IloCplex::SimDisplay, 2);
     cplex.solve();

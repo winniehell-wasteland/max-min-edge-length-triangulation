@@ -45,3 +45,8 @@ void Logger::print(const QString& message) const
          << message
          << endl;
 }
+
+void Logger::stats(const Stats& stats) const
+{
+    print("[STATS] "+stats.to_string());
+}

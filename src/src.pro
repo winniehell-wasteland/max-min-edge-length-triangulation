@@ -9,7 +9,7 @@ TEMPLATE = app
 
 # CGAL library
 LIBS += -lCGAL
-QMAKE_CXXFLAGS += -frounding-math
+QMAKE_CXXFLAGS += -frounding-math -std=c++11
 
 include(cplex.pri)
 
@@ -27,8 +27,7 @@ HEADERS += \
     $$files(cplex/*.h) \
     $$files(intersection/*.h) \
     $$files(utils/*.h) \
-    $$files(*.h) \
-    cgal/segment.h
+    $$files(*.h)
 
 CONFIG(debug, debug|release) {
     message("debug mode")

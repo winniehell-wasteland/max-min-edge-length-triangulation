@@ -7,21 +7,27 @@
 #include <QSvgGenerator>
 
 #include "parameters.h"
-
+#include "stats.h"
 #include "containers/convex_hull.h"
 #include "containers/segment_container.h"
-
 #include "intersection/intersection_graph.h"
 
-class Controller
+class Controller :
+        public QObject
 {
+    Q_OBJECT
 public:
     Controller(QFile& input_file, const Parameters& parameters);
-    void start();
+public Q_SLOTS:
+    void init();
+    void iteration();
+Q_SIGNALS:
+    void done();
 private:
     const QString                        file_prefix_;
     const Parameters&                    parameters_;
     const PointSet                       points_;
+    Stats                                stats_;
     QSvgGenerator                        svg_generator_;
 
     const CGAL::Iso_rectangle_2<Kernel>  bounding_box_;

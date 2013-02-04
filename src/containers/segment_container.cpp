@@ -3,56 +3,34 @@
 
 #include "segment_container.h"
 
-class STLSegmentLengthComparator :
-        public std::binary_function<Segment, Segment, bool>
-{
-public:
-    STLSegmentLengthComparator(const SegmentContainer& segments) :
-        segments_(segments)
-    {
-
-    }
-
-    bool operator() (const SegmentIndex& s, const SegmentIndex& t) const
-    {
-        return segments_[s].squared_length() < segments_[t].squared_length();
-    }
-
-private:
-    const SegmentContainer& segments_;
-};
-
 SegmentContainer::SegmentContainer(const PointSet& points) :
     SegmentVector()
 {
-    SegmentIndex seg_index = 0;
-
     // allocate space
     //segments_.reserve(points.size()*(points.size() - 1)/2);
 
     // generate segments
-    for(PointSet::const_iterator it = points.begin(); it != points.end(); ++it)
+    for(auto it = points.begin(); it != points.end(); ++it)
     {
-        PointSet::const_iterator jt;
-        for(jt = it, ++jt; jt != points.end(); ++jt)
+        for(auto jt = it; ++jt != points.end(); )
         {
             MMT_precondition_msg(point_order(*it, *jt) == CGAL::SMALLER, "PointSet is not ordered!");
-
-            Segment segment(*it, *jt);
-            segment.data().index = seg_index++;
-            logger.debug(mmt_msg("Created segment %1").arg(segment.to_string()));
-
-            push_back(segment);
+            push_back(Segment(*it, *jt));
         }
     }
 
-    CGAL_postcondition(seg_index == size());
+    // sort segments by length
+    std::sort(this->begin(), this->end(), stl_segment_length_order);
 
-    for(seg_index = 0; seg_index < size(); ++seg_index)
+    SegmentIndex seg_index = 0;
+
+    for(auto segment = this->begin(); segment != this->end(); ++segment)
     {
-        by_length_.push_back(seg_index);
+        segment->data().index = seg_index;
+        logger.debug(mmt_msg("Created segment %1").arg(segment->to_string()));
+
+        ++seg_index;
     }
 
-    // sort segments by length
-    std::sort(by_length_.begin(), by_length_.end(), STLSegmentLengthComparator(*this));
+    CGAL_postcondition(seg_index == this->size());
 }

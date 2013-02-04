@@ -3,53 +3,39 @@
 
 #include "cgal/kernel.h"
 
-/** CGAL order for lines */
-typedef Kernel::Compare_x_at_y_2           LineOrder;
-
 /** CGAL order for points */
 typedef Kernel::Compare_yx_2               PointOrder;
 /** STL version of @ref PointOrder */
 typedef CGAL::Compare_to_less<PointOrder>  STLPointOrder;
 
-/**
- * CGAL order for @ref Segment
- */
-struct SegmentOrder
+/** CGAL order for @ref Segment by index */
+struct SegmentIndexOrder
 {
-  CGAL::Comparison_result operator() (const Segment& s, const Segment& t) const
-  {
-    //return CGAL::compare(s.data().index, t.data().index);
-      if(s.data().index < t.data().index)
-      {
-          return CGAL::SMALLER;
-      }
-      else if(s.data().index < t.data().index)
-      {
-          return CGAL::LARGER;
-      }
-      else
-      {
-          return CGAL::EQUAL;
-      }
-  }
+    CGAL::Comparison_result operator() (const Segment& s, const Segment& t) const;
 };
 
-/**
- * STL version of @ref SegmentOrder
- */
-typedef CGAL::Compare_to_less<SegmentOrder>  STLSegmentOrder;
+/** CGAL order for @ref Segment by length */
+struct SegmentLengthOrder
+{
+    CGAL::Comparison_result operator() (const Segment& s, const Segment& t) const;
+};
+
+/** STL version of @ref SegmentOrder */
+typedef CGAL::Compare_to_less<SegmentIndexOrder>   STLSegmentIndexOrder;
+/** STL version of @ref SegmentOrder */
+typedef CGAL::Compare_to_less<SegmentLengthOrder>  STLSegmentLengthOrder;
 
 /**
  * @name global variables
  * @{
  */
-extern const LineOrder        line_order;
+extern const PointOrder     point_order;
+extern const STLPointOrder  stl_point_order;
 
-extern const PointOrder       point_order;
-extern const STLPointOrder    stl_point_order;
-
-extern const SegmentOrder     segment_order;
-extern const STLSegmentOrder  stl_segment_order;
+extern const SegmentIndexOrder      segment_index_order;
+extern const SegmentLengthOrder     segment_length_order;
+extern const STLSegmentIndexOrder   stl_segment_index_order;
+extern const STLSegmentLengthOrder  stl_segment_length_order;
 /**
  * @}
  */

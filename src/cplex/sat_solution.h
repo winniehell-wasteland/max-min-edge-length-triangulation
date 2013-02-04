@@ -30,6 +30,7 @@ public:
     }
 
     void draw(QPainter& painter, const SegmentContainer& segments) const;
+    const SegmentIndex& value() const;
 };
 
 #endif // MMT__CPLEX__SAT_SOLUTION_H

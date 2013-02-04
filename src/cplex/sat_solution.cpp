@@ -13,3 +13,8 @@ void SATSolution::draw(QPainter& painter, const SegmentContainer& segments) cons
         segments[segment_index].draw(painter);
     }
 }
+
+const SegmentIndex& SATSolution::value() const
+{
+    return *std::min_element(this->begin(), this->end());
+}
