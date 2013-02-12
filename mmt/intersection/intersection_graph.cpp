@@ -23,10 +23,6 @@ void IntersectionGraph::add_intersection_group(const IntersectionGroup& group)
 
 void IntersectionGraph::draw_igraph(QPainter& painter) const
 {
-    QPen pen(QColor(100, 100, 100));
-    pen.setWidthF(1.0/MMT_SVG_SCALE);
-    painter.setPen(pen);
-
     foreach(const Segment& segment, segments_)
     {
         segment.draw(painter);
@@ -35,10 +31,6 @@ void IntersectionGraph::draw_igraph(QPainter& painter) const
 
 void IntersectionGraph::draw_igroup(QPainter& painter, const IntersectionGroup& igroup) const
 {
-  QPen pen(QColor(255, 0, 0));
-  pen.setWidthF(1.0/MMT_SVG_SCALE);
-  painter.setPen(pen);
-
   foreach(SegmentIndex segment_index, igroup)
   {
       segments_[segment_index].draw(painter);
@@ -47,20 +39,16 @@ void IntersectionGraph::draw_igroup(QPainter& painter, const IntersectionGroup& 
 
 SegmentIndex IntersectionGraph::shortest_segment() const
 {
-    SegmentIndex min_segment = segments_.size() - 1;
-
-    foreach(auto igroup, intersection_groups_)
+    for(SegmentIndex i = 0; i < segments_.size(); ++i)
     {
-        foreach(SegmentIndex segment_index, igroup)
+        if(segments_[i].data().intersection_groups.empty())
         {
-            if(segment_index < min_segment)
-            {
-                min_segment = segment_index;
-            }
+            logger.info(mmt_msg("shortest non-intersecting segment: %1 (len^2=%2)")
+                        .arg(segments_[i].to_string())
+                        .arg(CGAL::to_double(segments_[i].squared_length())));
+            return i;
         }
     }
 
-    logger.info(mmt_msg("shortest non-intersecting segment: %1").arg(min_segment));
-
-    return min_segment;
+    return segments_.size();
 }

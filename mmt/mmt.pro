@@ -37,5 +37,5 @@ else {
     DEFINES += NDEBUG
 }
 
-OTHER_FILES += \
-    cplex.pri
+#OTHER_FILES += \
+#    cplex.pri
