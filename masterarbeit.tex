@@ -1,0 +1,143 @@
+\documentclass[
+	a4paper,
+	abstracton,
+	english,
+	twoside
+] {scrreprt}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage[german,english]{babel}
+
+% meta data
+\newcommand{\docadvisor}{Prof.~Dr.~Sándor Fekete}
+\newcommand{\docauthor}{Winfried Hellmann}
+\newcommand{\docdate}{2013-07-01}
+\newcommand{\docsubject}{Masterarbeit}
+\newcommand{\doctitle}{\foreignlanguage{english}{Computational aspects of\linebreak maxmin (length) triangulations}}
+
+\usepackage{
+	amsmath,
+	amssymb,
+%	amsthm,
+	csquotes,
+%	biblatex,
+	framed,
+	hyperref,
+	isodate,
+	microtype,
+	todonotes
+}
+
+\usepackage[backend=biber]{biblatex}
+\usepackage[amsmath,framed]{ntheorem}
+
+\author{\docauthor}
+\date{\isodate{\docdate}}
+\publishers{\small\textbf{Betreuer: }\docadvisor}
+\subject{\docsubject}
+\title{\doctitle}
+\titlehead{Institut für Betriebssysteme und Rechnerverbund\\
+Technische Universität Braunschweig}
+
+\hypersetup{
+       pdfauthor = {\docauthor},
+       pdftitle = {\doctitle},
+       pdfsubject = {\docsubject},
+       pdfkeywords = {maxmin, length, triangulation}
+}
+
+%\bibliography{masterarbeit}
+\addbibresource{masterarbeit.bib}
+\nocite{*}
+
+\theoremstyle{break}
+\theorembodyfont{\normalfont}
+
+\newframedtheorem{theorem}{Theorem}[chapter]
+\newframedtheorem{problem}[theorem]{Problem}
+
+% notations
+\newcommand{\R}{\mathbb{R}}
+
+
+
+
+
+
+\begin{document}
+\selectlanguage{german}
+\pagenumbering{roman}
+\maketitle
+
+\subsubsection*{\centering Erklärung}
+Ich versichere, die vorliegende Arbeit selbstständig und nur unter Benutzung der angegebenen Hilfsmittel angefertigt zu haben.
+
+\vspace{2em}
+
+Braunschweig, den \printdate{\docdate}
+\vspace{5em}
+
+% abstracts
+\begin{minipage}{\linewidth}
+	\selectlanguage{english}
+	\begin{abstract}
+	Maxmin length triangulations are just great.
+	\end{abstract}
+
+	\selectlanguage{german}
+	\begin{abstract}
+	Maxmin Triangulationen sind einfach super.
+	\end{abstract}
+\end{minipage}
+\cleardoublepage
+
+\tableofcontents
+\cleardoublepage
+
+\selectlanguage{english}
+\pagenumbering{arabic}
+\cleardoublepage
+\setcounter{page}{1}
+
+\chapter{Introduction}
+\todo{Be a little more verbose}\ldots
+
+\chapter{Related Work}
+\todo{Write about related work}
+
+\chapter{Preliminaries}
+\todo{Nobody needs notation}
+
+\chapter{Problem}
+
+\begin{problem}[Maxmin length triangulation]\hfill
+	\begin{labeling}{\hspace{4em}}
+		\item[\textbf{Given:}]
+			Set of points \(P=\left\{p\in\R^2\right\}\)
+		\item[\textbf{Sought:}]
+			Triangulation \(T\subseteq P^2\) of \(P\) which maximizes \(\min\limits_{s\in T} |s|\) 
+			with \(|s|\) being the Euclidean distance between the endpoints of segment \(s\).
+	\end{labeling}
+\end{problem}
+
+\section{Intersections}
+There are \(\Theta(n^4)\) intersections. \cite{quadrilaterals_bound} Thus calculating the intersection graph
+takes \(\Omega(n^4)\) time. \todo{Why do we need the intersection graph?}
+
+\chapter{Implementation}
+\todo{foo and bar}
+
+\chapter{Results}
+\todo{some very nice graphs}
+\missingfigure{times}
+
+\chapter{Conclusion}
+\todo{be conclusive}\ldots
+
+\printbibliography
+
+\listoftodos
+
+\end{document}
