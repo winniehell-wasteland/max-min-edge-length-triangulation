@@ -11,10 +11,15 @@
 #include <QTime>
 
 #include "stats.h"
+
+#include "cgal/triangulation.h"
+
 #include "containers/convex_hull.h"
 #include "containers/segment_container.h"
+
 #include "cplex/sat_problem.h"
 #include "cplex/sat_solution.h"
+
 #include "intersection/intersection_graph.h"
 
 class Controller :
@@ -38,6 +43,7 @@ private:
 
     const CGAL::Iso_rectangle_2<Kernel>  bounding_box_;
     const ConvexHull                     convex_hull_;
+    DelaunayTriangulation                delaunay_triangulation_;
     SegmentContainer                     segments_;
 
     const IntersectionGraph              intersection_graph_;

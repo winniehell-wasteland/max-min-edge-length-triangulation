@@ -32,7 +32,7 @@ public:
         return intersection_groups_.end();
     }
 
-    /** find the shortest non-intersecting segment */
+    /** find the shortest segment that does not intersect with longer segments */
     SegmentIndex shortest_nonintersecting_segment() const;
 private:
     IntersectionGroupVector  intersection_groups_;

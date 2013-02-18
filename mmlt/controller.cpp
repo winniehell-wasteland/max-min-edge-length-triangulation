@@ -20,6 +20,7 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
     stats_(),
     bounding_box_(CGAL::bounding_box(points_.begin(), points_.end())),
     convex_hull_(points_),
+    delaunay_triangulation_(points_),
     segments_(points_),
     intersection_graph_(points_, segments_),
     sat_problem_(points_.size(), segments_.size(), convex_hull_.size(), intersection_graph_)
@@ -141,6 +142,8 @@ void Controller::start()
 
 void Controller::done()
 {
+    logger.time("total", start_time_.msecsTo(QTime::currentTime()));
+
     logger.stats(stats_);
     if(settings_.value("draw/bounds").toBool())
     {
@@ -199,6 +202,9 @@ void Controller::draw_sat_solution()
 void Controller::pre_solving()
 {
     QTime presolving_start_time(QTime::currentTime());
+
+    // make use of Delaunay triangulation
+    stats_.add_lower_bound(delaunay_triangulation_.shortest_segment(segments_));
 
     // shortest segment of convex hull must be part of triangulation
     stats_.add_upper_bound(convex_hull_.shortest_segment(segments_));

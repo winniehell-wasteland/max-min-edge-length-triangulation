@@ -34,7 +34,17 @@ SegmentIndex IntersectionGraph::shortest_nonintersecting_segment() const
 {
     for(const Segment& segment : segments_)
     {
-        if(segment.data().intersection_groups.empty())
+        SegmentIndex longest_intersecting_segment = segment.data().index;
+
+        for(const IntersectionGroupIndex& igroup_index : segment.data().intersection_groups)
+        {
+            const IntersectionGroup& igroup = this->intersection_groups_[igroup_index];
+
+            longest_intersecting_segment = std::max(longest_intersecting_segment,
+                                                    *std::max_element(igroup.begin(), igroup.end()));
+        }
+
+        if(segment.data().index == longest_intersecting_segment)
         {
             logger.info(mmlt_msg("shortest non-intersecting segment: %1 (len^2=%2)")
                         .arg(segment.to_string())
