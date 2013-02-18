@@ -23,7 +23,6 @@ class Controller :
     Q_OBJECT
 public:
     Controller(QCoreApplication& application, const QSettings& settings);
-    void draw_igroups();
 public Q_SLOTS:
     void iteration();
     void start();
@@ -54,7 +53,7 @@ private:
             generator_(),
             pen_()
         {
-            generator_.setFileName(controller->file_prefix_ + file_name);
+            generator_.setFileName(controller->settings_.value("file_prefix").toString() + "_" + file_name);
             generator_.setSize(QSize(
                 CGAL::to_double(controller->bounding_box_.xmax())
                     - CGAL::to_double(controller->bounding_box_.xmin()) + 20,
@@ -96,8 +95,12 @@ private:
         QPen          pen_;
     };
 
+    void done();
+
     void draw_bounds();
+    void draw_igroups();
     void draw_sat_solution();
+
     void pre_solving();
 };
 

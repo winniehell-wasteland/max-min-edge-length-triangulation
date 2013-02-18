@@ -9,7 +9,7 @@ TEMPLATE = app
 
 # CGAL library
 LIBS += -lCGAL
-QMAKE_CXXFLAGS += -frounding-math -std=c++11
+QMAKE_CXXFLAGS += -frounding-math -std=c++11 -O3
 
 include(cplex.pri)
 

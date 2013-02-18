@@ -31,8 +31,5 @@ public:
     QString to_string(const SegmentContainer& segments) const;
 };
 
-/** vector of @ref IntersectionGroup */
-typedef std::vector<IntersectionGroup>        IntersectionGroupVector;
-
 #endif // MMLT_INTERSECTION_INTERSECTION_GROUP_H
 

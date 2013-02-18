@@ -118,8 +118,8 @@ public:
         }
 
         logger.print(mmlt_msg("intersections=%1 overlaps=%2")
-                     .arg(intersecting_segments, 10, 10, QChar('0'))
-                     .arg(overlaps, 3, 10, QChar('0')));
+                     .arg(intersecting_segments)
+                     .arg(overlaps));
     }
 private:
     IntersectionGroup empty_group_;

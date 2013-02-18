@@ -3,9 +3,13 @@
 #define MMLT_CPLEX_SAT_PROBLEM_H
 
 #include "config.h"
+
+#include <QSettings>
+
 #include "cplex/concert.h"
 #include "cplex/sat_solution.h"
-#include "intersection/intersection_group.h"
+
+#include "intersection/intersection_graph.h"
 
 class SATProblem
 {
@@ -13,9 +17,9 @@ public:
     SATProblem(SegmentIndex num_points,
                SegmentIndex num_segments,
                SegmentIndex num_convex_hull,
-               const IntersectionGroupVector& igroups);
+               const IntersectionGraph& igraph);
 
-    void solve(SATSolution& solution, const SegmentIndex& lower_bound);
+    void solve(const QSettings& settings, SATSolution& solution, const SegmentIndex& lower_bound);
 private:
     IloEnv           env_;
 

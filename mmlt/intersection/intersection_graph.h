@@ -11,6 +11,8 @@
 class IntersectionGraph
 {
 public:
+    /** vector of @ref IntersectionGroup */
+    using IntersectionGroupVector = std::vector<IntersectionGroup>;
 
     /** default constructor */
     IntersectionGraph(const PointSet& points, SegmentContainer& segments);
@@ -18,15 +20,16 @@ public:
     void add_intersection_group(const IntersectionGroup& group);
 
     /** output intersection graph using QPainter */
-    void draw_igraph(QPainter& painter) const;
+    void draw(QPainter& painter) const;
 
-    /** output intersection group using QPainter */
-    void draw_igroup(QPainter& painter,
-                     const IntersectionGroup& igroup) const;
-
-    const IntersectionGroupVector& intersection_groups() const
+    IntersectionGroupVector::const_iterator begin() const
     {
-        return intersection_groups_;
+        return intersection_groups_.begin();
+    }
+
+    IntersectionGroupVector::const_iterator end() const
+    {
+        return intersection_groups_.end();
     }
 
     /** find the shortest non-intersecting segment */

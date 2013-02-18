@@ -7,7 +7,7 @@
 SATProblem::SATProblem(SegmentIndex num_points,
                        SegmentIndex num_segments,
                        SegmentIndex num_convex_hull,
-                       const IntersectionGroupVector& igroups) :
+                       const IntersectionGraph& igraph) :
     env_(),
     cplex_(env_),
     model_(env_, "SAT"),
@@ -15,7 +15,7 @@ SATProblem::SATProblem(SegmentIndex num_points,
 {
     cplex_.setOut(env_.getNullStream());
     cplex_.setError(env_.getNullStream());
-    //cplex_.setParam(IloCplex::RootAlg, IloCplex::AutoAlg);
+    cplex_.setParam(IloCplex::RootAlg, IloCplex::AutoAlg);
     cplex_.setParam(IloCplex::SimDisplay, 2);
 
     QString var_name("x_%1");
@@ -27,7 +27,7 @@ SATProblem::SATProblem(SegmentIndex num_points,
 
     model_.add(IloSum(variables_) == 3*num_points - num_convex_hull - 3);
 
-    for(IntersectionGroup igroup : igroups)
+    for(const IntersectionGroup& igroup : igraph)
     {
         IloExpr restr_intersection(env_);
 
@@ -45,8 +45,10 @@ SATProblem::SATProblem(SegmentIndex num_points,
     cplex_.extract(model_);
 }
 
-void SATProblem::solve(SATSolution& solution, const SegmentIndex& lower_bound)
+void SATProblem::solve(const QSettings& settings, SATSolution& solution, const SegmentIndex& lower_bound)
 {
+    logger.info(mmlt_msg("Solving SAT problem (lb=%1)...").arg(lower_bound));
+
     IloConstraintArray lb_restrictions(env_);
 
     // disable variables
@@ -56,11 +58,17 @@ void SATProblem::solve(SATSolution& solution, const SegmentIndex& lower_bound)
     }
     model_.add(lb_restrictions);
 
-    cplex_.exportModel(QString("model_%1.lp").arg(lower_bound).toLocal8Bit().data());
-    cplex_.setParam(IloCplex::RootAlg, IloCplex::AutoAlg);
-    cplex_.solve();
+    if(settings.value("cplex/dump_models").toBool())
+    {
+        cplex_.exportModel(QString("%1_model_%2.lp")
+                           .arg(settings.value("file_prefix").toString())
+                           .arg(lower_bound)
+                           .toLocal8Bit().data());
+    }
 
     solution.clear();
+    cplex_.solve();
+
     auto status = cplex_.getStatus();
 
     switch (status) {
@@ -89,17 +97,17 @@ void SATProblem::solve(SATSolution& solution, const SegmentIndex& lower_bound)
 
     if(status == IloAlgorithm::Optimal)
     {
-        logger.debug(mmlt_msg("Objective: %0").arg(cplex_.getObjValue()));
+        //logger.debug(mmlt_msg("Objective: %0").arg(cplex_.getObjValue()));
 
         for(SegmentIndex segment_index = 0;
             segment_index < variables_.getSize();
             ++segment_index)
         {
-            logger.debug(mmlt_msg("%0 = %1")
+            logger.debug(mmlt_msg("%1 = %2")
                          .arg(variables_[segment_index].getName())
                          .arg(cplex_.getValue(variables_[segment_index])));
 
-            if(cplex_.getValue(variables_[segment_index]))
+            if(cplex_.getValue(variables_[segment_index]) == true)
             {
                 solution.push_back(segment_index);
             }

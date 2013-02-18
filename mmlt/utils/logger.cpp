@@ -53,5 +53,5 @@ void Logger::stats(const Stats& stats) const
 
 void Logger::time(const QString& identifier, int milliseconds) const
 {
-    print("[TIME] " + identifier + " = " + QString::number(milliseconds));
+    print(QString("[TIME] %1=%2ms").arg(identifier).arg(milliseconds));
 }

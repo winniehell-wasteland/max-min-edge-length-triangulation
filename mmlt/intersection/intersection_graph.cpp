@@ -22,20 +22,12 @@ void IntersectionGraph::add_intersection_group(const IntersectionGroup& group)
   }
 }
 
-void IntersectionGraph::draw_igraph(QPainter& painter) const
+void IntersectionGraph::draw(QPainter& painter) const
 {
     for(const Segment& segment : segments_)
     {
         segment.draw(painter);
     }
-}
-
-void IntersectionGraph::draw_igroup(QPainter& painter, const IntersectionGroup& igroup) const
-{
-  for(const SegmentIndex& segment_index : igroup)
-  {
-      segments_[segment_index].draw(painter);
-  }
 }
 
 SegmentIndex IntersectionGraph::shortest_nonintersecting_segment() const
