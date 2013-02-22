@@ -11,18 +11,18 @@
 #include <QPainter>
 #include <QString>
 
-/** sorted container of intersection group indices */
-using IntersectionGroupIndices = boost::container::flat_set<IntersectionGroupIndex>;
-
 /**
  * data attached to a segment
  */
 struct SegmentData
 {
-  SegmentIndex              index;
-  IntersectionGroupIndices  intersection_groups;
-  /** true if the segment overlaps another */
-  bool                      overlapping;
+    /** sorted container of intersection group indices */
+    using IntersectionGroupIndices = boost::container::flat_set<IntersectionGroupIndex>;
+
+    SegmentIndex              index;
+    IntersectionGroupIndices  intersection_groups;
+    /** true if the segment overlaps another */
+    bool                      overlapping;
 };
 
 /**

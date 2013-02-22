@@ -112,7 +112,9 @@ private:
     void draw_igroups() const;
     void draw_points(QPainter& painter) const;
     void draw_sat_solution() const;
+    void draw_separators() const;
 
+    void output_status() const;
     void pre_solving();
 };
 

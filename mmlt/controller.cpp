@@ -86,11 +86,7 @@ void Controller::iteration()
         QTimer::singleShot(0, this, SLOT(iteration()));
     }
 
-    logger.stats(stats_);
-    if(settings_.value("draw/bounds").toBool())
-    {
-        draw_bounds();
-    }
+    output_status();
 
     abort_timer_.stop();
 }
@@ -137,11 +133,7 @@ void Controller::start()
         return;
     }
 
-    logger.stats(stats_);
-    if(settings_.value("draw/bounds").toBool())
-    {
-        draw_bounds();
-    }
+    output_status();
 
     // next iteration
     QTimer::singleShot(0, this, SLOT(iteration()));
@@ -151,11 +143,7 @@ void Controller::done() const
 {
     logger.time("total", timer_.elapsed());
 
-    logger.stats(stats_);
-    if(settings_.value("draw/bounds").toBool())
-    {
-        draw_bounds();
-    }
+    output_status();
 
     logger.print(mmlt_msg("iterations=%1 gap=%2").arg(stats_.iteration).arg(stats_.gap()));
     logger.info(mmlt_msg("Done."));
@@ -214,6 +202,53 @@ void Controller::draw_sat_solution() const
     painter.setPenColor(QColor(255, 0, 0));
     sat_solution_.draw(painter, segments_);
     draw_points(painter);
+}
+
+void Controller::draw_separators() const
+{
+    logger.info(mmlt_msg("Drawing Separators..."));
+
+    SVGPainter painter(this, QString("separators_%1.svg").arg(stats_.iteration));
+
+    for(SegmentIndex index = stats_.lower_bound(); index < stats_.upper_bound(); ++index)
+    {
+        const Segment& segment = segments_[index];
+
+        painter.setPenColor(QColor(0, 255, 0));
+        segment.draw(painter);
+
+        painter.setPenColor(QColor(255, 0, 0));
+        //segments_[intersection_graph_.longest_intersecting_segment(index)].draw(painter);
+        for(const IntersectionGroupIndex& igroup : segment.data().intersection_groups)
+        {
+            for(const SegmentIndex& separator : intersection_graph_[igroup])
+            {
+                if(separator == index)
+                {
+                    continue;
+                }
+
+                segments_[separator].draw(painter);
+            }
+        }
+    }
+
+    draw_points(painter);
+}
+
+void Controller::output_status() const
+{
+    logger.stats(stats_);
+
+    if(settings_.value("draw/bounds").toBool())
+    {
+        draw_bounds();
+    }
+
+    if(settings_.value("draw/separators").toBool())
+    {
+        draw_separators();
+    }
 }
 
 void Controller::pre_solving()

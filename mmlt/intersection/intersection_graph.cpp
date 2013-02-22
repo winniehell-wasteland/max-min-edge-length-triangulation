@@ -17,7 +17,7 @@ void IntersectionGraph::add_intersection_group(const IntersectionGroup& group)
 
   for(const SegmentIndex& segment_index : group)
   {
-      IntersectionGroupIndices& igroups = segments_[segment_index].data().intersection_groups;
+      SegmentData::IntersectionGroupIndices& igroups = segments_[segment_index].data().intersection_groups;
       igroups.insert(igroups.end(), group_index);
   }
 }
@@ -30,21 +30,26 @@ void IntersectionGraph::draw(QPainter& painter) const
     }
 }
 
+SegmentIndex IntersectionGraph::longest_intersecting_segment(const SegmentIndex& index) const
+{
+    SegmentIndex longest = index;
+    const SegmentData::IntersectionGroupIndices igroups = segments_[index].data().intersection_groups;
+
+    for(const IntersectionGroupIndex& igroup_index : igroups)
+    {
+        const IntersectionGroup& igroup = this->intersection_groups_[igroup_index];
+
+        longest = std::max(longest, *std::max_element(igroup.begin(), igroup.end()));
+    }
+
+    return longest;
+}
+
 SegmentIndex IntersectionGraph::shortest_nonintersecting_segment() const
 {
     for(const Segment& segment : segments_)
     {
-        SegmentIndex longest_intersecting_segment = segment.data().index;
-
-        for(const IntersectionGroupIndex& igroup_index : segment.data().intersection_groups)
-        {
-            const IntersectionGroup& igroup = this->intersection_groups_[igroup_index];
-
-            longest_intersecting_segment = std::max(longest_intersecting_segment,
-                                                    *std::max_element(igroup.begin(), igroup.end()));
-        }
-
-        if(segment.data().index == longest_intersecting_segment)
+        if(segment.data().index == longest_intersecting_segment(segment.data().index))
         {
             logger.info(mmlt_msg("shortest non-intersecting segment: %1 (len^2=%2)")
                         .arg(segment.to_string())
