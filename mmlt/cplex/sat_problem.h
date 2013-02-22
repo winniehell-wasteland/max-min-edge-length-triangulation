@@ -19,7 +19,7 @@ public:
                SegmentIndex num_convex_hull,
                const IntersectionGraph& igraph);
 
-    void solve(const QSettings& settings, SATSolution& solution, const SegmentIndex& lower_bound);
+    void solve(const QSettings& settings, const QString& file_prefix, SATSolution& solution, const SegmentIndex& lower_bound);
 private:
     IloEnv           env_;
 

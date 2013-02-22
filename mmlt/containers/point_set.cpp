@@ -18,3 +18,11 @@ PointSet::PointSet(QFile &input_file) :
         this->clear();
     }
 }
+
+void PointSet::draw(QPainter& painter) const
+{
+    for(const Point& point : *this)
+    {
+        point.draw(painter);
+    }
+}

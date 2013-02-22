@@ -27,7 +27,7 @@ SegmentIndex DelaunayTriangulation::shortest_segment(const SegmentContainer& seg
         {
             logger.info(mmlt_msg("shortest Delaunay segment: %1 (len^2=%2)")
                         .arg(segment.to_string())
-                        .arg(CGAL::to_double(segment.squared_length())));
+                        .arg(CGAL::to_double(segment.squared_length()), 0, 'f'));
 
             return segment.data().index;
         }

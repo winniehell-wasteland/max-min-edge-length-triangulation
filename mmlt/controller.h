@@ -6,9 +6,9 @@
 
 #include <QCoreApplication>
 #include <QFile>
+#include <QElapsedTimer>
 #include <QSettings>
 #include <QSvgGenerator>
-#include <QTime>
 
 #include "stats.h"
 
@@ -21,6 +21,8 @@
 #include "cplex/sat_solution.h"
 
 #include "intersection/intersection_graph.h"
+#include "utils/abort_timer.h"
+#include "utils/elapsed_timer.h"
 
 class Controller :
         public QObject
@@ -32,13 +34,14 @@ public Q_SLOTS:
     void iteration();
     void start();
 private:
-    const QTime                          start_time_;
+    ElapsedTimer                         timer_;
     QCoreApplication&                    application_;
     QFile                                input_file_;
-
-    const QString                        file_prefix_;
-    const PointSet                       points_;
     const QSettings&                     settings_;
+
+    AbortTimer                           abort_timer_;
+    QString                              file_prefix_;
+    const PointSet                       points_;
     Stats                                stats_;
 
     const CGAL::Iso_rectangle_2<Kernel>  bounding_box_;
@@ -54,12 +57,14 @@ private:
             public QPainter
     {
     public:
-        SVGPainter(Controller* controller, const QString& file_name) :
+        SVGPainter(const Controller* controller, const QString& file_name) :
             QPainter(),
             generator_(),
             pen_()
         {
-            generator_.setFileName(controller->settings_.value("file_prefix").toString() + "_" + file_name);
+            generator_.setFileName(controller->file_prefix_ + "_" + file_name);
+            generator_.setTitle(controller->file_prefix_);
+
             generator_.setSize(QSize(
                 CGAL::to_double(controller->bounding_box_.xmax())
                     - CGAL::to_double(controller->bounding_box_.xmin()) + 20,
@@ -101,11 +106,12 @@ private:
         QPen          pen_;
     };
 
-    void done();
+    void done() const;
 
-    void draw_bounds();
-    void draw_igroups();
-    void draw_sat_solution();
+    void draw_bounds() const;
+    void draw_igroups() const;
+    void draw_points(QPainter& painter) const;
+    void draw_sat_solution() const;
 
     void pre_solving();
 };

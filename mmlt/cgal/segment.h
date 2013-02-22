@@ -37,6 +37,7 @@ class SegmentC2 :
     using Point_2   = typename Kernel_::Point_2;
     using Segment_2 = typename Kernel_::Segment_2;
 public:
+
     /** empty constructor */
     SegmentC2() :
         SegmentBase()

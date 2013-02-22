@@ -63,9 +63,8 @@ bool JSONParser::parse_points(QFile& file, std::insert_iterator<PointSet> output
         Point point(parse_number(coordinates[0]),
                 parse_number(coordinates[1]));
 
-        logger.debug(mmlt_msg("Created point (%1, %2)")
-                     .arg(CGAL::to_double(point.x()))
-                     .arg(CGAL::to_double(point.y())));
+        logger.debug(mmlt_msg("Created point %1")
+                     .arg(point.to_string()));
 
         *output = point;
         ++output;

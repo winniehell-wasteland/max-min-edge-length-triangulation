@@ -14,7 +14,9 @@ SATProblem::SATProblem(SegmentIndex num_points,
     variables_(env_)
 {
     cplex_.setOut(env_.getNullStream());
-    cplex_.setError(env_.getNullStream());
+    cplex_.setWarning(env_.getNullStream());
+    //cplex_.setError(env_.getNullStream());
+
     cplex_.setParam(IloCplex::RootAlg, IloCplex::AutoAlg);
     cplex_.setParam(IloCplex::SimDisplay, 2);
 
@@ -45,7 +47,7 @@ SATProblem::SATProblem(SegmentIndex num_points,
     cplex_.extract(model_);
 }
 
-void SATProblem::solve(const QSettings& settings, SATSolution& solution, const SegmentIndex& lower_bound)
+void SATProblem::solve(const QSettings& settings, const QString& file_prefix, SATSolution& solution, const SegmentIndex& lower_bound)
 {
     logger.info(mmlt_msg("Solving SAT problem (lb=%1)...").arg(lower_bound));
 
@@ -61,7 +63,7 @@ void SATProblem::solve(const QSettings& settings, SATSolution& solution, const S
     if(settings.value("cplex/dump_models").toBool())
     {
         cplex_.exportModel(QString("%1_model_%2.lp")
-                           .arg(settings.value("file_prefix").toString())
+                           .arg(file_prefix)
                            .arg(lower_bound)
                            .toLocal8Bit().data());
     }

@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     if(argc != 2)
     {
         logger.error(mmlt_msg("Invalid number of arguments!"));
-        return 1;
+        return EXIT_FAILURE;
     }
 
     logger.info(mmlt_msg("Running in directory %1").arg(QDir::currentPath()));

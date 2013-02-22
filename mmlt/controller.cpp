@@ -1,6 +1,5 @@
 #include <QDebug>
 #include <QFileInfo>
-#include <QTimer>
 
 #include <CGAL/bounding_box.h>
 
@@ -12,11 +11,13 @@
 const double Controller::SVGPainter::SVG_SCALE = 4.0;
 
 Controller::Controller(QCoreApplication& application, const QSettings& settings) :
-    start_time_(QTime::currentTime()),
+    timer_(true),
     application_(application),
     input_file_(application.arguments().at(1)),
-    points_(input_file_),
     settings_(settings),
+    abort_timer_(settings_.value("abort_timeout", 60*60*1000).toUInt()),
+    file_prefix_(QFileInfo(input_file_).completeBaseName()),
+    points_(input_file_),
     stats_(),
     bounding_box_(CGAL::bounding_box(points_.begin(), points_.end())),
     convex_hull_(points_),
@@ -25,7 +26,7 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
     intersection_graph_(points_, segments_),
     sat_problem_(points_.size(), segments_.size(), convex_hull_.size(), intersection_graph_)
 {
-    logger.time("controller initialization", start_time_.msecsTo(QTime::currentTime()));
+    logger.time("controller initialization", timer_.elapsed());
 
     logger.print(mmlt_msg("points=%1 segments=%2 convex hull=%3")
                  .arg(points_.size())
@@ -38,6 +39,7 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
         SVGPainter painter(this, "igraph.svg");
         painter.setPenColor(QColor(120, 120, 120));
         intersection_graph_.draw(painter);
+        draw_points(painter);
     }
 
     if(settings_.value("draw/intersection_groups").toBool())
@@ -48,12 +50,15 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
 
 void Controller::iteration()
 {
-    QTime iteration_start_time(QTime::currentTime());
+    abort_timer_.start();
+
+    ElapsedTimer iteration_timer(true);
     ++stats_.iteration;
 
-    sat_problem_.solve(settings_, sat_solution_, (stats_.lower_bound() + stats_.upper_bound())/2 + 1);
+    sat_problem_.solve(settings_, file_prefix_, sat_solution_, (stats_.lower_bound() + stats_.upper_bound())/2 + 1);
 
-    logger.time(QString("iteration %1").arg(stats_.iteration), iteration_start_time.msecsTo(QTime::currentTime()));
+
+    logger.time(QString("iteration %1").arg(stats_.iteration), iteration_timer.elapsed());
 
     if(sat_solution_.empty())
     {
@@ -86,6 +91,8 @@ void Controller::iteration()
     {
         draw_bounds();
     }
+
+    abort_timer_.stop();
 }
 
 void Controller::start()
@@ -99,17 +106,17 @@ void Controller::start()
 
     pre_solving();
 
-    if(stats_.gap() < 1)
+    if((stats_.gap() < 1) || (settings_.value("controller/max_iterations").toUInt() == 0))
     {
         done();
         return;
     }
 
-    QTime iteration_start_time(QTime::currentTime());
+    ElapsedTimer iteration_timer(true);
 
-    sat_problem_.solve(settings_, sat_solution_, stats_.lower_bound());
+    sat_problem_.solve(settings_, file_prefix_, sat_solution_, stats_.lower_bound());
 
-    logger.time(QString("iteration %1").arg(stats_.iteration), iteration_start_time.msecsTo(QTime::currentTime()));
+    logger.time(QString("iteration %1").arg(stats_.iteration), iteration_timer.elapsed());
 
     if(sat_solution_.empty())
     {
@@ -140,9 +147,9 @@ void Controller::start()
     QTimer::singleShot(0, this, SLOT(iteration()));
 }
 
-void Controller::done()
+void Controller::done() const
 {
-    logger.time("total", start_time_.msecsTo(QTime::currentTime()));
+    logger.time("total", timer_.elapsed());
 
     logger.stats(stats_);
     if(settings_.value("draw/bounds").toBool())
@@ -155,7 +162,7 @@ void Controller::done()
     application_.quit();
 }
 
-void Controller::draw_bounds()
+void Controller::draw_bounds() const
 {
     logger.info(mmlt_msg("Drawing bounds..."));
 
@@ -167,9 +174,11 @@ void Controller::draw_bounds()
     segments_[stats_.lower_bound()].draw(painter);
     painter.setPenColor(QColor(255, 0, 0));
     segments_[stats_.upper_bound()].draw(painter);
+
+    draw_points(painter);
 }
 
-void Controller::draw_igroups()
+void Controller::draw_igroups() const
 {
     logger.info(mmlt_msg("Drawing intersection groups..."));
 
@@ -183,12 +192,19 @@ void Controller::draw_igroups()
 
         painter.setPenColor(QColor(255, 0, 0));
         igroup.draw(painter, segments_);
+        draw_points(painter);
 
         ++igroup_index;
     }
 }
 
-void Controller::draw_sat_solution()
+void Controller::draw_points(QPainter& painter) const
+{
+    painter.setPen(QColor(0, 0, 255));
+    points_.draw(painter);
+}
+
+void Controller::draw_sat_solution() const
 {
     logger.info(mmlt_msg("Drawing SAT solution..."));
 
@@ -197,11 +213,12 @@ void Controller::draw_sat_solution()
     intersection_graph_.draw(painter);
     painter.setPenColor(QColor(255, 0, 0));
     sat_solution_.draw(painter, segments_);
+    draw_points(painter);
 }
 
 void Controller::pre_solving()
 {
-    QTime presolving_start_time(QTime::currentTime());
+    ElapsedTimer presolving_timer(true);
 
     // make use of Delaunay triangulation
     stats_.add_lower_bound(delaunay_triangulation_.shortest_segment(segments_));
@@ -212,5 +229,5 @@ void Controller::pre_solving()
     // each non-intersected segment must be part of the triangulation
     stats_.add_upper_bound(intersection_graph_.shortest_nonintersecting_segment());
 
-    logger.time("pre solving", presolving_start_time.msecsTo(QTime::currentTime()));
+    logger.time("pre solving", presolving_timer.elapsed());
 }

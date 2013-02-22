@@ -5,6 +5,7 @@
 #include <set>
 
 #include <QFile>
+#include <QPainter>
 
 #include "cgal/kernel.h"
 #include "cgal/orders.h"
@@ -15,6 +16,9 @@ class PointSet :
 {
 public:
     PointSet(QFile& input_file);
+
+    /** output point set using QPainter */
+    void draw(QPainter& painter) const;
 };
 
 #endif // MMLT_CONTAINERS_POINT_SET_H
