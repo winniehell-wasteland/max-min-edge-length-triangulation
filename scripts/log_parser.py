@@ -1,18 +1,35 @@
 #!/usr/bin/env python2
 
+import json
 import os
 import re
-import sys
+import math
 
-REGEXES = {
-    'file_name'   : re.compile(r'(?P<prefix>[^\d]+)_(?P<num_points>\d+)_(?P<parameters>.+)_\d+\.log'),
-    'igraph_data' : re.compile(r'intersections=(?P<intersections>\d+) overlaps=(?P<overlaps>\d+)'),
-    'input_data'  : re.compile(r'points=(?P<points>\d+) segments=(?P<segments>\d+) convex hull=(?P<convex_hull>\d+)'),
-    'shortest'    : re.compile(r'shortest (?P<object>[^:]+): (?P<index>\d+):\(\d+,\d+\)->\(\d+,\d+\) \(len^2=(?P<squared_length>\d+)\)'),
-    'stats'       : re.compile(r'\[STATS\] it=(?P<iteration>\d+)\tlb=(?P<lower_bound>\d+)\tub=(?P<upper_bound>\d+)'),
-    'time'        : re.compile(r'\[TIME\] (?P<task>.+)=(?P<time>\d+)ms')
-    #'time_stamp'  : re.compile(r'\[(?P<hour>\d{2}):(?P<minute>\d{2}):(?P<second>\d{2}).(?P<millisecond>\d{3})\]')
+LOG_PATTERNS = {
+    'file':     re.compile(r'(?P<prefix>[^\d\s]+)_(?P<num_points>\d+)'
+                           '_(?P<parameters>.+)_\d+\.json'
+                           ),
+    'igraph':   re.compile(r'intersections=(?P<intersections>\d+)'
+                           ' overlaps=(?P<overlaps>\d+)'
+                           ),
+    'input':    re.compile(r'points=(?P<points>\d+)'
+                           ' segments=(?P<segments>\d+)'
+                           ' convex hull=(?P<convex_hull>\d+)'
+                           ),
+    'shortest': re.compile(r'shortest (?P<object>[^:]+) segment:'
+                           ' (?P<index>\d+):\(\d+,\d+\)->\(\d+,\d+\)'
+                           ' \(len\^2=(?P<squared_length>\d+|\d\.\d+e\+\d\d)\)'
+                           ),
+    'stats':    re.compile(r'\[STATS\] it=(?P<iteration>\d+)\t'
+                           'lb=(?P<lower_bound>\d+)\t'
+                           'ub=(?P<upper_bound>\d+)'
+                           ),
+
+    'time':     re.compile(r'\[TIME\] (?P<task>.+)=(?P<time>\d+)ms')
 }
+
+#'time_stamp'  : re.compile(r'\[(?P<hour>\d{2}):(?P<minute>\d{2}):(?P<second>\d{2}).(?P<millisecond>\d{3})\]')
+
 
 def make_key(values, key, value=None):
     """
@@ -21,38 +38,71 @@ def make_key(values, key, value=None):
 
     if value is not None:
         return dict(
-            (
-                (item[key], item[value])
-                for item
-                in values
-            )
+            (item[key].replace(' ', '_'), item[value])
+            for item
+            in values
         )
     else:
         return dict(
             (
-                (item[key],
-                    dict(
-                        (value, item[value])
-                        for value in item.keys()
-                        if value != key
-                    )
+                item[key].replace(' ', '_'),
+                dict(
+                    (value, item[value])
+                    for value in item.iterkeys()
+                    if value != key
                 )
-                for item
-                in values
             )
+            for item
+            in values
         )
 
+
+def numberize(obj):
+    """
+    convert values of obj to numbers if possible
+    """
+
+    if isinstance(obj, int) or isinstance(obj, float):
+        return obj
+    if isinstance(obj, dict):
+        return dict(
+            (key, numberize(value))
+            for key, value
+            in obj.iteritems()
+        )
+    elif isinstance(obj, list):
+        return list(
+            numberize(value)
+            for value
+            in iter(obj)
+        )
+    elif isinstance(obj, str) or isinstance(obj, unicode):
+        try:
+            return int(obj)
+        except ValueError:
+            try:
+                return float(obj)
+            except ValueError:
+                return obj
+    else:
+        print obj
+        raise NotImplementedError
+
+columns = {}
 results = []
 
-TIME_TASKS = set()
+for key in LOG_PATTERNS.keys():
+    columns[key] = set()
 
 for file_name in os.listdir('.'):
     if file_name.endswith('.log'):
+        print 'Parsing {file} ...'.format(file=file_name)
+
         with open(file_name, 'r') as log_file:
             result = {}
 
             for line in log_file:
-                for key, regex in REGEXES.items():
+                for key, regex in LOG_PATTERNS.items():
                     match = regex.search(line)
                     if match:
                         if key not in result.keys():
@@ -60,26 +110,41 @@ for file_name in os.listdir('.'):
 
                         result[key].append(match.groupdict())
 
+            for key in ('file', 'igraph', 'input'):
+                assert len(result[key]) == 1
+                result[key] = result[key][0]
+
+            parameters = result['file'].pop('parameters').split('_')
+            result['file'].update(
+                ('param_{}'.format(i), parameters[i])
+                for i
+                in range(len(parameters))
+            )
+
+            result['shortest'] = make_key(result['shortest'], 'object')
+            result['stats'] = make_key(result['stats'], 'iteration')
             result['time'] = make_key(result['time'], 'task', 'time')
-            TIME_TASKS.update(result['time'].keys())
 
-print TIME_TASKS
-sys.exit(0)
+            # normalize
+            for key in result['shortest'].iterkeys():
+                result['shortest'][key]['squared_length'] = (
+                    float(result['shortest'][key]['squared_length']) /
+                    (
+                        float(result['file']['param_0']) / 1000 -
+                        float(result['file']['param_1']) / 1000
+                    ) ** 2
+                )
 
-with open('results.dat', 'w') as data_file:
-    data_file.write('# num_points\tavg\tmin\tmax\n')
+            for key in LOG_PATTERNS.iterkeys():
+                columns[key].update(result[key].keys())
 
-    for num_points in times.keys():
-        if len(times[num_points]) < 1:
-            continue
+            results.append(numberize(result))
 
-        time_avg = sum(times[num_points])/len(times[num_points])
-        time_max = max(times[num_points])
-        time_min = min(times[num_points])
+#import pprint
 
-        data_file.write('{num_points}\t{avg}\t{min}\t{max}\n'.format(
-            num_points=num_points,
-            avg=time_avg,
-            min=time_min,
-            max=time_max
-        ))
+#pprint.pprint(results)
+#pprint.pprint(columns)
+
+with open('results.json', 'w') as data_file:
+    json.dump(results, data_file, indent=4)
+
