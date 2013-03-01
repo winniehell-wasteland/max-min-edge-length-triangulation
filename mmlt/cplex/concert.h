@@ -9,4 +9,20 @@
 #include <ilcplex/ilocplex.h>
 #pragma GCC diagnostic pop
 
+class CPLEX :
+        public IloCplex
+{
+public:
+    CPLEX() :
+        IloCplex(IloEnv())
+    {
+        this->setOut(this->getEnv().getNullStream());
+        this->setWarning(this->getEnv().getNullStream());
+        //this->setError(this->getEnv().getNullStream());
+
+        this->setParam(IloCplex::RootAlg, IloCplex::AutoAlg);
+        this->setParam(IloCplex::SimDisplay, 2);
+    }
+};
+
 #endif // MMLT_CPLEX_CONCERT_H

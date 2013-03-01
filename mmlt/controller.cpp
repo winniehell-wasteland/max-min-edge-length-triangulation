@@ -4,6 +4,8 @@
 #include <CGAL/bounding_box.h>
 
 #include "cplex/sat_problem.h"
+#include "cplex/reduced_sat_problem.h"
+
 #include "utils/logger.h"
 
 #include "controller.h"
@@ -263,6 +265,23 @@ void Controller::pre_solving()
 
     // each non-intersected segment must be part of the triangulation
     stats_.add_upper_bound(intersection_graph_.shortest_nonintersecting_segment());
+
+    ReducedSATProblem reduced_sat(intersection_graph_,
+                                  segments_,
+                                  stats_.lower_bound(),
+                                  stats_.upper_bound());
+    SATSolution reduced_solution;
+    reduced_sat.solve(settings_, file_prefix_, reduced_solution);
+
+    logger.info(mmlt_msg("Drawing reduced SAT..."));
+
+    SVGPainter painter(this, "reduced_sat.svg");
+    painter.setPenColor(QColor(255, 0, 0));
+    reduced_solution.draw(painter, segments_);
+    draw_points(painter);
+
+    stats_.add_lower_bound(reduced_solution.shortest_segment());
+    stats_.add_upper_bound(reduced_solution.shortest_segment());
 
     logger.time("pre solving", presolving_timer.elapsed());
 }

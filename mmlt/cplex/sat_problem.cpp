@@ -8,30 +8,18 @@ SATProblem::SATProblem(SegmentIndex num_points,
                        SegmentIndex num_segments,
                        SegmentIndex num_convex_hull,
                        const IntersectionGraph& igraph) :
-    env_(),
-    cplex_(env_),
-    model_(env_, "SAT"),
-    variables_(env_)
+    cplex_(),
+    model_(cplex_.getEnv(), "SAT"),
+    variables_(cplex_.getEnv(), num_segments)
 {
-    cplex_.setOut(env_.getNullStream());
-    cplex_.setWarning(env_.getNullStream());
-    //cplex_.setError(env_.getNullStream());
+    variables_.setNames("x");
 
-    cplex_.setParam(IloCplex::RootAlg, IloCplex::AutoAlg);
-    cplex_.setParam(IloCplex::SimDisplay, 2);
-
-    QString var_name("x_%1");
-
-    for(SegmentIndex seg_index = 0; seg_index < num_segments; ++seg_index)
-    {
-        variables_.add(IloBoolVar(env_, var_name.arg(seg_index).toLocal8Bit().constData()));
-    }
-
+    // triangulation restriction
     model_.add(IloSum(variables_) == 3*num_points - num_convex_hull - 3);
 
     for(const IntersectionGroup& igroup : igraph)
     {
-        IloExpr restr_intersection(env_);
+        IloExpr restr_intersection(cplex_.getEnv());
 
         foreach(SegmentIndex seg_index, igroup)
         {
@@ -41,8 +29,8 @@ SATProblem::SATProblem(SegmentIndex num_points,
         model_.add(restr_intersection <= 1);
     }
 
-    IloIntExpr objective(env_, 1);
-    model_.add(IloObjective(env_, objective, IloObjective::Maximize));
+    IloIntExpr objective(cplex_.getEnv(), 1);
+    model_.add(IloObjective(cplex_.getEnv(), objective, IloObjective::Maximize));
 
     cplex_.extract(model_);
 }
@@ -51,7 +39,7 @@ void SATProblem::solve(const QSettings& settings, const QString& file_prefix, SA
 {
     logger.info(mmlt_msg("Solving SAT problem (lb=%1)...").arg(lower_bound));
 
-    IloConstraintArray lb_restrictions(env_);
+    IloConstraintArray lb_restrictions(cplex_.getEnv());
 
     // disable variables
     for(SegmentIndex i = 0; i < lower_bound; ++i)
@@ -62,7 +50,7 @@ void SATProblem::solve(const QSettings& settings, const QString& file_prefix, SA
 
     if(settings.value("cplex/dump_models").toBool())
     {
-        cplex_.exportModel(QString("%1_model_%2.lp")
+        cplex_.exportModel(QString("%1_%2.lp")
                            .arg(file_prefix)
                            .arg(lower_bound)
                            .toLocal8Bit().data());
@@ -107,7 +95,7 @@ void SATProblem::solve(const QSettings& settings, const QString& file_prefix, SA
         {
             logger.debug(mmlt_msg("%1 = %2")
                          .arg(variables_[segment_index].getName())
-                         .arg(cplex_.getValue(variables_[segment_index])));
+                         .arg(cplex_.getIntValue(variables_[segment_index])));
 
             if(cplex_.getValue(variables_[segment_index]) == true)
             {

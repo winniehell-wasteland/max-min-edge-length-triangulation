@@ -21,9 +21,7 @@ public:
 
     void solve(const QSettings& settings, const QString& file_prefix, SATSolution& solution, const SegmentIndex& lower_bound);
 private:
-    IloEnv           env_;
-
-    IloCplex         cplex_;
+    CPLEX            cplex_;
     IloModel         model_;
     IloBoolVarArray  variables_;
 };

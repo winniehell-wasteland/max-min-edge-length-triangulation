@@ -1,5 +1,7 @@
 #include <QSvgGenerator>
 
+#include "utils/logger.h"
+
 #include "sat_solution.h"
 
 void SATSolution::draw(QPainter& painter, const SegmentContainer& segments) const
