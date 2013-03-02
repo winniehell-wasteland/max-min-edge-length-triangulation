@@ -17,6 +17,11 @@ class PointSet :
 public:
     PointSet(QFile& input_file);
 
+    bool contains(const Point& point) const
+    {
+        return (this->count(point) > 0);
+    }
+
     /** output point set using QPainter */
     void draw(QPainter& painter) const;
 };

@@ -14,124 +14,212 @@ class IntersectionAlgorithm
     using Intersections = std::map<Point, IntersectionGroup, STLPointOrder>;
     using Overlaps      = std::set<SegmentIndex>;
 public:
-    IntersectionAlgorithm(IntersectionGraph* graph,
-                          const PointSet& points,
+    SegmentIndex  shortest_nonintersecting_segment;
+
+    IntersectionAlgorithm(const PointSet& points,
                           SegmentContainer& segments) :
+        shortest_nonintersecting_segment(0),
         empty_group_(),
-        intersections_(point_order)
+        intersections_(point_order),
+        points_(points),
+        segments_(segments),
+        separators_()
     {
-        MMLT_precondition_msg(graph != 0, "IntersectionGraph has to be initialized!");
+    }
 
-        SegmentIndex overlaps = 0;
+    void run(IntersectionGraph& igraph)
+    {
+        intersections_.clear();
+        separators_.clear();
+        shortest_nonintersecting_segment = 0;
 
-        for(auto s = segments.begin(); s != segments.end(); ++s)
+        for(auto s1 = segments_.begin(); s1 != segments_.end(); ++s1)
         {
-            auto t = s;
-            for( ++t; t != segments.end(); ++t)
+            bool segment_intersects = false;
+
+            auto s2 = s1;
+            for(++s2; s2 != segments_.end(); ++s2)
             {
-                logger.debug(mmlt_msg("check segment %1 and %2")
-                             .arg(s->to_string())
-                             .arg(t->to_string()));
+                MMLT_precondition(segment_length_order(*s1, *s2) != CGAL::LARGER);
+
+                logger.debug(mmlt_msg("test segments %1 and %2 for intersection")
+                             .arg(s1->to_string())
+                             .arg(s2->to_string()));
 
                 CGAL::Object result = CGAL::intersection(
-                            static_cast<CGAL::Segment_2<Kernel> >(*s),
-                            static_cast<CGAL::Segment_2<Kernel> >(*t)
+                            static_cast<CGAL::Segment_2<Kernel> >(*s1),
+                            static_cast<CGAL::Segment_2<Kernel> >(*s2)
                 );
 
+                // intersection is a point
                 if(const Point* ipoint = CGAL::object_cast<Point>(&result))
                 {
-                    if(points.find(*ipoint) != points.end())
+                    if(points_.contains(*ipoint))
                     {
-                        logger.debug(mmlt_msg("segment %1 intersects %2"
-                                             " in input point %3")
-                                     .arg(s->to_string())
-                                     .arg(t->to_string())
-                                     .arg(ipoint->to_string()));
+                        handle_input_point(*ipoint, *s1, *s2);
                     }
-                    else if((s->source() == *ipoint) || (s->target() == *ipoint))
+                    else if((s1->source() == *ipoint) || (s1->target() == *ipoint))
                     {
-                        logger.debug(mmlt_msg("segment %1 and %2 share point %3")
-                                     .arg(s->to_string())
-                                     .arg(t->to_string())
-                                     .arg(ipoint->to_string()));
+                        handle_same_endpoint(*ipoint, *s1, *s2);
                     }
                     else
                     {
-                        logger.debug(mmlt_msg("segment %1 intersects %2 in %3")
-                                     .arg(s->to_string())
-                                     .arg(t->to_string())
-                                     .arg(ipoint->to_string()));
-
-                        add_intersecting_segment(*ipoint, *s);
-                        add_intersecting_segment(*ipoint, *t);
+                        handle_intersection(*ipoint, *s1, *s2);
+                        separators_.insert(s2->data().index);
                     }
+
+                    segment_intersects = true;
                 }
-                else if (auto iseg = CGAL::object_cast<CGAL::Segment_2<Kernel> >(&result))
+                // intersection is a segment
+                else if(auto iseg = CGAL::object_cast<CGAL::Segment_2<Kernel> >(&result))
                 {
-                    if(*iseg == *s)
+                    if(*iseg == *s1)
                     {
-                        logger.debug(mmlt_msg("segment %1 contains %2")
-                                     .arg(t->to_string())
-                                     .arg(s->to_string()));
-
-                        if(!s->data().overlapping)
-                        {
-                            s->data().overlapping = true;
-                            ++overlaps;
-                        }
+                        handle_inclusion(*s2, *s1);
                     }
-                    else if(*iseg == *t)
+                    else if(*iseg == *s2)
                     {
-                        logger.debug(mmlt_msg("segment %1 contains %2")
-                                     .arg(s->to_string())
-                                     .arg(t->to_string()));
+                        handle_inclusion(*s1, *s2);
+                    }
+                    // there is another inner segment
+                    else
+                    {
+                        handle_overlap(*s1, *s2);
+                    }
 
-                        if(!t->data().overlapping)
-                        {
-                            t->data().overlapping = true;
-                            ++overlaps;
-                        }
+                    segment_intersects = true;
+                }
+            }
+
+            if(!segment_intersects)
+            {
+                shortest_nonintersecting_segment = s1->data().index;
+                break;
+            }
+        }
+
+        for(auto s1_index = separators_.begin(); s1_index != separators_.end(); ++s1_index)
+        {
+            Segment& s1 = segments_[*s1_index];
+
+            auto s2_index = s1_index;
+            for(++s2_index; s2_index != separators_.end(); ++s2_index)
+            {
+                Segment& s2 = segments_[*s2_index];
+
+                MMLT_precondition(segment_length_order(s1, s2) != CGAL::LARGER);
+
+                logger.debug(mmlt_msg("test segments %1 and %2 for intersection")
+                             .arg(s1.to_string())
+                             .arg(s2.to_string()));
+
+                CGAL::Object result = CGAL::intersection(
+                            static_cast<CGAL::Segment_2<Kernel> >(s1),
+                            static_cast<CGAL::Segment_2<Kernel> >(s2)
+                );
+
+                // intersection is a point
+                if(const Point* ipoint = CGAL::object_cast<Point>(&result))
+                {
+                    if(points_.contains(*ipoint))
+                    {
+                        handle_input_point(*ipoint, s1, s2);
+                    }
+                    else if((s1.source() == *ipoint) || (s1.target() == *ipoint))
+                    {
+                        handle_same_endpoint(*ipoint, s1, s2);
                     }
                     else
                     {
-                        logger.debug(mmlt_msg("segments %1 and %2 overlap")
-                                     .arg(s->to_string())
-                                     .arg(t->to_string()));
+                        handle_intersection(*ipoint, s1, s2);
                     }
                 }
-                else
+                // intersection is a segment
+                else if(auto iseg = CGAL::object_cast<CGAL::Segment_2<Kernel> >(&result))
                 {
-                    // handle the no intersection case.
+                    if(*iseg == s1)
+                    {
+                        handle_inclusion(s2, s1);
+                    }
+                    else if(*iseg == s2)
+                    {
+                        handle_inclusion(s1, s2);
+                    }
+                    // there is another inner segment
+                    else
+                    {
+                        handle_overlap(s1, s2);
+                    }
                 }
             }
         }
 
-        SegmentIndex intersecting_segments = 0;
-
         for(auto& intersection : intersections_)
         {
             logger.debug(mmlt_msg("intersection group: %1")
-                         .arg(intersection.second.to_string(segments)));
+                         .arg(intersection.second.to_string(segments_)));
 
-            intersecting_segments += intersection.second.size();
-            graph->add_intersection_group(intersection.second);
+            igraph.add_intersection_group(intersection.second);
         }
-
-        logger.print(mmlt_msg("intersections=%1 overlaps=%2")
-                     .arg(intersecting_segments)
-                     .arg(overlaps));
     }
 private:
-    IntersectionGroup empty_group_;
-    Intersections intersections_;
+    IntersectionGroup       empty_group_;
+    Intersections           intersections_;
+    const PointSet&         points_;
+    SegmentContainer&       segments_;
+    std::set<SegmentIndex>  separators_;
 
-    void add_intersecting_segment(const Point& point, const Segment& segment)
+    void add_intersecting_segment(const Point& intersection_point, const Segment& segment)
     {
         // insert key if it does not exist
-        auto key = intersections_.insert(std::make_pair(point, empty_group_)).first;
+        auto key = intersections_.insert(std::make_pair(intersection_point, empty_group_)).first;
 
         // add segment to group
         key->second.insert(segment.data().index);
+    }
+
+    void handle_inclusion(Segment& outer, const Segment& inner) const
+    {
+        logger.debug(mmlt_msg("segment %1 contains %2")
+                     .arg(outer.to_string())
+                     .arg(inner.to_string()));
+
+        outer.data().overlapping = true;
+    }
+
+    void handle_input_point(const Point& input_point, const Segment& s1, const Segment& s2) const
+    {
+        logger.debug(mmlt_msg("segment %1 intersects %2"
+                             " in input point %3")
+                     .arg(s1.to_string())
+                     .arg(s2.to_string())
+                     .arg(input_point.to_string()));
+    }
+
+    void handle_intersection(const Point& intersection_point, const Segment& s1, const Segment& s2)
+    {
+        logger.debug(mmlt_msg("segments %1 and %2 intersect in %3")
+                     .arg(s1.to_string())
+                     .arg(s2.to_string())
+                     .arg(intersection_point.to_string()));
+
+        add_intersecting_segment(intersection_point, s1);
+        add_intersecting_segment(intersection_point, s2);
+    }
+
+    void handle_overlap(const Segment& s1, const Segment& s2) const
+    {
+        logger.debug(mmlt_msg("segments %1 and %2 overlap")
+                     .arg(s1.to_string())
+                     .arg(s2.to_string()));
+    }
+
+    void handle_same_endpoint(const Point& end_point, const Segment& s1, const Segment& s2) const
+    {
+        logger.debug(mmlt_msg("segment %1 and %2 share point %3")
+                     .arg(s1.to_string())
+                     .arg(s2.to_string())
+                     .arg(end_point.to_string()));
     }
 };
 

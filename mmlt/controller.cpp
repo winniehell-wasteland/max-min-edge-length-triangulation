@@ -13,18 +13,24 @@ const double Controller::SVGPainter::SVG_SCALE = 4.0;
 
 Controller::Controller(QCoreApplication& application, const QSettings& settings) :
     timer_(true),
+    sat_solution_(),
+    stats_(),
+
     application_(application),
     input_file_(application.arguments().at(1)),
     settings_(settings),
+
     abort_timer_(settings_.value("abort_timeout", 60*60*1000).toUInt()),
     file_prefix_(QFileInfo(input_file_).completeBaseName()),
     points_(input_file_),
-    stats_(),
+
     bounding_box_(CGAL::bounding_box(points_.begin(), points_.end())),
     convex_hull_(points_),
-    triangulation_(points_),
     segments_(points_),
-    intersection_graph_(points_, segments_)
+    triangulation_(points_),
+
+    intersection_algorithm_(points_, segments_),
+    intersection_graph_(segments_)
 {
     logger.time("controller initialization", timer_.elapsed());
 
@@ -32,6 +38,8 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
                  .arg(points_.size())
                  .arg(segments_.size())
                  .arg(convex_hull_.size()));
+
+    intersection_algorithm_.run(intersection_graph_);
 
     if(settings_.value("draw/intersection_graph").toBool())
     {
@@ -274,7 +282,7 @@ void Controller::pre_solving()
     stats_.add_upper_bound(convex_hull_.shortest_segment(segments_));
 
     // each non-intersected segment must be part of the triangulation
-    stats_.add_upper_bound(intersection_graph_.shortest_nonintersecting_segment());
+    stats_.add_upper_bound(intersection_algorithm_.shortest_nonintersecting_segment);
 
     logger.time("pre solving", presolving_timer.elapsed());
 }

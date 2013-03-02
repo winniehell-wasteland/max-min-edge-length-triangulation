@@ -20,7 +20,9 @@
 #include "cplex/sat_problem.h"
 #include "cplex/sat_solution.h"
 
+#include "intersection/intersection_algorithm.h"
 #include "intersection/intersection_graph.h"
+
 #include "utils/abort_timer.h"
 #include "utils/elapsed_timer.h"
 
@@ -34,23 +36,71 @@ public Q_SLOTS:
     void iteration();
     void start();
 private:
+    using BoundingBox = CGAL::Iso_rectangle_2<Kernel>;
+
+    /**
+     * @name independent members
+     * @{
+     */
     ElapsedTimer                         timer_;
+    SATSolution                          sat_solution_;
+    Stats                                stats_;
+    /**
+     * @}
+     */
+
+    /**
+     * @name input parameters
+     * @{
+     */
     QCoreApplication&                    application_;
     QFile                                input_file_;
     const QSettings&                     settings_;
+    /**
+     * @}
+     */
 
+    /**
+     * @name dependent on input parameter
+     * @{
+     */
     AbortTimer                           abort_timer_;
     QString                              file_prefix_;
     const PointSet                       points_;
-    Stats                                stats_;
+    /**
+     * @}
+     */
 
-    const CGAL::Iso_rectangle_2<Kernel>  bounding_box_;
+    /**
+     * @name dependent on input points
+     * @{
+     */
+    const BoundingBox                    bounding_box_;
     const ConvexHull                     convex_hull_;
-    Triangulation                        triangulation_;
     SegmentContainer                     segments_;
+    Triangulation                        triangulation_;
+    /**
+     * @}
+     */
 
-    const IntersectionGraph              intersection_graph_;
-    SATSolution                          sat_solution_;
+    /**
+     * @name dependent on segments
+     * @{
+     */
+    IntersectionAlgorithm                intersection_algorithm_;
+    IntersectionGraph                    intersection_graph_;
+    /**
+     * @}
+     */
+
+    /**
+     * @name dependent on intersection graph
+     * @{
+     */
+    // find intersections
+    /**
+     * @}
+     */
 
     class SVGPainter :
             public QPainter

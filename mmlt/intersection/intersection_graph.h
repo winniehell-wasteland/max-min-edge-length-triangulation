@@ -19,7 +19,7 @@ public:
     using IntersectionGroupVector = std::vector<IntersectionGroup>;
 
     /** default constructor */
-    IntersectionGraph(const PointSet& points, SegmentContainer& segments);
+    IntersectionGraph(SegmentContainer& segments);
 
     const IntersectionGroup& operator[] (const IntersectionGroupIndex& index) const
     {
@@ -43,9 +43,6 @@ public:
     }
 
     SegmentIndex longest_intersecting_segment(const SegmentIndex& index) const;
-
-    /** find the shortest segment that does not intersect with longer segments */
-    SegmentIndex shortest_nonintersecting_segment() const;
 private:
     IntersectionGroupVector  intersection_groups_;
     SegmentContainer&        segments_;
