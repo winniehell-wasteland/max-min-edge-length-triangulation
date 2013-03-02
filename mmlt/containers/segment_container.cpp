@@ -51,3 +51,11 @@ const Segment& SegmentContainer::operator[](const SegmentIndex& index) const
 {
     return *(this->cbegin() + index);
 }
+
+void SegmentContainer::draw(QPainter& painter) const
+{
+    for(const Segment& segment : *this)
+    {
+        segment.draw(painter);
+    }
+}

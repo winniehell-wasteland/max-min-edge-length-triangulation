@@ -36,8 +36,10 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
     if(settings_.value("draw/intersection_graph").toBool())
     {
         logger.info(mmlt_msg("Drawing intersection graph..."));
+
         SVGPainter painter(this, "igraph.svg");
-        painter.setPenColor(QColor(120, 120, 120));
+        draw_segments(painter);
+        painter.setPenColor(QColor(255, 0, 0));
         intersection_graph_.draw(painter);
         draw_points(painter);
     }
@@ -104,7 +106,7 @@ void Controller::start()
 
     pre_solving();
 
-    //if((stats_.gap() < 1) || (settings_.value("controller/max_iterations").toUInt() == 0))
+    if((stats_.gap() < 1) || (settings_.value("controller/max_iterations").toUInt() == 0))
     {
         done();
         return;
@@ -164,8 +166,7 @@ void Controller::draw_bounds() const
     logger.info(mmlt_msg("Drawing bounds..."));
 
     SVGPainter painter(this, QString("bounds_%1.svg").arg(stats_.iteration));
-    painter.setPenColor(QColor(120, 120, 120));
-    intersection_graph_.draw(painter);
+    draw_segments(painter);
 
     painter.setPenColor(QColor(0, 255, 0));
     segments_[stats_.lower_bound()].draw(painter);
@@ -184,9 +185,8 @@ void Controller::draw_igroups() const
     for(const IntersectionGroup& igroup : intersection_graph_)
     {
         SVGPainter painter(this, QString("%1_igroup.svg").arg(igroup_index, 5, 10));
-        painter.setPenColor(QColor(120, 120, 120));
-        intersection_graph_.draw(painter);
 
+        draw_segments(painter);
         painter.setPenColor(QColor(255, 0, 0));
         igroup.draw(painter, segments_);
         draw_points(painter);
@@ -195,9 +195,9 @@ void Controller::draw_igroups() const
     }
 }
 
-void Controller::draw_points(QPainter& painter) const
+void Controller::draw_points(SVGPainter& painter) const
 {
-    painter.setPen(QColor(0, 0, 255));
+    painter.setPenColor(QColor(0, 0, 255));
     points_.draw(painter);
 }
 
@@ -206,11 +206,17 @@ void Controller::draw_sat_solution() const
     logger.info(mmlt_msg("Drawing SAT solution..."));
 
     SVGPainter painter(this, QString("sat_%1.svg").arg(stats_.iteration));
-    painter.setPenColor(QColor(120, 120, 120));
-    intersection_graph_.draw(painter);
+
+    draw_segments(painter);
     painter.setPenColor(QColor(255, 0, 0));
     sat_solution_.draw(painter, segments_);
     draw_points(painter);
+}
+
+void Controller::draw_segments(SVGPainter& painter) const
+{
+    painter.setPenColor(QColor(120, 120, 120));
+    segments_.draw(painter);
 }
 
 void Controller::draw_separators() const

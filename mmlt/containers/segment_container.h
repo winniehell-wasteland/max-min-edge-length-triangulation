@@ -4,7 +4,10 @@
 
 #include <boost/container/flat_set.hpp>
 
+#include <QPainter>
+
 #include "cgal/kernel.h"
+
 #include "containers/point_set.h"
 
 /**
@@ -18,6 +21,8 @@ public:
 
     Segment& operator[](const SegmentIndex& index);
     const Segment& operator[](const SegmentIndex& index) const;
+
+    void draw(QPainter& painter) const;
 };
 
 #endif // MMLT_CONTAINERS_SEGMENT_CONTAINER_H

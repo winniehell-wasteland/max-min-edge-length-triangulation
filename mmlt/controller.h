@@ -109,8 +109,9 @@ private:
 
     void draw_bounds() const;
     void draw_igroups() const;
-    void draw_points(QPainter& painter) const;
+    void draw_points(SVGPainter& painter) const;
     void draw_sat_solution() const;
+    void draw_segments(SVGPainter& painter) const;
     void draw_separators() const;
 
     void output_status() const;
