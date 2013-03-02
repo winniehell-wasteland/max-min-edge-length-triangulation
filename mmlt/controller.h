@@ -46,11 +46,10 @@ private:
 
     const CGAL::Iso_rectangle_2<Kernel>  bounding_box_;
     const ConvexHull                     convex_hull_;
-    DelaunayTriangulation                delaunay_triangulation_;
+    Triangulation                        triangulation_;
     SegmentContainer                     segments_;
 
     const IntersectionGraph              intersection_graph_;
-    SATProblem                           sat_problem_;
     SATSolution                          sat_solution_;
 
     class SVGPainter :

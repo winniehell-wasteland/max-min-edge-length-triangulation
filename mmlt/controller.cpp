@@ -4,7 +4,6 @@
 #include <CGAL/bounding_box.h>
 
 #include "cplex/sat_problem.h"
-#include "cplex/reduced_sat_problem.h"
 
 #include "utils/logger.h"
 
@@ -23,10 +22,9 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
     stats_(),
     bounding_box_(CGAL::bounding_box(points_.begin(), points_.end())),
     convex_hull_(points_),
-    delaunay_triangulation_(points_),
+    triangulation_(points_),
     segments_(points_),
-    intersection_graph_(points_, segments_),
-    sat_problem_(points_.size(), segments_.size(), convex_hull_.size(), intersection_graph_)
+    intersection_graph_(points_, segments_)
 {
     logger.time("controller initialization", timer_.elapsed());
 
@@ -52,6 +50,7 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
 
 void Controller::iteration()
 {
+#if 0
     abort_timer_.start();
 
     ElapsedTimer iteration_timer(true);
@@ -91,6 +90,7 @@ void Controller::iteration()
     output_status();
 
     abort_timer_.stop();
+#endif
 }
 
 void Controller::start()
@@ -104,7 +104,7 @@ void Controller::start()
 
     pre_solving();
 
-    if((stats_.gap() < 1) || (settings_.value("controller/max_iterations").toUInt() == 0))
+    //if((stats_.gap() < 1) || (settings_.value("controller/max_iterations").toUInt() == 0))
     {
         done();
         return;
@@ -112,7 +112,12 @@ void Controller::start()
 
     ElapsedTimer iteration_timer(true);
 
-    sat_problem_.solve(settings_, file_prefix_, sat_solution_, stats_.lower_bound());
+    SATProblem sat_problem_(intersection_graph_,
+                            segments_,
+                            stats_.lower_bound(),
+                            stats_.upper_bound());
+
+    sat_problem_.solve(settings_, file_prefix_, sat_solution_);
 
     logger.time(QString("iteration %1").arg(stats_.iteration), iteration_timer.elapsed());
 
@@ -124,6 +129,8 @@ void Controller::start()
     }
 
     stats_.add_lower_bound(sat_solution_.shortest_segment());
+    stats_.add_upper_bound(sat_solution_.shortest_segment());
+
     if(settings_.value("draw/sat_solution").toBool())
     {
         draw_sat_solution();
@@ -257,31 +264,11 @@ void Controller::pre_solving()
 {
     ElapsedTimer presolving_timer(true);
 
-    // make use of Delaunay triangulation
-    stats_.add_lower_bound(delaunay_triangulation_.shortest_segment(segments_));
-
     // shortest segment of convex hull must be part of triangulation
     stats_.add_upper_bound(convex_hull_.shortest_segment(segments_));
 
     // each non-intersected segment must be part of the triangulation
     stats_.add_upper_bound(intersection_graph_.shortest_nonintersecting_segment());
-
-    ReducedSATProblem reduced_sat(intersection_graph_,
-                                  segments_,
-                                  stats_.lower_bound(),
-                                  stats_.upper_bound());
-    SATSolution reduced_solution;
-    reduced_sat.solve(settings_, file_prefix_, reduced_solution);
-
-    logger.info(mmlt_msg("Drawing reduced SAT..."));
-
-    SVGPainter painter(this, "reduced_sat.svg");
-    painter.setPenColor(QColor(255, 0, 0));
-    reduced_solution.draw(painter, segments_);
-    draw_points(painter);
-
-    stats_.add_lower_bound(reduced_solution.shortest_segment());
-    stats_.add_upper_bound(reduced_solution.shortest_segment());
 
     logger.time("pre solving", presolving_timer.elapsed());
 }

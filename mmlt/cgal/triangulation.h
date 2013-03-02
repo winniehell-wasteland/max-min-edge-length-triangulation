@@ -4,25 +4,21 @@
 
 #include "config.h"
 
-#include <CGAL/Delaunay_triangulation_2.h>
+#include <CGAL/Constrained_triangulation_2.h>
 
 #include "cgal/kernel.h"
 
 #include "containers/point_set.h"
-#include "containers/segment_container.h"
 
-class DelaunayTriangulation :
-        public CGAL::Delaunay_triangulation_2<Kernel>
+class Triangulation :
+        public CGAL::Constrained_triangulation_2<Kernel>
 {
 public:
     /** default constructor */
-    DelaunayTriangulation(const PointSet& points)
+    Triangulation(const PointSet& points)
     {
         this->insert(points.begin(), points.end());
     }
-
-    /** find the shortest segment */
-    SegmentIndex shortest_segment(const SegmentContainer& segments) const;
 };
 
 #endif // MMLT_CGAL_TRIANGULATION_H
