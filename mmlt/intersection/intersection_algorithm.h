@@ -54,32 +54,33 @@ public:
                 // intersection is a point
                 if(const Point* ipoint = CGAL::object_cast<Point>(&result))
                 {
-                    if(points_.contains(*ipoint))
-                    {
-                        handle_input_point(*ipoint, *s1, *s2);
-                    }
-                    else if((s1->source() == *ipoint) || (s1->target() == *ipoint))
+                    if((s1->source() == *ipoint) || (s1->target() == *ipoint))
                     {
                         handle_same_endpoint(*ipoint, *s1, *s2);
+                    }
+                    else if(points_.contains(*ipoint))
+                    {
+                        handle_input_point(*ipoint, *s1, *s2);
+
+                        segment_intersects = true;
                     }
                     else
                     {
                         handle_intersection(*ipoint, *s1, *s2);
                         separators_.insert(s2->data().index);
-                    }
 
-                    segment_intersects = true;
+                        segment_intersects = true;
+                    }
                 }
                 // intersection is a segment
                 else if(auto iseg = CGAL::object_cast<CGAL::Segment_2<Kernel> >(&result))
                 {
+                    // s2 must be the longer segment
+                    MMLT_assertion(*iseg != *s2);
+
                     if(*iseg == *s1)
                     {
                         handle_inclusion(*s2, *s1);
-                    }
-                    else if(*iseg == *s2)
-                    {
-                        handle_inclusion(*s1, *s2);
                     }
                     // there is another inner segment
                     else
@@ -94,9 +95,13 @@ public:
             if(!segment_intersects)
             {
                 shortest_nonintersecting_segment = s1->data().index;
+                logger.info(mmlt_msg("shortest non-intersecting segment: %1").arg(s1->to_string()));
+
                 break;
             }
         }
+
+        logger.print(mmlt_msg("separators=%1").arg(separators_.size()));
 
         for(auto s1_index = separators_.begin(); s1_index != separators_.end(); ++s1_index)
         {
@@ -121,13 +126,13 @@ public:
                 // intersection is a point
                 if(const Point* ipoint = CGAL::object_cast<Point>(&result))
                 {
-                    if(points_.contains(*ipoint))
-                    {
-                        handle_input_point(*ipoint, s1, s2);
-                    }
-                    else if((s1.source() == *ipoint) || (s1.target() == *ipoint))
+                    if((s1.source() == *ipoint) || (s1.target() == *ipoint))
                     {
                         handle_same_endpoint(*ipoint, s1, s2);
+                    }
+                    else if(points_.contains(*ipoint))
+                    {
+                        handle_input_point(*ipoint, s1, s2);
                     }
                     else
                     {
@@ -137,13 +142,12 @@ public:
                 // intersection is a segment
                 else if(auto iseg = CGAL::object_cast<CGAL::Segment_2<Kernel> >(&result))
                 {
+                    // s2 must be the longer segment
+                    MMLT_assertion(*iseg != s2);
+
                     if(*iseg == s1)
                     {
                         handle_inclusion(s2, s1);
-                    }
-                    else if(*iseg == s2)
-                    {
-                        handle_inclusion(s1, s2);
                     }
                     // there is another inner segment
                     else

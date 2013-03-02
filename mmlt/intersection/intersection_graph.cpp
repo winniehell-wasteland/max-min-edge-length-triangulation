@@ -19,14 +19,6 @@ void IntersectionGraph::add_intersection_group(const IntersectionGroup& group)
   }
 }
 
-void IntersectionGraph::draw(QPainter& painter) const
-{
-    for(const Segment& segment : segments_)
-    {
-        segment.draw(painter);
-    }
-}
-
 SegmentIndex IntersectionGraph::longest_intersecting_segment(const SegmentIndex& index) const
 {
     SegmentIndex longest = index;

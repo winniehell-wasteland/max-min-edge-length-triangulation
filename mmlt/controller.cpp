@@ -41,20 +41,23 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
 
     intersection_algorithm_.run(intersection_graph_);
 
-    if(settings_.value("draw/intersection_graph").toBool())
+    if(settings_.value("draw/segments").toBool())
     {
-        logger.info(mmlt_msg("Drawing intersection graph..."));
+        logger.info(mmlt_msg("Drawing segments..."));
 
-        SVGPainter painter(this, "igraph.svg");
+        SVGPainter painter(this, "segments.svg");
         draw_segments(painter);
-        painter.setPenColor(QColor(255, 0, 0));
-        intersection_graph_.draw(painter);
         draw_points(painter);
     }
 
     if(settings_.value("draw/intersection_groups").toBool())
     {
         draw_igroups();
+    }
+
+    if(settings_.value("draw/separators").toBool())
+    {
+        draw_separators();
     }
 }
 
@@ -231,14 +234,12 @@ void Controller::draw_separators() const
 {
     logger.info(mmlt_msg("Drawing Separators..."));
 
-    SVGPainter painter(this, QString("separators_%1.svg").arg(stats_.iteration));
-
-    for(SegmentIndex index = stats_.lower_bound(); index < stats_.upper_bound(); ++index)
+    for(SegmentIndex index = 0; index < intersection_algorithm_.shortest_nonintersecting_segment; ++index)
     {
-        const Segment& segment = segments_[index];
+        SVGPainter painter(this, QString("separators_%1.svg").arg(index));
+        draw_segments(painter);
 
-        painter.setPenColor(QColor(0, 255, 0));
-        segment.draw(painter);
+        const Segment& segment = segments_[index];
 
         painter.setPenColor(QColor(255, 0, 0));
         //segments_[intersection_graph_.longest_intersecting_segment(index)].draw(painter);
@@ -254,9 +255,12 @@ void Controller::draw_separators() const
                 segments_[separator].draw(painter);
             }
         }
-    }
 
-    draw_points(painter);
+        painter.setPenColor(QColor(0, 255, 0));
+        segment.draw(painter);
+
+        draw_points(painter);
+    }
 }
 
 void Controller::output_status() const
@@ -266,11 +270,6 @@ void Controller::output_status() const
     if(settings_.value("draw/bounds").toBool())
     {
         draw_bounds();
-    }
-
-    if(settings_.value("draw/separators").toBool())
-    {
-        draw_separators();
     }
 }
 

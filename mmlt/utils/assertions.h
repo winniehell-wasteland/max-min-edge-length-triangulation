@@ -5,6 +5,22 @@
 #include <QString>
 
 #ifdef NDEBUG
+#  define MMLT_assertion(EX)         (static_cast<void>(0))
+#  define MMLT_assertion_msg(EX,MSG) (static_cast<void>(0))
+#else
+
+void MMLT_assertion_fail(const char* expression,
+                         const char* file_name,
+                         int line,
+                         const QString& message = "");
+
+#define MMLT_assertion(EX) \
+    if(!(EX)) { MMLT_assertion_fail( # EX , __FILE__, __LINE__); }
+#define MMLT_assertion_msg(EX,MSG) \
+    if(!(EX)) { MMLT_assertion_fail( # EX , __FILE__, __LINE__, MSG); }
+#endif
+
+#ifdef NDEBUG
 #  define MMLT_precondition(EX)         (static_cast<void>(0))
 #  define MMLT_precondition_msg(EX,MSG) (static_cast<void>(0))
 #else

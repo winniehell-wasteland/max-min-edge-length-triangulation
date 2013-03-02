@@ -34,9 +34,6 @@ public:
         return intersection_groups_.begin();
     }
 
-    /** output intersection graph using QPainter */
-    void draw(QPainter& painter) const;
-
     IntersectionGroupVector::const_iterator end() const
     {
         return intersection_groups_.end();
