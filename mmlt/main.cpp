@@ -4,6 +4,7 @@
 #include <QGuiApplication>
 
 #include "controller.h"
+#include "generator.h"
 
 #include "utils/logger.h"
 
@@ -71,8 +72,18 @@ int main(int argc, char *argv[])
     QGuiApplication application(argc, argv);
     const QSettings settings( QDir::currentPath() + "/config.json", JSONFormat);
 
-    Controller controller(application, settings);
-    QTimer::singleShot(0, &controller, SLOT(start()));
+    if(application.arguments().at(1) == "--generate")
+    {
+        Generator generator;
+        exit(EXIT_SUCCESS);
 
-    return application.exec();
+        return EXIT_SUCCESS;
+    }
+    else
+    {
+        Controller controller(application, settings);
+        QTimer::singleShot(0, &controller, SLOT(start()));
+
+        return application.exec();
+    }
 }

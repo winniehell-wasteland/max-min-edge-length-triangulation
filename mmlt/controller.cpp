@@ -141,15 +141,18 @@ void Controller::start()
         return;
     }
 
+    /*
     stats_.add_lower_bound(sat_solution_.shortest_segment());
     stats_.add_upper_bound(sat_solution_.shortest_segment());
+    */
+    logger.info(mmlt_msg("SAT solution: %1").arg(sat_solution_.shortest_segment()));
 
     if(settings_.value("draw/sat_solution").toBool())
     {
         draw_sat_solution();
     }
 
-    if(stats_.gap() < 1)
+    //if(stats_.gap() < 1)
     {
         done();
         return;
