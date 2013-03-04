@@ -5,6 +5,12 @@
 
 #include "point_set.h"
 
+PointSet::PointSet() :
+    std::set<Point, STLPointOrder>(stl_point_order)
+{
+
+}
+
 PointSet::PointSet(QFile &input_file) :
     std::set<Point, STLPointOrder>(stl_point_order)
 {

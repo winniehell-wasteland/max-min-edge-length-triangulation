@@ -16,6 +16,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <json_spirit/json_spirit_reader_template.h>
+#include <json_spirit/json_spirit_writer_template.h>
 #pragma GCC diagnostic pop
 
 class JSON
@@ -35,18 +36,18 @@ public:
      * @name helper functions
      * @{
      */
+    static JSONValue fromNumber(const Number& value);
+    static JSONArray fromPoint(const Point& point);
+
     static bool isArray(const JSONValue& value);
     static bool isInt(const JSONValue& value);
-
-    static bool isNumber(const JSONValue& value)
-    {
-        return (isInt(value) || isReal(value));
-    }
-
+    static bool isNumber(const JSONValue& value);
     static bool isReal(const JSONValue& value);
 
     static const JSONArray& toArray(const JSONValue& value);
     static int toInt(const JSONValue& value);
+    static Number toNumber(const JSONValue& value);
+    static Point toPoint(const JSONValue& value);
     static double toReal(const JSONValue& value);
     static const std::string& toString(const JSONValue& value);
     /**
@@ -62,8 +63,6 @@ public:
             return false;
         }
 
-        JSONValue doc;
-
         std::ifstream input(file.fileName().toStdString(), std::ifstream::in);
 
         if(!input.good())
@@ -73,6 +72,8 @@ public:
         }
 
         logger.info(mmlt_msg("Reading file %1...").arg(file.fileName()));
+
+        JSONValue doc;
         if(!json_spirit::read_stream(input, doc))
         {
             return false;
@@ -85,24 +86,9 @@ public:
         }
 
         // loop over JSON array
-        for(const JSONValue& json_point : toArray(doc))
+        for(const JSONValue& value : toArray(doc))
         {
-            MMLT_precondition_msg(
-                isArray(json_point),
-                mmlt_msg("Expected point, got %1!")
-                .arg(QString::fromStdString(toString(json_point)))
-            );
-
-            const JSONArray& coordinates = toArray(json_point);
-
-            MMLT_precondition_msg(
-                (coordinates.size() == 2),
-                mmlt_msg("Point has invalid dimension (%1)!")
-                .arg(coordinates.size())
-            );
-
-            Point point(parse_number(coordinates[0]),
-                    parse_number(coordinates[1]));
+            Point point = toPoint(value);
 
             logger.debug(mmlt_msg("Created point %1")
                          .arg(point.to_string()));
@@ -114,8 +100,29 @@ public:
         return true;
     }
 
-private:
-    static Number parse_number(const JSONValue& value);
+    template <typename Container>
+    static bool write_points(const std::string& file_name, Container points)
+    {
+        std::ofstream output(file_name, std::ifstream::out);
+
+        if(!output.good())
+        {
+            logger.error(mmlt_msg("Could not open %1!").arg(QString::fromStdString(file_name)));
+            return false;
+        }
+
+        logger.info(mmlt_msg("Writing file %1...").arg(QString::fromStdString(file_name)));
+
+        JSONArray doc;
+        for(const Point& point : points)
+        {
+            doc.push_back(fromPoint(point));
+        }
+
+        json_spirit::write_stream(JSONValue(doc), output, false);
+
+        return true;
+    }
 };
 
 #endif // MMLT_UTILS_JSON_H

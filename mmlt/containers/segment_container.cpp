@@ -1,7 +1,5 @@
 #include <vector>
 
-#include <boost/foreach.hpp>
-
 #include "utils/assertions.h"
 #include "utils/logger.h"
 
@@ -32,7 +30,7 @@ SegmentContainer::SegmentContainer(const PointSet& points) :
 
     SegmentIndex seg_index = 0;
 
-    BOOST_FOREACH(Segment& segment, *this)
+    for(Segment& segment : *this)
     {
         segment.data().index = seg_index;
         logger.debug(mmlt_msg("Created segment %1").arg(segment.to_string()));

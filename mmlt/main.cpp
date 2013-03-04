@@ -4,7 +4,7 @@
 #include <QGuiApplication>
 
 #include "controller.h"
-#include "generator.h"
+#include "point_generator.h"
 
 #include "utils/logger.h"
 
@@ -74,8 +74,8 @@ int main(int argc, char *argv[])
 
     if(application.arguments().at(1) == "--generate")
     {
-        Generator generator;
-        exit(EXIT_SUCCESS);
+        PointGenerator::run(settings);
+        //exit(EXIT_SUCCESS);
 
         return EXIT_SUCCESS;
     }

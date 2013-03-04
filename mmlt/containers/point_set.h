@@ -15,6 +15,14 @@ class PointSet :
         public std::set<Point, STLPointOrder>
 {
 public:
+    /**
+     * empty set
+     */
+    PointSet();
+
+    /**
+     * read points from file
+     */
     PointSet(QFile& input_file);
 
     bool contains(const Point& point) const
