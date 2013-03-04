@@ -1,6 +1,6 @@
 #include <QFileInfo>
 
-#include "utils/json_parser.h"
+#include "utils/json.h"
 #include "utils/logger.h"
 
 #include "point_set.h"
@@ -13,7 +13,7 @@ PointSet::PointSet(QFile &input_file) :
         logger.warn(mmlt_msg("Only JSON files are supported!"));
     }
 
-    if(!JSONParser::parse_points(input_file, std::inserter(*this, this->end())))
+    if(!JSON::read_points(input_file, std::inserter(*this, this->end())))
     {
         this->clear();
     }

@@ -1,0 +1,3 @@
+[submodule "mmlt/json-spirit"]
+	path = mmlt/json-spirit
+	url = git@github.com:wagerlabs/json-spirit.git

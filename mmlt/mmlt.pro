@@ -12,6 +12,7 @@ LIBS += -lCGAL
 QMAKE_CXXFLAGS += -frounding-math -std=c++11 -O3
 
 include(cplex.pri)
+include(json.pri)
 
 SOURCES += \
     $$files(cgal/*.cpp) \
