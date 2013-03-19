@@ -25,7 +25,7 @@ data = data[[
 
 # normalize
 for length in ['shortest/input/squared_length', 'shortest/non-intersecting/squared_length']:
-    data[length] /= 100.0 * data['file/range']
+    data[length] /= 1.0 * data['file/range']
 
 data['ratio'] = data['shortest/non-intersecting/squared_length'] / data['shortest/input/squared_length']
 
@@ -77,23 +77,25 @@ mmlt_utils.output(
             'name': 'avg',
             'func': np.mean,
             'comparisons': {
-                r'\( \dfrac{1}{3\cdot \sqrt{n}} \)': lambda n: 1.0 / (3 * np.sqrt(n)),
-                r'\( \dfrac{1}{n \cdot \log(n)} \)': lambda n: 1.0 / (n * np.log(n))
+                r'\( \dfrac{10^2}{5\cdot \sqrt{n}} \)': lambda n: 100.0 / (5 * np.sqrt(n)),
+                r'\( \dfrac{2*10^2}{n \cdot \sqrt{n}} \)': lambda n: 200.0 / (n * np.sqrt(n)),
+                r'\( \dfrac{20}{n} \)': lambda n: 20.0 / (1 * n)
             }
         },
         {
             'name': 'min',
             'func': np.min,
             'comparisons': {
-                r'\( \dfrac{1}{10^5\sqrt{n}} \)': lambda n: 1.0 / (10000 * np.sqrt(n))
+                r'\( \dfrac{1}{10^2\sqrt{n}} \)': lambda n: 1.0 / (100 * np.sqrt(n))
             }
         },
         {
             'name': 'max',
             'func': np.max,
             'comparisons': {
-                r'\( \dfrac{1}{\sqrt{n}} \)': lambda n: 1.0 / np.sqrt(n),
-                r'\( \dfrac{2}{n \cdot \log(n)} \)': lambda n: 2.0 / (n * np.log(n))
+                r'\( \dfrac{10^2}{\sqrt{n}} \)': lambda n: 100.0 / np.sqrt(n),
+                r'\( \dfrac{7*10^2}{n \cdot \sqrt{n}} \)': lambda n: 700.0 / (n * np.sqrt(n)),
+                r'\( \dfrac{70}{n} \)': lambda n: 70.0 / (1 * n)
             }
         }
     ],
@@ -111,7 +113,9 @@ mmlt_utils.output(
             'name': 'avg',
             'func': np.mean,
             'comparisons': {
-                r'\( \dfrac{n\cdot\log(n)}{\sqrt{n}} \)': lambda n: n * np.log(n) / (1.0 * np.sqrt(n))
+                r'\( 0.2n \)': lambda n: 0.2 * n,
+                r'\( 0.5n \)': lambda n: 0.5 * n,
+                r'\( 1.1n \)': lambda n: 1.1 * n
             }
         },
         {
@@ -124,7 +128,9 @@ mmlt_utils.output(
             'name': 'max',
             'func': np.max,
             'comparisons': {
-                r'\( \dfrac{30n\cdot\log(n)}{\sqrt{n}} \)': lambda n: 30 * n * np.log(n) / (1.0 * np.sqrt(n))
+                r'\( 2.0n \)': lambda n: 2.0 * n,
+                r'\( 7.0n \)': lambda n: 7.0 * n,
+                r'\( 70.0n \)': lambda n: 70.0 * n
             }
         }
     ],

@@ -37,7 +37,7 @@ def load_results():
     return results
 
 
-def output(data, name, columns, aggregations, y_scale=None):
+def output(data, name, columns, aggregations, y_scale=None, legend_loc='best'):
     print 'Generating ' + name + '...'
 
     # plot graph
@@ -79,7 +79,7 @@ def output(data, name, columns, aggregations, y_scale=None):
         else:
             fig.set_yscale(y_scale)
 
-        legend = plt.legend(prop={'size': 10})
+        legend = plt.legend(loc=legend_loc, prop={'size': 10})
         plt.setp(legend.get_texts(), fontsize='large')
 
         #plt.show()
