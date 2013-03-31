@@ -33,26 +33,40 @@ public:
         }
 
         QString type = settings.value("generator/type").toString();
-        QString file_name = QString("%1_%2_%3_%4.json").arg(type);
+        QString base_name = QString("%1_%2_%3_%4.json").arg(type);
+
+        std::size_t num_iterations = settings.value("generator/iterations", 0).toUInt();
 
         for(std::size_t num_points = 10; num_points <= 1000; num_points += 10)
         {
+            logger.info(mmlt_msg("#points = %1").arg(num_points));
+
             if(type == "random_in_square")
             {
-                generate<CGAL::Random_points_in_square_2<Point, PointCreator>>(file_name, num_points);
+                generate<CGAL::Random_points_in_square_2<Point, PointCreator>>(base_name, num_points, num_iterations);
             }
         }
     }
 
 private:
     template <typename GeneratorType>
-    static void generate(const QString& file_name, std::size_t num_points)
+    static void generate(const QString& base_name, std::size_t num_points, std::size_t num_iterations)
     {
         double range = round(sqrt(BASE_RANGE*BASE_RANGE*num_points));
         GeneratorType generator(range);
 
-        for(int i = 0; i < 10; ++i)
+        for(std::size_t i = 0; i < num_iterations; ++i)
         {
+            QString file_name = base_name
+                .arg(qulonglong(num_points), 4, 10, QChar('0'))
+                .arg(qulonglong(range),      4, 10, QChar('0'))
+                .arg(qulonglong(i),          3, 10, QChar('0'));
+
+            if(QFile(file_name).exists())
+            {
+                continue;
+            }
+
             PointSet points;
 
             while(points.size() < num_points)
@@ -63,16 +77,9 @@ private:
                 ++generator;
             }
 
-            logger.info(mmlt_msg("Generated %1 points").arg(points.size()));
+            logger.debug(mmlt_msg("Generated %1 points").arg(points.size()));
 
-            JSON::write_points(
-                file_name
-                .arg(num_points)
-                .arg(range)
-                .arg(i)
-                .toStdString(),
-                points
-            );
+            JSON::write_points(file_name.toStdString(), points);
         }
     }
 };

@@ -46,7 +46,7 @@ const SegmentIndex& ConvexHull::shortest_segment(const SegmentContainer& segment
 
     logger.info(mmlt_msg("shortest convex hull segment: %1 (len^2=%2)")
                 .arg(min_segment->to_string())
-                .arg(CGAL::to_double(min_dist), 0, 'f'));
+                .arg(CGAL::to_double(min_dist)));
 
     return min_segment->data().index;
 }

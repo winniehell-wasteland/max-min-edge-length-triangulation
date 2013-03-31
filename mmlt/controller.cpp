@@ -20,7 +20,7 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
     input_file_(application.arguments().at(1)),
     settings_(settings),
 
-    abort_timer_(settings_.value("abort_timeout", 60*60*1000).toUInt()),
+    abort_timer_(settings_.value("controller/abort_timeout", 60*60*1000).toUInt()),
     file_prefix_(QFileInfo(input_file_).completeBaseName()),
     points_(input_file_),
 
@@ -39,7 +39,15 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
                  .arg(segments_.size())
                  .arg(convex_hull_.size()));
 
+    logger.info(
+        mmlt_msg("shortest input segment: %1 (len^2=%2)")
+        .arg(segments_[0].to_string())
+        .arg(CGAL::to_double(segments_[0].squared_length()))
+    );
+
+    abort_timer_.start();
     intersection_algorithm_.run(intersection_graph_);
+    abort_timer_.stop();
 
     if(settings_.value("draw/segments").toBool())
     {

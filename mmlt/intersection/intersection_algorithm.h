@@ -95,14 +95,21 @@ public:
             if(!segment_intersects)
             {
                 shortest_nonintersecting_segment = s1->data().index;
-                logger.info(mmlt_msg("shortest non-intersecting segment: %1").arg(s1->to_string()));
+                logger.info(mmlt_msg("shortest non-intersecting segment: %1 (len^2=%2)")
+                            .arg(s1->to_string())
+                            .arg(CGAL::to_double(s1->squared_length())));
 
                 break;
             }
+            else {
+                // just for testing!
+                continue;
+            }
         }
 
-        logger.print(mmlt_msg("separators=%1").arg(separators_.size()));
+        //logger.print(mmlt_msg("separators=%1").arg(separators_.size()));
 
+            /*
         for(auto s1_index = separators_.begin(); s1_index != separators_.end(); ++s1_index)
         {
             Segment& s1 = segments_[*s1_index];
@@ -165,6 +172,8 @@ public:
 
             igraph.add_intersection_group(intersection.second);
         }
+
+        */
     }
 private:
     IntersectionGroup       empty_group_;
