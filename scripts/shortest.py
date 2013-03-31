@@ -25,9 +25,9 @@ data = data[[
 
 # normalize
 for length in ['shortest/input/squared_length', 'shortest/non-intersecting/squared_length']:
-    data[length] /= 1.0 * data['file/range']
+    data[length.replace('squared_length', 'length')] = np.sqrt(1.0 * data[length]) / data['file/range']
 
-data['ratio'] = data['shortest/non-intersecting/squared_length'] / data['shortest/input/squared_length']
+data['ratio'] = data['shortest/non-intersecting/length'] / data['shortest/input/length']
 
 data = data.groupby('file/num_points')
 
@@ -42,9 +42,7 @@ mmlt_utils.output(
             'name': 'avg',
             'func': np.mean,
             'comparisons': {
-                '6/100*n': lambda n: 6 * n / 100.0,
-                '10/100*n': lambda n: 10 * n / 100.0,
-                '13/100*n': lambda n: 13 * n / 100.0
+                '\( 0.1n \)': lambda n: 0.1 * n
             }
         },
         {
@@ -57,9 +55,9 @@ mmlt_utils.output(
             'name': 'max',
             'func': np.max,
             'comparisons': {
-                '7/20*n': lambda n: 7 * n / 20.0,
-                '14/20*n': lambda n: 14 * n / 20.0,
-                '28/20*n': lambda n: 28 * n / 20.0
+                '\( \dfrac{3}{4}n \)': lambda n: 3 * n / 4.0,
+                '\( n \)': lambda n: n,
+                '\( 2n \)': lambda n: 2 * n
             }
         }
     ]
@@ -69,33 +67,32 @@ mmlt_utils.output(
     data=data,
     name='shortest segment length',
     columns={
-        'shortest/input/squared_length': 'shortest',
-        'shortest/non-intersecting/squared_length': 'shortest non-crossing'
+        'shortest/input/length': 'shortest',
+        'shortest/non-intersecting/length': 'shortest non-crossing'
     },
     aggregations=[
         {
             'name': 'avg',
             'func': np.mean,
             'comparisons': {
-                r'\( \dfrac{10^2}{5\cdot \sqrt{n}} \)': lambda n: 100.0 / (5 * np.sqrt(n)),
-                r'\( \dfrac{2*10^2}{n \cdot \sqrt{n}} \)': lambda n: 200.0 / (n * np.sqrt(n)),
-                r'\( \dfrac{20}{n} \)': lambda n: 20.0 / (1 * n)
+                r'\( \dfrac{1}{\sqrt{5n}} \)': lambda n: 1.0 / np.sqrt(5.0*n),
+                r'\( \dfrac{\sqrt{2}}{n} \)': lambda n: np.sqrt(2.0) / (1.0 * n)
             }
         },
         {
             'name': 'min',
             'func': np.min,
             'comparisons': {
-                r'\( \dfrac{1}{10^2\sqrt{n}} \)': lambda n: 1.0 / (100 * np.sqrt(n))
+                r'\( \dfrac{1}{10^2\sqrt{n}} \)': lambda n: 1.0 / (100.0 * np.sqrt(1.0 * n))
             }
         },
         {
             'name': 'max',
             'func': np.max,
             'comparisons': {
-                r'\( \dfrac{10^2}{\sqrt{n}} \)': lambda n: 100.0 / np.sqrt(n),
-                r'\( \dfrac{7*10^2}{n \cdot \sqrt{n}} \)': lambda n: 700.0 / (n * np.sqrt(n)),
-                r'\( \dfrac{70}{n} \)': lambda n: 70.0 / (1 * n)
+                r'\( \dfrac{2}{\sqrt{n}} \)': lambda n: 2.0 / np.sqrt(1.0 * n),
+                r'\( \dfrac{\sqrt{2}}{\sqrt{n}} \)': lambda n: np.sqrt(2.0) / np.sqrt(1.0 * n),
+                r'\( \dfrac{4}{n} \)': lambda n: 4.0 / (1.0 * n)
             }
         }
     ],
@@ -113,9 +110,7 @@ mmlt_utils.output(
             'name': 'avg',
             'func': np.mean,
             'comparisons': {
-                r'\( 0.2n \)': lambda n: 0.2 * n,
-                r'\( 0.5n \)': lambda n: 0.5 * n,
-                r'\( 1.1n \)': lambda n: 1.1 * n
+                r'\( \dfrac{\sqrt{n}}{\sqrt{6}} \)': lambda n: np.sqrt(1.0 * n) / np.sqrt(6.0)
             }
         },
         {
@@ -128,9 +123,7 @@ mmlt_utils.output(
             'name': 'max',
             'func': np.max,
             'comparisons': {
-                r'\( 2.0n \)': lambda n: 2.0 * n,
-                r'\( 7.0n \)': lambda n: 7.0 * n,
-                r'\( 70.0n \)': lambda n: 70.0 * n
+                r'\( 5\sqrt{n} \)': lambda n: 5.0 * np.sqrt(1.0 * n)
             }
         }
     ],
