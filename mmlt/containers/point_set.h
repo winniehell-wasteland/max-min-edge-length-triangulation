@@ -25,6 +25,10 @@ public:
      */
     PointSet(QFile& input_file);
 
+    /**
+     * shortcut for STL count()
+     * @return true if point is in set
+     */
     bool contains(const Point& point) const
     {
         return (this->count(point) > 0);

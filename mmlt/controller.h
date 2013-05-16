@@ -17,7 +17,7 @@
 #include "containers/convex_hull.h"
 #include "containers/segment_container.h"
 
-#include "cplex/sat_problem.h"
+#include "cplex/separators_sat_problem.h"
 #include "cplex/sat_solution.h"
 
 #include "intersection/intersection_algorithm.h"
@@ -116,14 +116,14 @@ private:
 
             generator_.setSize(QSize(
                 CGAL::to_double(controller->bounding_box_.xmax())
-                    - CGAL::to_double(controller->bounding_box_.xmin()) + 20,
+                    - CGAL::to_double(controller->bounding_box_.xmin()) + 2 * SVG_PADDING,
                 CGAL::to_double(controller->bounding_box_.ymax())
-                    - CGAL::to_double(controller->bounding_box_.ymin()) + 20) * SVG_SCALE
+                    - CGAL::to_double(controller->bounding_box_.ymin()) + 2 * SVG_PADDING) * SVG_SCALE
             );
 
             generator_.setViewBox(QRect(
-                CGAL::to_double(SVG_SCALE*(controller->bounding_box_.xmin()-10)),
-                CGAL::to_double(SVG_SCALE*(controller->bounding_box_.ymin()-10)),
+                CGAL::to_double(SVG_SCALE*(controller->bounding_box_.xmin() - SVG_PADDING)),
+                CGAL::to_double(SVG_SCALE*(controller->bounding_box_.ymin() - SVG_PADDING)),
                 generator_.size().width(), generator_.size().height())
             );
 
@@ -142,19 +142,35 @@ private:
             this->setPen(pen_);
         }
 
+        void setPenWidth(int width)
+        {
+            pen_.setWidth(width);
+            this->setPen(pen_);
+        }
+
         ~SVGPainter()
         {
             this->end();
         }
 
     private:
-        /** scale for SVG images */
+        /**
+         * padding for SVG images
+        */
+        static const int SVG_PADDING;
+
+        /**
+         * scale for SVG images
+        */
         static const double SVG_SCALE;
 
         QSvgGenerator generator_;
         QPen          pen_;
     };
 
+    /**
+     * called when algorithm finishes
+     */
     void done() const;
 
     void draw_bounds() const;
@@ -163,8 +179,16 @@ private:
     void draw_sat_solution() const;
     void draw_segments(SVGPainter& painter) const;
     void draw_separators() const;
+    void draw_triangulation() const;
 
+    /**
+     * dumps the current algorithm status
+     */
     void output_status() const;
+
+    /**
+     * does some pre-processing
+     */
     void pre_solving();
 };
 

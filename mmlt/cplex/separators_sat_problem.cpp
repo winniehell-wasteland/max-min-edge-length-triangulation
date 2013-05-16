@@ -1,8 +1,8 @@
 #include "utils/logger.h"
 
-#include "sat_problem.h"
+#include "separators_sat_problem.h"
 
-SATProblem::SATProblem(const IntersectionGraph& igraph,
+SeparatorsSATProblem::SeparatorsSATProblem(const IntersectionGraph& igraph,
                        const SegmentContainer& segments,
                        const SegmentIndex& lower_bound,
                        const SegmentIndex& upper_bound) :
@@ -14,7 +14,10 @@ SATProblem::SATProblem(const IntersectionGraph& igraph,
 {
     variables_.setNames("x");
 
-    // index of minimum used segment
+    // igroups that lead to restrictions
+    std::set<IntersectionGroupIndex> restricting_igroups;
+
+    // penalty for using short segments
     IloIntVar penalty(cplex_.getEnv(),"penalty");
     model_.add(IloObjective(cplex_.getEnv(), penalty, IloObjective::Minimize));
 
@@ -23,13 +26,16 @@ SATProblem::SATProblem(const IntersectionGraph& igraph,
         const Segment& segment = segments[segment_index];
 
         // bind variable to objective
-        IloIntExpr restr_bind_min(cplex_.getEnv());
+        IloIntExpr restr_bind_penalty(cplex_.getEnv());
 
+        // ensure the unsigned int fits in the signed int
         MMLT_precondition(segment_index < std::numeric_limits<IloInt>::max());
-        restr_bind_min = IloInt(upper_bound-segment_index+1)*variables_[segment_index];
-        restr_bind_min -= penalty;
 
-        model_.add(restr_bind_min <= 0);
+        // the shorter the segment, the higher the penalty
+        restr_bind_penalty = IloInt(upper_bound-segment_index) * variables_[segment_index];
+        restr_bind_penalty -= penalty;
+
+        model_.add(restr_bind_penalty <= 0);
 
         // add choice: either segment or separator
         IloIntExpr restr_separators(cplex_.getEnv());
@@ -37,10 +43,14 @@ SATProblem::SATProblem(const IntersectionGraph& igraph,
 
         for(const IntersectionGroupIndex& igroup_index : segment.data().intersection_groups)
         {
+            restricting_igroups.insert(igroup_index);
+
             const IntersectionGroup& igroup = igraph[igroup_index];
 
             for(const SegmentIndex& separator_index : igroup)
             {
+                // separators must be longer than segment
+                // (i.e. higher index in segment set)
                 if(separator_index <= segment_index)
                 {
                     continue;
@@ -48,6 +58,7 @@ SATProblem::SATProblem(const IntersectionGraph& igraph,
 
                 Separators::iterator separator;
 
+                // if separator is a short segment, we already have a variable
                 if((lower_bound <= separator_index)
                         && (separator_index < upper_bound))
                 {
@@ -59,12 +70,19 @@ SATProblem::SATProblem(const IntersectionGraph& igraph,
                         )
                     ).first;
                 }
+                // if separator is a long segment, add a variable to
+                // the separators map (there is only one variable for
+                // each long segment, duplicates don't get inserted)
                 else
                 {
                     separator = separators_.insert(
                         Separators::value_type(
                             separator_index,
-                            IloBoolVar(cplex_.getEnv(), QString("s(%1)").arg(separator_index).toLocal8Bit().constData())
+                            IloBoolVar(cplex_.getEnv(),
+                                       QString("y[%1]")
+                                       .arg(separator_index)
+                                       .toLocal8Bit().constData()
+                                       )
                         )
                     ).first;
                 }
@@ -73,63 +91,70 @@ SATProblem::SATProblem(const IntersectionGraph& igraph,
             }
         }
 
-
+        // at least one from the segment itself or its separators
+        // has to be picked
         model_.add(restr_separators >= 1);
     }
 
-    std::set<IntersectionGroupIndex> handled_igroups;
 
     // collect separator igroups
     for(auto separator : separators_)
     {
-        const SegmentData::IntersectionGroupIndices& igroups = segments[separator.first].data().intersection_groups;
+        const SegmentData::IntersectionGroupIndices& igroups =
+                segments[separator.first].data().intersection_groups;
 
-        // prevent intersecting separators
-        for(const IntersectionGroupIndex& igroup_index : igroups)
+        restricting_igroups.insert(igroups.begin(), igroups.end());
+    }
+
+    // prevent intersecting segments
+    for(const IntersectionGroupIndex& igroup_index : restricting_igroups)
+    {
+        const IntersectionGroup& igroup = igraph[igroup_index];
+        MMLT_assertion(igroup.size() == 2);
+
+        IloExpr restr_intersection(cplex_.getEnv());
+
+        // loop over intersecting segments
+        for(const SegmentIndex& segment_index : igroup)
         {
-            if(!handled_igroups.insert(igroup_index).second)
+            if((lower_bound <= segment_index) && (segment_index < upper_bound))
             {
-                // intersection group exists already
-                continue;
+                restr_intersection += variables_[segment_index];
             }
-
-            const IntersectionGroup& igroup = igraph[igroup_index];
-            IloExpr restr_intersection(cplex_.getEnv());
-
-            bool insert_restr = false;
-
-            // loop over intersected separators
-            for(const SegmentIndex& segment_index : igroup)
+            else
             {
                 auto it = separators_.find(segment_index);
 
+                // segment is a separator
                 if(it != separators_.end())
                 {
+                    // add separator variable to restriction
                     restr_intersection += it->second;
-
-                    if(it->first != separator.first)
-                    {
-                        insert_restr = true;
-                    }
+                }
+                else
+                {
+                    // the segment is neither a short segment nor
+                    // a separator, so just ignore it
                 }
             }
-
-            if(insert_restr)
-            {
-                model_.add(restr_intersection <= 1);
-            }
         }
+
+        // from all the segments intersecting in one point
+        // only one can be picked
+        model_.add(restr_intersection <= 1);
     }
 
+    // whatever this does... it is necessary to call solve()
     cplex_.extract(model_);
 }
 
-void SATProblem::solve(const QSettings& settings, const QString& file_prefix, SATSolution& solution)
+void SeparatorsSATProblem::solve(const QSettings& settings, const QString& file_prefix, SATSolution& solution)
 {
     logger.info(mmlt_msg("Solving reduced SAT problem..."));
 
     if(settings.value("cplex/dump_models").toBool())
     {
+        logger.info(mmlt_msg("Dumping SAT problem to %1.lp...").arg(file_prefix));
         cplex_.exportModel(QString("%1.lp")
                            .arg(file_prefix)
                            .toLocal8Bit().data());

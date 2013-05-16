@@ -15,7 +15,9 @@ struct SegmentIndexOrder
     CGAL::Comparison_result operator() (const Segment& s, const Segment& t) const;
 };
 
-/** CGAL order for @ref Segment by length */
+/**
+ * CGAL order for @ref Segment by length
+ */
 struct SegmentLengthOrder
 {
     CGAL::Comparison_result operator() (const Segment& s, const Segment& t) const;

@@ -3,12 +3,13 @@
 
 #include <CGAL/bounding_box.h>
 
-#include "cplex/sat_problem.h"
+#include "cplex/separators_sat_problem.h"
 
 #include "utils/logger.h"
 
 #include "controller.h"
 
+const int Controller::SVGPainter::SVG_PADDING = 10;
 const double Controller::SVGPainter::SVG_SCALE = 4.0;
 
 Controller::Controller(QCoreApplication& application, const QSettings& settings) :
@@ -40,9 +41,9 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
                  .arg(convex_hull_.size()));
 
     logger.info(
-        mmlt_msg("shortest input segment: %1 (len^2=%2)")
+        mmlt_msg("shortest input segment: %1 (%2)")
         .arg(segments_[0].to_string())
-        .arg(CGAL::to_double(segments_[0].squared_length()))
+        .arg(segment_length_to_string(segments_[0]))
     );
 
     abort_timer_.start();
@@ -133,12 +134,12 @@ void Controller::start()
 
     ElapsedTimer iteration_timer(true);
 
-    SATProblem sat_problem_(intersection_graph_,
+    SeparatorsSATProblem sat_problem(intersection_graph_,
                             segments_,
                             stats_.lower_bound(),
                             stats_.upper_bound());
 
-    sat_problem_.solve(settings_, file_prefix_, sat_solution_);
+    sat_problem.solve(settings_, file_prefix_, sat_solution_);
 
     logger.time(QString("iteration %1").arg(stats_.iteration), iteration_timer.elapsed());
 
@@ -149,18 +150,28 @@ void Controller::start()
         return;
     }
 
-    /*
-    stats_.add_lower_bound(sat_solution_.shortest_segment());
-    stats_.add_upper_bound(sat_solution_.shortest_segment());
-    */
-    logger.info(mmlt_msg("SAT solution: %1").arg(sat_solution_.shortest_segment()));
-
     if(settings_.value("draw/sat_solution").toBool())
     {
         draw_sat_solution();
     }
 
-    //if(stats_.gap() < 1)
+    stats_.add_lower_bound(sat_solution_.shortest_segment());
+    stats_.add_upper_bound(sat_solution_.shortest_segment());
+    logger.info(mmlt_msg("SAT solution: %1").arg(sat_solution_.shortest_segment()));
+
+    logger.info(mmlt_msg("Adding separators to triangulation..."));
+    for(const SegmentIndex& seg_index : sat_solution_)
+    {
+        const Segment& segment = segments_[seg_index];
+        triangulation_.insert_constraint(segment.source(), segment.target());
+    }
+
+    if(settings_.value("draw/triangulation").toBool())
+    {
+        draw_triangulation();
+    }
+
+    if(stats_.gap() < 1)
     {
         done();
         return;
@@ -169,7 +180,7 @@ void Controller::start()
     output_status();
 
     // next iteration
-    QTimer::singleShot(0, this, SLOT(iteration()));
+    //QTimer::singleShot(0, this, SLOT(iteration()));
 }
 
 void Controller::done() const
@@ -190,8 +201,12 @@ void Controller::draw_bounds() const
     SVGPainter painter(this, QString("bounds_%1.svg").arg(stats_.iteration));
     draw_segments(painter);
 
+    painter.setPenColor(QColor(255, 255, 0));
+    segments_.draw_range(painter, stats_.lower_bound(), stats_.upper_bound());
+
     painter.setPenColor(QColor(0, 255, 0));
     segments_[stats_.lower_bound()].draw(painter);
+
     painter.setPenColor(QColor(255, 0, 0));
     segments_[stats_.upper_bound()].draw(painter);
 
@@ -220,7 +235,10 @@ void Controller::draw_igroups() const
 void Controller::draw_points(SVGPainter& painter) const
 {
     painter.setPenColor(QColor(0, 0, 255));
+    //int oldwidth = painter.pen().width();
+    //painter.setPenWidth(10*oldwidth);
     points_.draw(painter);
+    //painter.setPenWidth(oldwidth);
 }
 
 void Controller::draw_sat_solution() const
@@ -230,8 +248,16 @@ void Controller::draw_sat_solution() const
     SVGPainter painter(this, QString("sat_%1.svg").arg(stats_.iteration));
 
     draw_segments(painter);
+
+    painter.setPenColor(QColor(255, 255, 0));
+    segments_.draw_range(painter, stats_.lower_bound(), stats_.upper_bound());
+
     painter.setPenColor(QColor(255, 0, 0));
-    sat_solution_.draw(painter, segments_);
+    sat_solution_.draw_short_segments(painter, stats_.upper_bound(), segments_);
+
+    painter.setPenColor(QColor(0, 255, 0));
+    sat_solution_.draw_separators(painter, stats_.upper_bound(), segments_);
+
     draw_points(painter);
 }
 
@@ -272,6 +298,20 @@ void Controller::draw_separators() const
 
         draw_points(painter);
     }
+}
+
+void Controller::draw_triangulation() const
+{
+    logger.info(mmlt_msg("Drawing triangulation..."));
+
+    SVGPainter painter(this, "solution.svg");
+
+    draw_segments(painter);
+
+    painter.setPenColor(QColor(255, 0, 0));
+    triangulation_.draw(painter);
+
+    draw_points(painter);
 }
 
 void Controller::output_status() const

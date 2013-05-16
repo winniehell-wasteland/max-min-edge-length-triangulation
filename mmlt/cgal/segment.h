@@ -83,6 +83,7 @@ public:
 
     /** draw segment using given QPainter */
     void draw(QPainter& painter) const;
+
     /** dump segment to QString */
     QString to_string() const;
 private:

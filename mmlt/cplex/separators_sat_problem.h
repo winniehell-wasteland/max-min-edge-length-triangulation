@@ -1,6 +1,6 @@
 #pragma once
-#ifndef MMLT_CPLEX_SAT_PROBLEM_H
-#define MMLT_CPLEX_SAT_PROBLEM_H
+#ifndef MMLT_CPLEX_SEPARATORS_SAT_PROBLEM_H
+#define MMLT_CPLEX_SEPARATORS_SAT_PROBLEM_H
 
 #include <map>
 
@@ -13,10 +13,10 @@
 
 #include "intersection/intersection_graph.h"
 
-class SATProblem
+class SeparatorsSATProblem
 {
 public:
-    SATProblem(const IntersectionGraph& igraph,
+    SeparatorsSATProblem(const IntersectionGraph& igraph,
                       const SegmentContainer& segments,
                       const SegmentIndex& lower_bound,
                       const SegmentIndex& upper_bound);
@@ -33,4 +33,4 @@ private:
     IloBoolVarArray  variables_;
 };
 
-#endif // MMLT_CPLEX_SAT_PROBLEM_H
+#endif // MMLT_CPLEX_SEPARATORS_SAT_PROBLEM_H

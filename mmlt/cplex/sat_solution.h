@@ -17,7 +17,9 @@ public:
 
     }
 
-    void draw(QPainter& painter, const SegmentContainer& segments) const;
+    void draw_short_segments(QPainter& painter, const SegmentIndex& upper_bound, const SegmentContainer& segments) const;
+    void draw_separators(QPainter& painter, const SegmentIndex& upper_bound, const SegmentContainer& segments) const;
+
     const SegmentIndex& shortest_segment() const;
 };
 
