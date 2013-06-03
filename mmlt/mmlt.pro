@@ -7,10 +7,9 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-# CGAL library
-LIBS += -lCGAL
 QMAKE_CXXFLAGS += -frounding-math -std=c++11 -O3
 
+include(cgal.pri)
 include(cplex.pri)
 include(json.pri)
 
@@ -37,3 +36,6 @@ else {
     message("release mode")
     DEFINES += NDEBUG
 }
+
+OTHER_FILES += \
+    cgal.pri

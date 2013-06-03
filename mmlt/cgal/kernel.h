@@ -2,15 +2,16 @@
 #ifndef MMLT_CGAL_KERNEL_H
 #define MMLT_CGAL_KERNEL_H
 
-#include <CGAL/Cartesian.h>
-#include <CGAL/MP_Float.h>
-#include <CGAL/Quotient.h>
+#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+//#include <CGAL/Cartesian.h>
+//#include <CGAL/MP_Float.h>
+//#include <CGAL/Quotient.h>
 
 #include "cgal/point.h"
 #include "cgal/segment.h"
 
 /// number type
-typedef CGAL::Quotient<CGAL::MP_Float>  Number;
+//typedef CGAL::Quotient<CGAL::MP_Float>  Number;
 
 /**
  * kernel base with customized PointC2 and SegmentC2
@@ -33,12 +34,16 @@ public:
  */
 struct Kernel :
         public CGAL::Type_equality_wrapper<
-            Kernel_base<Kernel, CGAL::Cartesian<Number>>,
+//            Kernel_base<Kernel, CGAL::Cartesian<Number>>,
+            Kernel_base<Kernel, CGAL::Exact_predicates_inexact_constructions_kernel>,
             Kernel
         >
 {
 
 };
+
+/// for backwards compatibility
+typedef Kernel::FT Number;
 
 /// shortcut for point type
 using Point = Kernel::Point_2;
