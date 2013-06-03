@@ -248,7 +248,7 @@ void Controller::draw_sat_solution() const
 
     SVGPainter painter(this, QString("sat_%1.svg").arg(stats_.iteration));
 
-    draw_segments(painter);
+    //draw_segments(painter);
 
     painter.setPenColor(QColor(255, 255, 0));
     segments_.draw_range(painter, stats_.lower_bound(), stats_.upper_bound());
@@ -275,7 +275,8 @@ void Controller::draw_separators() const
     for(SegmentIndex index = 0; index < intersection_algorithm_.shortest_nonintersecting_segment; ++index)
     {
         SVGPainter painter(this, QString("separators_%1.svg").arg(index));
-        draw_segments(painter);
+
+        //draw_segments(painter);
 
         const Segment& segment = segments_[index];
 
@@ -307,7 +308,7 @@ void Controller::draw_triangulation() const
 
     SVGPainter painter(this, "solution.svg");
 
-    draw_segments(painter);
+    //draw_segments(painter);
 
     painter.setPenColor(QColor(255, 0, 0));
     triangulation_.draw(painter);
