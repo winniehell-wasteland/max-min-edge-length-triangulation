@@ -26,7 +26,7 @@ void SATSolution::draw_short_segments(QPainter& painter, const SegmentIndex& upp
     }
 }
 
-const SegmentIndex& SATSolution::shortest_segment() const
+const SegmentIndex& SATSolution::shortest_segment(const SegmentIndex& upper_bound) const
 {
-    return *std::min_element(this->begin(), this->end());
+    return std::min(upper_bound, *std::min_element(this->begin(), this->end()));
 }

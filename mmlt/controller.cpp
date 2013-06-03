@@ -155,9 +155,10 @@ void Controller::start()
         draw_sat_solution();
     }
 
-    stats_.add_lower_bound(sat_solution_.shortest_segment());
-    stats_.add_upper_bound(sat_solution_.shortest_segment());
-    logger.info(mmlt_msg("SAT solution: %1").arg(sat_solution_.shortest_segment()));
+    SegmentIndex sat_bound = sat_solution_.shortest_segment(stats_.upper_bound());
+    stats_.add_lower_bound(sat_bound);
+    stats_.add_upper_bound(sat_bound);
+    logger.info(mmlt_msg("SAT solution: %1").arg(sat_bound));
 
     logger.info(mmlt_msg("Adding separators to triangulation..."));
     for(const SegmentIndex& seg_index : sat_solution_)
