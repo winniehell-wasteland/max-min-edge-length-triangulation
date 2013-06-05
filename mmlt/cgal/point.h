@@ -62,8 +62,8 @@ template <class Kernel_>
 QString PointC2<Kernel_>::to_string() const
 {
     return QString("(%1,%2)")
-            .arg(CGAL::to_double(this->x()), 0, 'f')
-            .arg(CGAL::to_double(this->y()), 0, 'f');
+            .arg(CGAL::to_double(this->x()), 0, 'f', 0)
+            .arg(CGAL::to_double(this->y()), 0, 'f', 0);
 }
 
 #endif // MMT__CGAL__POINT_H

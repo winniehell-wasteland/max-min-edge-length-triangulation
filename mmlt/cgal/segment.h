@@ -16,13 +16,10 @@
  */
 struct SegmentData
 {
-    /** sorted container of intersection group indices */
-    using IntersectionGroupIndices = boost::container::flat_set<IntersectionGroupIndex>;
+    SegmentIndex  index;
 
-    SegmentIndex              index;
-    IntersectionGroupIndices  intersection_groups;
-    /** true if the segment overlaps another */
-    bool                      overlapping;
+    /** true if the segment includes another */
+    bool          is_outer;
 };
 
 /**

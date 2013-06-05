@@ -2,6 +2,9 @@
 #ifndef MMLT_CGAL_ORDERS_H
 #define MMLT_CGAL_ORDERS_H
 
+#include <CGAL/enum.h>
+#include <CGAL/function_objects.h>
+
 #include "cgal/kernel.h"
 
 /** CGAL order for points */

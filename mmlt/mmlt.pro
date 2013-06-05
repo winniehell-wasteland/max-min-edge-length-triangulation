@@ -18,6 +18,7 @@ SOURCES += \
     $$files(containers/*.cpp) \
     $$files(cplex/*.cpp) \
     $$files(intersection/*.cpp) \
+    $$files(sat/*.cpp) \
     $$files(utils/*.cpp) \
     $$files(*.cpp)
 
@@ -26,6 +27,7 @@ HEADERS += \
     $$files(containers/*.h) \
     $$files(cplex/*.h) \
     $$files(intersection/*.h) \
+    $$files(sat/*.h) \
     $$files(utils/*.h) \
     $$files(*.h)
 
@@ -36,6 +38,3 @@ else {
     message("release mode")
     DEFINES += NDEBUG
 }
-
-OTHER_FILES += \
-    cgal.pri

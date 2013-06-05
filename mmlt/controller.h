@@ -17,11 +17,12 @@
 #include "containers/convex_hull.h"
 #include "containers/segment_container.h"
 
-#include "cplex/separators_sat_problem.h"
-#include "cplex/sat_solution.h"
+#include "cplex/cplex_sat_solver.h"
 
 #include "intersection/intersection_algorithm.h"
 #include "intersection/intersection_graph.h"
+
+#include "sat/sat_solution.h"
 
 #include "utils/abort_timer.h"
 #include "utils/elapsed_timer.h"
@@ -43,6 +44,8 @@ private:
      * @{
      */
     ElapsedTimer                         timer_;
+    CplexSATSolver                       cplex_solver_;
+    IntersectionAlgorithm                intersection_algorithm_;
     SATSolution                          sat_solution_;
     Stats                                stats_;
     /**
@@ -87,17 +90,7 @@ private:
      * @name dependent on segments
      * @{
      */
-    IntersectionAlgorithm                intersection_algorithm_;
     IntersectionGraph                    intersection_graph_;
-    /**
-     * @}
-     */
-
-    /**
-     * @name dependent on intersection graph
-     * @{
-     */
-    // find intersections
     /**
      * @}
      */
@@ -171,10 +164,10 @@ private:
     /**
      * called when algorithm finishes
      */
-    void done() const;
+    void done();
 
     void draw_bounds() const;
-    void draw_igroups() const;
+    void draw_intersections() const;
     void draw_points(SVGPainter& painter) const;
     void draw_sat_solution() const;
     void draw_segments(SVGPainter& painter) const;
