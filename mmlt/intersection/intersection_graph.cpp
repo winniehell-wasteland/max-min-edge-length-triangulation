@@ -1,35 +1,31 @@
 #include "intersection_graph.h"
 
-IntersectionGraph::IntersectionGraph(SegmentContainer& segments) :
-    intersection_groups_(),
-    segments_(segments)
+IntersectionGraph::IntersectionGraph(const SegmentIndex& size) :
+    intersections_(size)
 {
 
 }
 
-void IntersectionGraph::add_intersection_group(const IntersectionGroup& group)
+void IntersectionGraph::add_intersection(const Segment& s1, const Segment& s2)
 {
-  intersection_groups_.push_back(group);
-  IntersectionGroupIndex group_index = intersection_groups_.size() - 1;
+    MMLT_precondition(s1.data().index < intersections_.size());
+    MMLT_precondition(s2.data().index < intersections_.size());
+    MMLT_precondition(s1.data().index < s2.data().index);
 
-  for(const SegmentIndex& segment_index : group)
-  {
-      SegmentData::IntersectionGroupIndices& igroups = segments_[segment_index].data().intersection_groups;
-      igroups.insert(igroups.end(), group_index);
-  }
+    intersections_[s1.data().index].insert(s2.data().index);
+    intersections_[s2.data().index].insert(s1.data().index);
 }
 
-SegmentIndex IntersectionGraph::longest_intersecting_segment(const SegmentIndex& index) const
+const SegmentIndex& IntersectionGraph::longest_intersecting_segment(const SegmentIndex& index) const
 {
-    SegmentIndex longest = index;
-    const SegmentData::IntersectionGroupIndices igroups = segments_[index].data().intersection_groups;
+    MMLT_precondition(index < intersections_.size());
+    const Intersections& igroup = intersections_[index];
 
-    for(const IntersectionGroupIndex& igroup_index : igroups)
-    {
-        const IntersectionGroup& igroup = this->intersection_groups_[igroup_index];
-
-        longest = std::max(longest, *std::max_element(igroup.begin(), igroup.end()));
+    if(igroup.empty()) {
+        return index;
     }
-
-    return longest;
+    else
+    {
+        return *std::max_element(igroup.begin(), igroup.end());
+    }
 }

@@ -6,43 +6,46 @@
 
 #include <QPainter>
 
-#include "containers/segment_container.h"
-
-#include "intersection/intersection_group.h"
+#include "intersection/intersections.h"
 
 #include "utils/assertions.h"
 
 class IntersectionGraph
 {
 public:
-    /** vector of @ref IntersectionGroup */
-    using IntersectionGroupVector = std::vector<IntersectionGroup>;
+    /** vector of @ref Intersections */
+    using IntersectionsVector = std::vector<Intersections>;
 
     /** default constructor */
-    IntersectionGraph(SegmentContainer& segments);
+    IntersectionGraph(const SegmentIndex& size);
 
-    const IntersectionGroup& operator[] (const IntersectionGroupIndex& index) const
+    /**
+     * @return all intersecting segments for a segment
+     */
+    const Intersections& operator[] (const SegmentIndex& index) const
     {
-        MMLT_precondition(index < intersection_groups_.size());
-        return intersection_groups_[index];
+        MMLT_precondition(index < intersections_.size());
+        return intersections_[index];
     }
 
-    void add_intersection_group(const IntersectionGroup& group);
+    /**
+     * add two intersecting segments to the graph
+     */
+    void add_intersection(const Segment &s1, const Segment &s2);
 
-    IntersectionGroupVector::const_iterator begin() const
+    IntersectionsVector::const_iterator begin() const
     {
-        return intersection_groups_.begin();
+        return intersections_.begin();
     }
 
-    IntersectionGroupVector::const_iterator end() const
+    IntersectionsVector::const_iterator end() const
     {
-        return intersection_groups_.end();
+        return intersections_.end();
     }
 
-    SegmentIndex longest_intersecting_segment(const SegmentIndex& index) const;
+    const SegmentIndex& longest_intersecting_segment(const SegmentIndex& index) const;
 private:
-    IntersectionGroupVector  intersection_groups_;
-    SegmentContainer&        segments_;
+    IntersectionsVector  intersections_;
 };
 
 #endif // MMLT_INTERSECTION_INTERSECTION_GRAPH_H

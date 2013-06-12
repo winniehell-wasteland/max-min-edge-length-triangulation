@@ -19,6 +19,17 @@ public:
     {
         this->insert(points.begin(), points.end());
     }
+
+    /**
+     * draw triangulation segments using given QPainter
+     */
+    void draw(QPainter& painter) const
+    {
+        for(auto edge = this->finite_edges_begin(); edge != this->finite_edges_end(); ++edge)
+        {
+            this->segment(edge).draw(painter);
+        }
+    }
 };
 
 #endif // MMLT_CGAL_TRIANGULATION_H

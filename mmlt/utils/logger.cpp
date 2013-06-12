@@ -55,3 +55,16 @@ void Logger::time(const QString& identifier, int milliseconds) const
 {
     print(QString("[TIME] %1=%2ms").arg(identifier).arg(milliseconds));
 }
+
+QString segment_length_to_string(const Segment& segment)
+{
+    auto length = segment.squared_length();
+
+    QString s;
+    QTextStream stream(&s);
+
+    stream << "len^2=";
+    stream << CGAL::to_double(length);
+
+    return s;
+}

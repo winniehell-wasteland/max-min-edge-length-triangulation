@@ -3,16 +3,19 @@
 
 #include <CGAL/bounding_box.h>
 
-#include "cplex/sat_problem.h"
+#include "sat/sat_problem.h"
 
 #include "utils/logger.h"
 
 #include "controller.h"
 
+const int Controller::SVGPainter::SVG_PADDING = 10;
 const double Controller::SVGPainter::SVG_SCALE = 4.0;
 
 Controller::Controller(QCoreApplication& application, const QSettings& settings) :
     timer_(true),
+    cplex_solver_(),
+    intersection_algorithm_(),
     sat_solution_(),
     stats_(),
 
@@ -21,7 +24,9 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
     settings_(settings),
 
     abort_timer_(settings_.value("controller/abort_timeout", 60*60*1000).toUInt()),
-    file_prefix_(QFileInfo(input_file_).completeBaseName()),
+    file_prefix_(
+        input_file_.fileName().left(input_file_.fileName().lastIndexOf('.'))
+        ),
     points_(input_file_),
 
     bounding_box_(CGAL::bounding_box(points_.begin(), points_.end())),
@@ -29,8 +34,7 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
     segments_(points_),
     triangulation_(points_),
 
-    intersection_algorithm_(points_, segments_),
-    intersection_graph_(segments_)
+    intersection_graph_(segments_.size())
 {
     logger.time("controller initialization", timer_.elapsed());
 
@@ -40,13 +44,13 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
                  .arg(convex_hull_.size()));
 
     logger.info(
-        mmlt_msg("shortest input segment: %1 (len^2=%2)")
+        mmlt_msg("shortest input segment: %1 (%2)")
         .arg(segments_[0].to_string())
-        .arg(CGAL::to_double(segments_[0].squared_length()))
+        .arg(segment_length_to_string(segments_[0]))
     );
 
     abort_timer_.start();
-    intersection_algorithm_.run(intersection_graph_);
+    intersection_algorithm_.run(intersection_graph_, segments_);
     abort_timer_.stop();
 
     if(settings_.value("draw/segments").toBool())
@@ -58,9 +62,9 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
         draw_points(painter);
     }
 
-    if(settings_.value("draw/intersection_groups").toBool())
+    if(settings_.value("draw/intersections").toBool())
     {
-        draw_igroups();
+        draw_intersections();
     }
 
     if(settings_.value("draw/separators").toBool())
@@ -133,12 +137,15 @@ void Controller::start()
 
     ElapsedTimer iteration_timer(true);
 
-    SATProblem sat_problem_(intersection_graph_,
-                            segments_,
-                            stats_.lower_bound(),
-                            stats_.upper_bound());
+    SATProblem sat_problem(intersection_graph_, segments_);
+    sat_problem.set_short_segment_range(stats_.lower_bound(), stats_.upper_bound());
 
-    sat_problem_.solve(settings_, file_prefix_, sat_solution_);
+    cplex_solver_.solve_optimization_problem(
+                settings_,
+                file_prefix_,
+                sat_problem,
+                sat_solution_
+                );
 
     logger.time(QString("iteration %1").arg(stats_.iteration), iteration_timer.elapsed());
 
@@ -149,18 +156,25 @@ void Controller::start()
         return;
     }
 
-    /*
-    stats_.add_lower_bound(sat_solution_.shortest_segment());
-    stats_.add_upper_bound(sat_solution_.shortest_segment());
-    */
-    logger.info(mmlt_msg("SAT solution: %1").arg(sat_solution_.shortest_segment()));
-
     if(settings_.value("draw/sat_solution").toBool())
     {
         draw_sat_solution();
     }
 
-    //if(stats_.gap() < 1)
+    SegmentIndex sat_bound = sat_solution_.shortest_segment();
+    logger.info(mmlt_msg("SAT solution: %1").arg(sat_bound));
+
+    // check bounds
+    MMLT_postcondition(sat_problem.lower_bound() <= sat_bound);
+    if(sat_bound > sat_problem.upper_bound())
+    {
+        sat_bound = sat_problem.upper_bound();
+    }
+
+    stats_.add_lower_bound(sat_bound);
+    stats_.add_upper_bound(sat_bound);
+
+    if(stats_.gap() < 1)
     {
         done();
         return;
@@ -169,11 +183,23 @@ void Controller::start()
     output_status();
 
     // next iteration
-    QTimer::singleShot(0, this, SLOT(iteration()));
+    //QTimer::singleShot(0, this, SLOT(iteration()));
 }
 
-void Controller::done() const
+void Controller::done()
 {
+    logger.info(mmlt_msg("Adding separators and non-separable segments to triangulation..."));
+    for(const SegmentIndex& seg_index : sat_solution_)
+    {
+        const Segment& segment = segments_[seg_index];
+        triangulation_.insert_constraint(segment.source(), segment.target());
+    }
+
+    if(settings_.value("draw/triangulation").toBool())
+    {
+        draw_triangulation();
+    }
+
     logger.time("total", timer_.elapsed());
 
     output_status();
@@ -190,37 +216,49 @@ void Controller::draw_bounds() const
     SVGPainter painter(this, QString("bounds_%1.svg").arg(stats_.iteration));
     draw_segments(painter);
 
+    painter.setPenColor(QColor(255, 255, 0));
+    segments_.draw_range(painter, stats_.lower_bound(), stats_.upper_bound());
+
     painter.setPenColor(QColor(0, 255, 0));
     segments_[stats_.lower_bound()].draw(painter);
+
     painter.setPenColor(QColor(255, 0, 0));
     segments_[stats_.upper_bound()].draw(painter);
 
     draw_points(painter);
 }
 
-void Controller::draw_igroups() const
+void Controller::draw_intersections() const
 {
-    logger.info(mmlt_msg("Drawing intersection groups..."));
+    logger.info(mmlt_msg("Drawing intersections..."));
 
-    IntersectionGroupIndex igroup_index = 0;
+    SegmentIndex segment_index = 0;
 
-    for(const IntersectionGroup& igroup : intersection_graph_)
+    for(const Intersections& intersections : intersection_graph_)
     {
-        SVGPainter painter(this, QString("%1_igroup.svg").arg(igroup_index, 5, 10));
+        SVGPainter painter(this, QString("%1_intersections.svg").arg(segment_index, 5, 10, QChar('0')));
 
         draw_segments(painter);
+
+        painter.setPenColor(QColor(0, 255, 0));
+        segments_[segment_index].draw(painter);
+
         painter.setPenColor(QColor(255, 0, 0));
-        igroup.draw(painter, segments_);
+        intersections.draw(painter, segments_);
+
         draw_points(painter);
 
-        ++igroup_index;
+        ++segment_index;
     }
 }
 
 void Controller::draw_points(SVGPainter& painter) const
 {
     painter.setPenColor(QColor(0, 0, 255));
+    //int oldwidth = painter.pen().width();
+    //painter.setPenWidth(10*oldwidth);
     points_.draw(painter);
+    //painter.setPenWidth(oldwidth);
 }
 
 void Controller::draw_sat_solution() const
@@ -229,9 +267,17 @@ void Controller::draw_sat_solution() const
 
     SVGPainter painter(this, QString("sat_%1.svg").arg(stats_.iteration));
 
-    draw_segments(painter);
+    //draw_segments(painter);
+
+    painter.setPenColor(QColor(255, 255, 0));
+    segments_.draw_range(painter, stats_.lower_bound(), stats_.upper_bound());
+
     painter.setPenColor(QColor(255, 0, 0));
-    sat_solution_.draw(painter, segments_);
+    sat_solution_.draw_short_segments(painter, stats_.upper_bound(), segments_);
+
+    painter.setPenColor(QColor(0, 255, 0));
+    sat_solution_.draw_separators(painter, stats_.upper_bound(), segments_);
+
     draw_points(painter);
 }
 
@@ -245,33 +291,47 @@ void Controller::draw_separators() const
 {
     logger.info(mmlt_msg("Drawing Separators..."));
 
-    for(SegmentIndex index = 0; index < intersection_algorithm_.shortest_nonintersecting_segment; ++index)
+    for(SegmentIndex index = 0; index < intersection_algorithm_.shortest_noncrossing_segment_; ++index)
     {
         SVGPainter painter(this, QString("separators_%1.svg").arg(index));
-        draw_segments(painter);
 
-        const Segment& segment = segments_[index];
+        //draw_segments(painter);
+
 
         painter.setPenColor(QColor(255, 0, 0));
-        //segments_[intersection_graph_.longest_intersecting_segment(index)].draw(painter);
-        for(const IntersectionGroupIndex& igroup : segment.data().intersection_groups)
-        {
-            for(const SegmentIndex& separator : intersection_graph_[igroup])
-            {
-                if(separator == index)
-                {
-                    continue;
-                }
 
-                segments_[separator].draw(painter);
-            }
+        const Intersections& intersections = intersection_graph_[index];
+
+        std::vector<SegmentIndex> separators;
+        intersections.find_separators(index, segments_, separators);
+
+        for(const SegmentIndex& separator_index : separators)
+        {
+            const Segment& separator= segments_[separator_index];
+            separator.draw(painter);
         }
 
         painter.setPenColor(QColor(0, 255, 0));
+
+        const Segment& segment = segments_[index];
         segment.draw(painter);
 
         draw_points(painter);
     }
+}
+
+void Controller::draw_triangulation() const
+{
+    logger.info(mmlt_msg("Drawing triangulation..."));
+
+    SVGPainter painter(this, "solution.svg");
+
+    //draw_segments(painter);
+
+    painter.setPenColor(QColor(255, 0, 0));
+    triangulation_.draw(painter);
+
+    draw_points(painter);
 }
 
 void Controller::output_status() const
@@ -292,7 +352,7 @@ void Controller::pre_solving()
     stats_.add_upper_bound(convex_hull_.shortest_segment(segments_));
 
     // each non-intersected segment must be part of the triangulation
-    stats_.add_upper_bound(intersection_algorithm_.shortest_nonintersecting_segment);
+    stats_.add_upper_bound(intersection_algorithm_.shortest_noncrossing_segment_);
 
     logger.time("pre solving", presolving_timer.elapsed());
 }

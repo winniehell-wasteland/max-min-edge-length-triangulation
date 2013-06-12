@@ -2,6 +2,9 @@
 #ifndef MMLT_CGAL_ORDERS_H
 #define MMLT_CGAL_ORDERS_H
 
+#include <CGAL/enum.h>
+#include <CGAL/function_objects.h>
+
 #include "cgal/kernel.h"
 
 /** CGAL order for points */
@@ -15,7 +18,9 @@ struct SegmentIndexOrder
     CGAL::Comparison_result operator() (const Segment& s, const Segment& t) const;
 };
 
-/** CGAL order for @ref Segment by length */
+/**
+ * CGAL order for @ref Segment by length
+ */
 struct SegmentLengthOrder
 {
     CGAL::Comparison_result operator() (const Segment& s, const Segment& t) const;

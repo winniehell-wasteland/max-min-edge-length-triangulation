@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QString>
 
+#include "cgal/kernel.h"
 #include "stats.h"
 
 class Logger
@@ -34,5 +35,8 @@ public:
 
 extern const Logger  logger;
 extern Messages      mmlt_msg;
+
+/** dump segment length to QString */
+QString segment_length_to_string(const Segment& segment);
 
 #endif // MMLT_UTILS_LOGGER_H
