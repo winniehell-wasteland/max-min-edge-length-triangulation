@@ -6,6 +6,25 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+from matplotlib import rc as mpl_rc
+
+mpl_rc('text', usetex=True)
+mpl_rc('text.latex',
+    preamble=r'\usepackage{amsmath}'
+             '\usepackage{fourier}'
+             '\usepackage{xfrac}'
+)
+
+
+def err(x):
+    return 2.0 * np.std(x, ddof=1) / np.sqrt(len(x))
+
+
+def fit(data):
+    A = np.vstack([data.index, np.ones(len(data.index))]).T
+    return np.linalg.lstsq(A, data['mean'])[0]
+
+
 def flatten(obj, prefix=''):
     if isinstance(obj, dict):
         flattened_obj = {}
@@ -27,17 +46,24 @@ def flatten(obj, prefix=''):
         return obj
 
 
-def load_results():
+def load(*args):
     with open('results.json', 'r') as results_file:
         results = json.load(results_file)
 
     results = flatten(results)
     results = pandas.concat([pandas.DataFrame(results[i], index=[i]) for i in range(len(results))])
 
-    return results
+    if len(args) > 0:
+        results = results[[arg for arg in args]]
+        return results
 
 
-def output(data, name, columns, aggregations, y_scale=None, legend_loc='best'):
+def normalize(data, values):
+    for value in values:
+        data[value.replace('squared_length', 'length')] = np.sqrt(1.0 * data[value]) / data['file/range']
+
+
+def output_(data, name, columns, aggregations, y_scale=None, legend_loc='best'):
     print 'Generating ' + name + '...'
 
     # plot graph
@@ -101,3 +127,11 @@ def output(data, name, columns, aggregations, y_scale=None, legend_loc='best'):
 
     with open(name.replace(' ', '_') + '.html', 'w') as html_file:
         html_file.write(html_data.to_html())
+
+
+def output(name, data):
+    #plt.show()
+    plt.savefig(name + '.pdf', bbox_inches='tight')
+
+    with open(name + '.html', 'w') as html_file:
+        html_file.write(data.to_html())
