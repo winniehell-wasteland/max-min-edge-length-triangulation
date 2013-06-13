@@ -4,17 +4,9 @@
 
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 
-//#include <CGAL/Cartesian.h>
-//#include <CGAL/MP_Float.h>
-//#include <CGAL/Quotient.h>
-
 #include "cgal/point.h"
 #include "cgal/segment.h"
 
-/// number type
-//using Number = CGAL::Quotient<CGAL::MP_Float>;
-
-//using MMLT_kernel = CGAL::Cartesian<Number>;
 using MMLT_kernel = CGAL::Exact_predicates_inexact_constructions_kernel;
 
 /**

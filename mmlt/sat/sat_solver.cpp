@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "intersection/intersections.h"
 
 #include "utils/assertions.h"
@@ -9,7 +11,8 @@ void SATSolver::prepare_problem(const SATProblem& problem)
 {
     const SegmentContainer& segments = problem.segments();
 
-    std::vector<SegmentIndex> separators;
+    std::set<SegmentIndex> all_separators;
+    std::vector<SegmentIndex> current_separators;
 
     // forbid unnecessary segments
     for(SegmentIndex segment_index = 0;
@@ -17,6 +20,15 @@ void SATSolver::prepare_problem(const SATProblem& problem)
         segment_index++)
     {
         add_forbidden_segment(&problem, segment_index);
+
+        const Intersections& intersections = problem.intersections(segment_index);
+
+        // we need separators for forbidden segments
+        intersections.find_separators(segment_index, problem.segments(), current_separators);
+        add_separation_restriction(&problem, segment_index, current_separators);
+
+        all_separators.insert(current_separators.begin(), current_separators.end());
+        current_separators.clear();
     }
 
     for(SegmentIndex segment_index = problem.lower_bound();
@@ -36,17 +48,18 @@ void SATSolver::prepare_problem(const SATProblem& problem)
 
         add_intersection_restrictions(&problem, segment_index, intersections);
 
-        intersections.find_separators(segment_index, problem.segments(), separators);
-        add_separation_restriction(&problem, segment_index, separators);
+        intersections.find_separators(segment_index, problem.segments(), current_separators);
+        add_separation_restriction(&problem, segment_index, current_separators);
 
-        // handle intersecting separators
-        for(const SegmentIndex& separator_index : separators)
-        {
-            const Intersections& separator_intersections = problem.intersections(separator_index);
-            add_intersection_restrictions(&problem, separator_index, separator_intersections);
-        }
+        all_separators.insert(current_separators.begin(), current_separators.end());
+        current_separators.clear();
+    }
 
-        separators.clear();
+    // handle intersecting separators
+    for(const SegmentIndex& separator_index : all_separators)
+    {
+        const Intersections& separator_intersections = problem.intersections(separator_index);
+        add_intersection_restrictions(&problem, separator_index, separator_intersections);
     }
 }
 

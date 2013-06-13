@@ -75,26 +75,51 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
 
 void Controller::iteration()
 {
-#if 0
     abort_timer_.start();
 
     ElapsedTimer iteration_timer(true);
     ++stats_.iteration;
 
-    sat_problem_.solve(settings_, file_prefix_, sat_solution_, (stats_.lower_bound() + stats_.upper_bound())/2 + 1);
+    SATProblem sat_problem(intersection_graph_, segments_);
 
+    SegmentIndex new_bound = (stats_.lower_bound() + stats_.upper_bound() + 1)/2;
+
+    logger.info(mmlt_msg("Trying new lower bound: %1").arg(new_bound));
+
+    sat_problem.set_short_segment_range(new_bound, stats_.upper_bound());
+
+    cplex_solver_.solve_decision_problem(
+                settings_,
+                file_prefix_,
+                sat_problem,
+                sat_solution_
+                );
 
     logger.time(QString("iteration %1").arg(stats_.iteration), iteration_timer.elapsed());
 
+    // there is no feasible triangulation
     if(sat_solution_.empty())
     {
-        // there is no feasible triangulation
-        stats_.add_upper_bound((stats_.lower_bound() + stats_.upper_bound())/2);
+        if(new_bound > stats_.lower_bound())
+        {
+            new_bound = new_bound - 1;
+        }
+
+        logger.info(mmlt_msg("New upper bound: %1").arg(new_bound));
+        stats_.add_upper_bound(new_bound);
     }
+    // there is a feasible triangulation
     else
     {
-        // there is a feasible triangulation
-        stats_.add_lower_bound(sat_solution_.shortest_segment());
+        SegmentIndex sat_bound = sat_solution_.shortest_segment();
+
+        if(sat_bound > stats_.upper_bound())
+        {
+            sat_bound = stats_.upper_bound();
+        }
+
+        logger.info(mmlt_msg("New lower bound: %1").arg(sat_bound));
+        stats_.add_lower_bound(sat_bound);
 
         if(settings_.value("draw/sat_solution").toBool())
         {
@@ -115,7 +140,6 @@ void Controller::iteration()
     output_status();
 
     abort_timer_.stop();
-#endif
 }
 
 void Controller::start()
@@ -135,8 +159,7 @@ void Controller::start()
         return;
     }
 
-    ElapsedTimer iteration_timer(true);
-
+    /*
     SATProblem sat_problem(intersection_graph_, segments_);
     sat_problem.set_short_segment_range(stats_.lower_bound(), stats_.upper_bound());
 
@@ -162,7 +185,9 @@ void Controller::start()
     }
 
     SegmentIndex sat_bound = sat_solution_.shortest_segment();
-    logger.info(mmlt_msg("SAT solution: %1").arg(sat_bound));
+    logger.info(mmlt_msg("shortest SAT solution segment: %1 (%2)")
+                .arg(segments_[sat_bound].to_string())
+                .arg(segment_length_to_string(segments_[sat_bound])));
 
     // check bounds
     MMLT_postcondition(sat_problem.lower_bound() <= sat_bound);
@@ -179,25 +204,39 @@ void Controller::start()
         done();
         return;
     }
+    */
 
     output_status();
 
     // next iteration
-    //QTimer::singleShot(0, this, SLOT(iteration()));
+    QTimer::singleShot(0, this, SLOT(iteration()));
 }
 
 void Controller::done()
 {
-    logger.info(mmlt_msg("Adding separators and non-separable segments to triangulation..."));
-    for(const SegmentIndex& seg_index : sat_solution_)
+    if(!sat_solution_.empty())
     {
-        const Segment& segment = segments_[seg_index];
-        triangulation_.insert_constraint(segment.source(), segment.target());
-    }
+        logger.info(mmlt_msg("Adding separators and non-separable segments to triangulation..."));
+        for(const SegmentIndex& seg_index : sat_solution_)
+        {
+            logger.debug(mmlt_msg("Segment index: %1").arg(seg_index));
+            const Segment& segment = segments_[seg_index];
+            triangulation_.insert_constraint(segment.source(), segment.target());
+        }
 
-    if(settings_.value("draw/triangulation").toBool())
-    {
-        draw_triangulation();
+        const SegmentIndex& shortest_triangulation_segment =
+                triangulation_.shortest_segment(segments_);
+
+        logger.info(
+            mmlt_msg("shortest constrained triangulation segment: %1 (%2)")
+            .arg(segments_[shortest_triangulation_segment].to_string())
+            .arg(segment_length_to_string(segments_[shortest_triangulation_segment]))
+        );
+
+        if(settings_.value("draw/triangulation").toBool())
+        {
+            draw_triangulation();
+        }
     }
 
     logger.time("total", timer_.elapsed());
@@ -347,6 +386,18 @@ void Controller::output_status() const
 void Controller::pre_solving()
 {
     ElapsedTimer presolving_timer(true);
+
+    // use non-constrained triangulation as a feasible solution
+    const SegmentIndex& shortest_triangulation_segment =
+            triangulation_.shortest_segment(segments_);
+
+    stats_.add_lower_bound(shortest_triangulation_segment);
+
+    logger.info(
+        mmlt_msg("shortest triangulation segment: %1 (%2)")
+        .arg(segments_[shortest_triangulation_segment].to_string())
+        .arg(segment_length_to_string(segments_[shortest_triangulation_segment]))
+    );
 
     // shortest segment of convex hull must be part of triangulation
     stats_.add_upper_bound(convex_hull_.shortest_segment(segments_));

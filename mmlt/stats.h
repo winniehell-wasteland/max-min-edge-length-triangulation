@@ -5,6 +5,8 @@
 
 #include "cgal/kernel.h"
 
+#include "utils/assertions.h"
+
 class Stats
 {
 public:
@@ -36,6 +38,7 @@ public:
 
     SegmentIndex gap() const
     {
+        MMLT_assertion(upper_bound_ >= lower_bound_);
         return (upper_bound_ - lower_bound_);
     }
 

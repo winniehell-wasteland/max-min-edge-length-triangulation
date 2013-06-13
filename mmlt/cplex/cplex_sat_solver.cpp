@@ -14,11 +14,10 @@ void CplexSATSolver::add_forbidden_segment(const SATProblem* problem,
 {
     ProblemData& data = problem_data(problem);
 
-    IloExpr restriction(data.cplex_.getEnv());
+    IloRange restriction = (data.variables_[index] == 0);
+    restriction.setName(QString("forbidden_%1").arg(index).toLocal8Bit().data());
 
-    restriction += data.variables_[index];
-
-    data.model_.add(restriction == 0);
+    data.model_.add(restriction);
 }
 
 void CplexSATSolver::add_intersection_restrictions(const SATProblem* problem,
@@ -29,6 +28,12 @@ void CplexSATSolver::add_intersection_restrictions(const SATProblem* problem,
 
     for(const SegmentIndex& intersecting_index : intersections)
     {
+        // we don't need intersections twice
+        if(intersecting_index < index)
+        {
+            continue;
+        }
+
         IloExpr sum(data.cplex_.getEnv());
 
         sum += data.variables_[index];
@@ -37,7 +42,10 @@ void CplexSATSolver::add_intersection_restrictions(const SATProblem* problem,
         // for every pair fo intersecting segments
         // only one can be picked
         IloRange restriction = (sum <= 1);
-        restriction.setName(QString("intersection_%1").arg(index).toLocal8Bit().data());
+        restriction.setName(QString("intersection_%1_%2")
+                            .arg(index)
+                            .arg(intersecting_index)
+                            .toLocal8Bit().data());
 
         data.model_.add(restriction);
     }
@@ -95,10 +103,22 @@ void CplexSATSolver::dump_problem(const QString& file_prefix,
     // whatever this does... it is necessary before calling exportModel()
     data.cplex_.extract(data.model_);
 
-    logger.info(mmlt_msg("Dumping SAT problem to %1.lp...").arg(file_prefix));
-    data.cplex_.exportModel(QString("%1.lp")
-                             .arg(file_prefix)
-                             .toLocal8Bit().data());
+    QString file_name = QString("%1_%2-%3.lp")
+            .arg(file_prefix)
+            .arg(problem->lower_bound())
+            .arg(problem->upper_bound());
+
+    logger.info(mmlt_msg("Dumping SAT problem to %1...").arg(file_name));
+
+    try
+    {
+        data.cplex_.exportModel(file_name.toLocal8Bit().data());
+    }
+    catch(IloCplex::Exception e)
+    {
+        logger.error(mmlt_msg("Could not extract model: %1").arg(e.getMessage()));
+        MMLT_assertion(false);
+    }
 }
 
 void CplexSATSolver::init_decision_problem(const SATProblem* problem)
@@ -171,8 +191,10 @@ void CplexSATSolver::solve_problem(const SATProblem* problem,
         {
             if(!data.cplex_.isExtracted(data.variables_[i]))
             {
+                /*
                 logger.debug(mmlt_msg("%1 not part of SAT")
                              .arg(data.variables_[i].getName()));
+                             */
                 continue;
             }
 
