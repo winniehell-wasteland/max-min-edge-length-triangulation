@@ -1,0 +1,96 @@
+\setglossarysection{section}
+\renewcommand*{\glspostdescription}{}
+
+\newglossary{ignored}{ignored.gls}{ignored.glo}{Ignored Glossary}
+
+\newacronym{MMLT}{MMLT}{MaxMin Length Triangulation}
+\newacronym{NCS}{NCS}{Non-Conflicting Separators}
+
+\newglossaryentry{wlog}{
+  name={w.l.o.g.},
+  description={without loss of generality},
+  type={ignored}
+}
+
+% properties
+\newglossary{prop}{prop.gls}{prop.glo}{Properties}
+\DeclareRobustCommand{\glspropstyle}[1]{\textit{#1}}
+\defglsdisplay[prop]{\glspropstyle{#1#4}}
+\defglsdisplayfirst[prop]{\glspropstyle{#1#4}}
+
+\newglossaryentry{cross}
+{
+  name={crossing},
+  description={see \cref{def:crossing}},
+  type={prop}
+}
+
+\newglossaryentry{ncross}
+{
+  name={non-crossing},
+  description={see \cref{def:crossing}},
+  type={prop}
+}
+
+% sets
+\newglossary{set}{sets.gls}{sets.glo}{Sets}
+\newglossaryentry{R}
+{
+  name={\ensuremath{\mathbb{R}}},
+  description={real numbers},
+  type={ignored}
+}
+
+\newglossaryentry{Sconf}
+{
+  name={\ensuremath{S_\textnormal{conf}}},
+  description={set of potentially conflicting separators (see \cref{thm:tight_upper_bound})},
+  type={set}
+}
+
+\newglossaryentry{Sopt}
+{
+  name={\ensuremath{S_\textnormal{opt}}},
+  description={an optimal set of segments},
+  type={set}
+}
+
+\newglossaryentry{Ssep}
+{
+  name={\ensuremath{S_\textnormal{sep}}},
+  description={set of separators (see \cref{sec:pre_separators})},
+  type={set}
+}
+
+\newglossaryentry{Sshort}
+{
+  name={\ensuremath{S_\textnormal{short}}},
+  description={set of short segments (see \cref{sec:pre_short_segments})},
+  type={set}
+}
+
+\newglossaryentry{Topt}
+{
+  name={\ensuremath{T_\textnormal{opt}}},
+  description={an optimal triangulation},
+  type={set}
+}
+
+% variables
+\newglossaryentry{snc}
+{
+  name={\ensuremath{s_\textnormal{nc}}},
+  description={shortest \gls{ncross} segment}
+}
+
+\newglossaryentry{ssep}
+{
+  name={\ensuremath{s_\textnormal{sep}}},
+  description={separating segment}
+}
+
+\newglossaryentry{snose}
+{
+  name={\ensuremath{s_\textnormal{nose}}},
+  description={non-separable segment}
+}

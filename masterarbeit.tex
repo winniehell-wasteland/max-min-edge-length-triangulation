@@ -8,45 +8,65 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
-\usepackage[german,english]{babel}
-
-% meta data
-\newcommand{\docadvisor}{Prof.~Dr.~Sándor Fekete}
-\newcommand{\docauthor}{Winfried Hellmann}
-\newcommand{\docdate}{2013-07-01}
-\newcommand{\docsubject}{Masterarbeit}
-\newcommand{\doctitle}{\foreignlanguage{english}{Computational aspects of\linebreak maxmin (length) triangulations}}
+\usepackage[english,ngerman]{babel}
 
 \usepackage{
 	amsmath,
 	amssymb,
-%	amsthm,
 	csquotes,
-%	biblatex,
+	etoolbox,
 	framed,
 	hyperref,
 	isodate,
 	microtype,
-	todonotes
+	todonotes,
+	upgreek,
+%	xspace
 }
 
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
 \usepackage[backend=biber]{biblatex}
-\usepackage[amsmath,framed]{ntheorem}
+\usepackage[amsmath,framed,hyperref]{ntheorem}
+\usepackage[section]{placeins}
+
+% after hyperref
+\usepackage{
+	cleveref,
+	glossaries
+}
+
+% meta data
+\newcommand{\docadvisor}{Prof.~Dr.~Sándor Fekete}
+\newcommand{\docauthor}{Winfried Hellmann}
+\renewcommand{\docdate}{2013-07-01}
+\newcommand{\docsubject}{Masterarbeit}
+\newcommand{\doctitle}{\foreignlanguage{english}{Computational aspects of%
+\texorpdfstring{\linebreak}{} maxmin (length) triangulations}}
 
 \author{\docauthor}
 \date{\isodate{\docdate}}
 \publishers{\small\textbf{Betreuer: }\docadvisor}
 \subject{\docsubject}
 \title{\doctitle}
+\subtitle{or: How Greg Found Large Triangles}
 \titlehead{Institut für Betriebssysteme und Rechnerverbund\\
 Technische Universität Braunschweig}
 
 \hypersetup{
        pdfauthor = {\docauthor},
-       pdftitle = {\doctitle},
+       pdftitle = {\doctitle ---},
        pdfsubject = {\docsubject},
        pdfkeywords = {maxmin, length, triangulation}
 }
+
+% underline links
+\hypersetup{
+  colorlinks=false,
+  linkbordercolor=red,
+  pdfborderstyle={/S/U/W 1}
+}
+
+%\hypersetup{hidelinks}
 
 %\bibliography{masterarbeit}
 \addbibresource{masterarbeit.bib}
@@ -55,88 +75,105 @@ Technische Universität Braunschweig}
 \theoremstyle{break}
 \theorembodyfont{\normalfont}
 
+\newcommand{\samepagetheorem}{%
+\theoremprework{\begin{samepage}}%
+\theorempostwork{\end{samepage}}%
+}
+%\theoremprework{\begin{minipage}{\textwidth}}
+%\theorempostwork{\end{minipage}}
+
+\samepagetheorem
 \newframedtheorem{theorem}{Theorem}[chapter]
+
+\samepagetheorem
+\newframedtheorem{definition}[theorem]{Definition}
+
+\samepagetheorem
 \newframedtheorem{problem}[theorem]{Problem}
 
-% notations
-\newcommand{\R}{\mathbb{R}}
+\theoremseparator{:}
+\theoremstyle{nonumberbreak}
+\samepagetheorem
+\newframedtheorem{proof}{Proof}
 
+\theoremstyle{empty}
+\newtheorem{case}{Case}
+\numberwithin{case}{proof}
 
+% operators
+\DeclareMathOperator*{\argmin}{arg\,min}
 
+\loadglsentries{glossary}
+\makeglossaries
 
+\renewcommand{\epsilon}{\upvarepsilon}
 
+\newcommand{\includeChapter}[1]{\glsresetall\include{#1}\cleardoublepage}
 
 \begin{document}
-\selectlanguage{german}
+\selectlanguage{ngerman}
 \pagenumbering{roman}
+%\frontmatter
+
+\setboolean{@twoside}{false}
 \maketitle
+\setboolean{@twoside}{true}
+
+\thispagestyle{empty}
+\vspace*{\fill}
+\hspace*{\fill}
+for my daughter --- in the hope that she will understand sometime
+\cleardoublepage
 
 \subsubsection*{\centering Erklärung}
-Ich versichere, die vorliegende Arbeit selbstständig und nur unter Benutzung der angegebenen Hilfsmittel angefertigt zu haben.
+Ich versichere, die vorliegende Arbeit selbstständig und nur unter
+Benutzung der angegebenen Hilfsmittel angefertigt zu haben.
 
 \vspace{2em}
 
 Braunschweig, den \printdate{\docdate}
 \vspace{5em}
+\cleardoublepage
 
 % abstracts
-\begin{minipage}{\linewidth}
+\begin{minipage}{\textwidth}
 	\selectlanguage{english}
 	\begin{abstract}
-	Maxmin length triangulations are just great.
+	Maxmin length triangulations are just awesome.
 	\end{abstract}
 
-	\selectlanguage{german}
+	\selectlanguage{ngerman}
 	\begin{abstract}
 	Maxmin Triangulationen sind einfach super.
 	\end{abstract}
 \end{minipage}
-\cleardoublepage
-
-\tableofcontents
+\thispagestyle{plain}
 \cleardoublepage
 
 \selectlanguage{english}
+\tableofcontents
+\cleardoublepage
+
 \pagenumbering{arabic}
 \cleardoublepage
 \setcounter{page}{1}
 
-\chapter{Introduction}
-\todo{Be a little more verbose}\ldots
+%\mainmatter
+\includeChapter{introduction}
+\includeChapter{triangulations}
+\includeChapter{set_cover}
+\includeChapter{mmlt}
+\includeChapter{implementation}
+\includeChapter{results}
+\includeChapter{conclusion}
 
-\chapter{Related Work}
-\todo{Write about related work}
-
-\chapter{Preliminaries}
-\todo{Nobody needs notation}
-
-\chapter{Problem}
-
-\begin{problem}[Maxmin length triangulation]\hfill
-	\begin{labeling}{\hspace{4em}}
-		\item[\textbf{Given:}]
-			Set of points \(P=\left\{p\in\R^2\right\}\)
-		\item[\textbf{Sought:}]
-			Triangulation \(T\subseteq P^2\) of \(P\) which maximizes \(\min\limits_{s\in T} |s|\) 
-			with \(|s|\) being the Euclidean distance between the endpoints of segment \(s\).
-	\end{labeling}
-\end{problem}
-
-\section{Intersections}
-There are \(\Theta(n^4)\) intersections. \cite{quadrilaterals_bound} Thus calculating the intersection graph
-takes \(\Omega(n^4)\) time. \todo{Why do we need the intersection graph?}
-
-\chapter{Implementation}
-\todo{foo and bar}
-
-\chapter{Results}
-\todo{some very nice graphs}
-\missingfigure{times}
-
-\chapter{Conclusion}
-\todo{be conclusive}\ldots
+\addchap{Glossary}
+\printglossary[style=listdotted,type=main]
+\printglossary[style=listdotted,type=prop]
+\printglossary[style=listdotted,type=set]
 
 \printbibliography
+\cleardoublepage
 
 \listoftodos
 

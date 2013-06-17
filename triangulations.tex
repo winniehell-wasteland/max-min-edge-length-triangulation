@@ -1,0 +1,87 @@
+\chapter{Triangulations}
+One day Greg had art class and the children were given sheets of
+paper with points on them. The task was to connect all the points 
+such that they have as many bounded areas as possible. Greg 
+connected all the points taking care that the connections would only 
+intersect in the given points. He was happy to see that the result 
+consisted only of triangles filling up the whole space within the 
+points. Also he had more bounded areas than any other child --- 
+even more than Joey who filled up his sheet with quadrangles. Greg's
+teacher, Mrs. Minerva, told him that he made a triangulation.
+
+\begin{definition}[Triangulation]\label{def:triangulation_subdivision}
+As defined in \cite{deberg_compgeom} (section 9.1), the
+triangulation \(T\) of a planar point set \(P\) is a maximal planar 
+subdivision where \(P\) are the vertices.
+\end{definition}
+
+After seeing Greg's sheet, some of his friends let their connections
+cross each other to get more areas, but Greg considered that
+cheating. To stay the winner of the competition he made a new rule
+that no point connections are allowed to cross.
+
+\begin{definition}[Crossing]\label{def:crossing}
+Two line segments \(s_i=(p_i,q_i)\) and \(s_j=(p_j,q_j)\) with 
+different slope are \gls{cross}, if their intersection is not empty
+and not an endpoint, i.e.
+
+\[
+  s_i, s_j~\gls{cross}
+  \iff
+  p = s_i\cap s_j,~
+  p~\text{point},~
+  p \not\in \{p_i,q_i,p_j,q_j\} \]
+
+Two segments \(s_i\) and \(s_j\) are \gls{ncross} if they are
+not \gls{cross}. A set \(S\) of segments is \gls{cross} if at least
+two segments \(s_i, s_j \in S\) are \gls{cross}. It is \gls{ncross}
+if each pair \(s_i, s_j \in S\) is \gls{ncross}.
+\end{definition}
+
+Joey tried to circumvent Greg's rule by adding new points to his
+sheet. For each new point he added on the outside he could make
+several new connections and therefore got soon many more areas. So
+Greg had to quickly come up with another rule only allowing the
+existing points to take part of the competition.
+
+\begin{definition}[Induced Segments]\label{def:induced_segments}
+The set of induced line segments \(S_P\) of a planar point set \(P\)
+consists of all line segments which have endpoints in \(P\):
+
+\[ S_P := \{\{p,q\} : p,q\in P, p\neq q\} \]
+
+Hereby we consider the line segment from a point \(p\) to a point
+\(q\) as equivalent to the line segment from \(q\) to \(p\) as 
+replacing one by the other does not change the \gls{MMLT}:
+
+\[ \{p, q\} \equiv \{q, p\} \]
+\end{definition}
+
+With those two new rules no one could think of a better way to make
+areas than Greg's triangles. Even Mrs. Minerva said that under those
+conditions it would not be possible to come up with a subdivision
+which has more faces than a triangulation.
+
+\begin{definition}[Triangulation]\label{def:triangulation}
+The \cref{def:triangulation_subdivision} is equivalent to saying
+a triangulation \(T\) of a planar point set \(P\) is a maximal
+\gls{ncross} subset of the induced segments \(S_P\) of \(P\).
+\end{definition}
+
+After class was over, Greg asked Mrs. Minerva if there are different
+kinds of triangulations. 
+%--------------------------------------------------------------------##########
+
+Minimum weight triangulation \cite{mwt_complexity}
+
+ This is 
+
+
+\todo[inline]{Write about related work}
+\begin{itemize}
+  \item Edelsbrunner paper -- open problem \cite{mmlt_problem}
+  \item Sándor's paper --  NP-complete \cite{mmlt_complexity}
+  \item Christiane's paper -- MMLT in polygons \cite{mmlt_polygons}
+  \item Hu paper -- convex polygons in linear time \cite{mmlt_convex_polygons}
+  \item Delaunay triangulation
+\end{itemize}
