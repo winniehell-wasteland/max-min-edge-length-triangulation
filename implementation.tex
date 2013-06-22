@@ -70,6 +70,47 @@ The optimization part itself consists mainly of data structures for
 SAT problems and solutions, an interface for SAT solvers and the
 solvers themselves (currently only CPLEX).
 
+Only segment indices and intersections are passed to the SAT problem.
+This is because geometry does not influence the problem, but only
+topology. Also it is easier that way to keep track of which segments
+take part in the restrictions.
+
+\subsection{SAT problem}
+This class serves two purposes: To grant an interface to the relevant
+data for the SAT (i.e. segments and intersections) and to set the
+short segment range.
+
+\subsection{SAT solution}
+The SAT solution class mainly just stores the segment indices derived
+from solving the SAT problem --- which can be none if no feasible
+solution is found. Additionally it offers methods for drawing short
+segments and separators and for finding the shortest segment of the
+solution.
+
+\subsection{SAT solver}
+To unify the way solving the SAT problem is done, there are three
+interfaces: The base SAT solver and two derived interfaces for
+decision and optimization problems. They all share methods for adding
+forbidden segments, intersection and separation restrictions and for
+running the actual solving. Furthermore there is a method for binding
+short segments to the objective function for optimization problems.
+
+\subsection{CPLEX}
+IBM ILOG CPLEX
+\url{https://www.ibm.com/software/commerce/optimization/cplex-optimizer/}
+is a commercial optimization suite written in C. It contains a
+standalone tool for solving optimization problems and also includes
+libraries for being used in other programs or even other programming
+languages. According to 
+\url{http://plato.asu.edu/ftp/milpc.html} 
+CPLEX is one of the two fastest MILP solvers.
+
+In our application we use the Concert API for C++
+\url{http://pic.dhe.ibm.com/infocenter/cosinfoc/v12r2/topic/ilog.odms.cplex.help/Content/Optimization/Documentation/CPLEX/_pubskel/CPLEX197.html}
+to access CPLEX. It allows for adding variables and restrictions to
+a model, extracting them to more efficient data structures and then
+running several solving algorithms on it.
+
 \section{Remains}
 And then there is the rest: A controller
 class for the whole algorithm which combines all the other components

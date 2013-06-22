@@ -6,15 +6,15 @@ of the problem:
 
 \begin{problem}[\gls{MMLT}]
   \hfill
-	\begin{labeling}{\hspace{4em}}
-		\item[\textbf{Given:}]
-			Set of points in the plane \(P\) and implicitly their induced segments
-			\(S_P\) (see \cref{sec:pre_induced_segments})
-		\item[\textbf{Sought:}]
-			Triangulation \(\gls{Topt}\subseteq S_P\) of \(P\) which maximizes
-			\(\min\limits_{s\in \gls{Topt}} |s|\) 
-			with \(|s|\) being the length of the segment \(s\).
-	\end{labeling}
+  \begin{labeling}{\hspace{4em}}
+    \item[\textbf{Given:}]
+      Set of points in the plane \(P\) and implicitly their induced segments
+      \(S_P\) (see \cref{sec:pre_induced_segments})
+    \item[\textbf{Sought:}]
+      Triangulation \(\gls{Topt}\subseteq S_P\) of \(P\) which maximizes
+      \(\min\limits_{s\in \gls{Topt}} |s|\) 
+      with \(|s|\) being the length of the segment \(s\)
+  \end{labeling}
 \end{problem}
 
 Note that an optimal solution for \gls{MMLT} need not be unique as
@@ -213,21 +213,33 @@ as an optimal \gls{MMLT} solution \gls{Topt}:
 
 \begin{problem}[\gls{NCS}]
   \hfill
-	\begin{labeling}{\hspace{4em}}
-		\item[\textbf{Given:}]
-			Set of short segments \(S\) and their separators \gls{Ssep}.
-		\item[\textbf{Sought:}]
-			Set of \gls{ncross} segments \(\gls{Sopt} \subseteq S \cup
-			\bigcup\limits_{s \in S} \gls{Ssep}[(s)] \) which contains
-			for each segment \(s \in S\) either the segment itself or at
-			least one separator \(\gls{ssep} \in \gls{Ssep}[(s)]\) and
-			maximizes \(\min\limits_{s \in \gls{Sopt}} |s|\).
-	\end{labeling}
+  \begin{labeling}{\hspace{4em}}
+    \item[\textbf{Given:}]
+      Set of short segments \(S\) and their separators \gls{Ssep}.
+    \item[\textbf{Sought:}]
+      Set of \gls{ncross} segments \(\gls{Sopt} \subseteq S \cup
+      \bigcup\limits_{s \in S} \gls{Ssep}[(s)] \) which contains
+      for each segment \(s \in S\) either the segment itself or at
+      least one separator \(\gls{ssep} \in \gls{Ssep}[(s)]\) and
+      maximizes \(\min\limits_{s \in \gls{Sopt}} |s|\).
+  \end{labeling}
 \end{problem}
 
 The \gls{NCS} problem can be modeled as a weighted set cover problem. 
 Therefore it is also NP-hard. \todo{where did the NP-completeness go?}
 \ldots
+
+\begin{problem}
+  \hfill
+  \begin{labeling}{\hspace{4em}}
+    \item[\textbf{Given:}]
+      Set of short segments \(S\) and their separators \gls{Ssep}.
+      
+    \item[\textbf{Sought:}]
+      
+  
+\end{problem}
+
 
 \section{Algorithm}
 

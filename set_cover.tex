@@ -24,13 +24,13 @@ you can see the result in \cref{tab:game_voting}.
   \caption{\label{tab:game_voting}Voting of Greg and his friends}
 \end{table}
 
-Then Greg goes to Mrs. Lloyd and asks her how they could find the 
-best solution. Firstly, she makes another list
-(\cref{tab:example_set_cover}) where she puts all the children's
-names and sums up their preferences.
+Then Greg went to Mrs. Lloyd and asked her how they could find the 
+best solution. Firstly, she made another list
+(\cref{tab:example_set_cover}) where she put all the children's
+names for each game and summed up their preferences.%
 \footnote{Note that I cheated here: Usually you would divide the
 sum of preferences by the number of children who want to play the
-game. But Greg does not know yet how to divide, so I made all the
+game. But Greg did not know yet how to divide, so I made all the
 groups have equal size.}
 
 \begin{table}[ht]
@@ -44,10 +44,37 @@ groups have equal size.}
   \caption{\label{tab:example_set_cover}Summed up preferences for each game}
 \end{table}
 
+Mrs. Lloyd showed the children that there were no two games to cover
+all of them --- so they needed to split up into at least three groups.
+The best way to do so was to play table tennis, hide and seek, and
+on the swings. That was everybody's first choice besides for Jason.
+The problem Mrs. Lloyd solved is an instance of the minimum weight 
+set cover problem.
+
+\begin{problem}[Minimum Weight Set Cover]\label{prob:mwsc}
+  \hfill
+  \begin{labeling}{\hspace{4em}}
+    \item[\textbf{Given:}]
+      A ``universe'' (set) of objects \(U\), 
+      subsets \(S = \{S_i\}\)
+      such that \(\bigcup\limits_{S_i \in S} S_i = U\),
+      and a weight function \(c : S \to \gls{R}_+\)
+    \item[\textbf{Sought:}]
+      A set \(R \subseteq S\)
+      which covers the universe, i.e. 
+      \(\bigcup\limits_{S_i \in R} S_i = U\)
+      and minimizes \(\sum\limits_{S_i \in R} c(S_i)\)
+  \end{labeling}
+\end{problem}
+
+
+
+%---------------------------------------------------------------------##########
+
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.5\textwidth]{img/example_set_cover.jpg}
   \caption{\label{fig:example_set_cover}Example for a set cover instance.}
 \end{figure}
 
-%--------------------------------------------------------------------##########
+NP-hard \cite{set_cover}
