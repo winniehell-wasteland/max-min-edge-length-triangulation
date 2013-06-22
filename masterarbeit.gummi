@@ -1,4 +1,0 @@
-version=0.6.0
-typesetter=pdflatex
-steps=texpdf
-root=/home/winnie/Projects/masterarbeit/doc/masterarbeit.tex
