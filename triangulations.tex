@@ -9,8 +9,9 @@ points. Also he had more bounded areas than any other child ---
 even more than Joey who filled up his sheet with quadrangles. Greg's
 teacher, Mrs. Minerva, told him that he made a triangulation.
 
+\section{Definitions}
 \begin{definition}[Triangulation]\label{def:triangulation_subdivision}
-As defined in \cite{deberg_compgeom} (section 9.1), the
+As defined in \cite[Section 9.1]{deberg_compgeom}, the
 triangulation \(T\) of a planar point set \(P\) is a maximal planar 
 subdivision where \(P\) are the vertices.
 \end{definition}
@@ -68,20 +69,44 @@ a triangulation \(T\) of a planar point set \(P\) is a maximal
 \gls{ncross} subset of the induced segments \(S_P\) of \(P\).
 \end{definition}
 
+\section{Related Work}
 After class was over, Greg asked Mrs. Minerva if there are different
-kinds of triangulations. 
-%--------------------------------------------------------------------##########
+kinds of triangulations. She replied that the problem of 
+triangulating has kept researchers busy for over 100 years already
+\cite{triangulation_hilbert} and that people have found different
+aspects in that a triangulation can be optimal.
 
-Minimum weight triangulation \cite{mwt_complexity}
+The most famous class is the Delaunay triangulation
+\cite[Section 9.2]{deberg_compgeom}. It forces every circumcircle
+of a triangle to be empty of other points and therefore maximizes
+the minimum angle \cite[Theorem 9.9]{deberg_compgeom}. There is an
+edge flipping algorithm which calculates it in \(O(n \log n)\) 
+expected time using \(O(n)\) space 
+\cite[Theorem 9.12]{deberg_compgeom}.
 
- This is 
+There are several other triangulations which can be computed in
+polynomial time. Minimizing the maximum edge length in \(O(n^2)\)
+times was one of the first results \cite{triangulation_minmax_length}.
+The counterpart of a Delaunay triangulation, 
+minimizing the maximum angle, takes \(O(n^2 \log n)\) time and
+\(O(n)\) space \cite{triangulation_edge_insertion}. The same
+approach can also produce triangulations which maximize the minimum 
+height of a triangle. Finally, the same reference shows also that 
+minimizing the maximum slope and minimizing the maximum eccentricity 
+can both be done in \(O(n^3)\) time and \(O(n^2)\) space. A 
+triangulation which minimizes or maximizes the area of triangles can
+be computed in \(O(n^2 \log n)\) time with \(O(n^2)\) space.
+\cite{triangulation_area}
 
+Other triangulations have been proven NP-hard or NP-complete. One
+of them is to minimize the edge length sum (also known as the minimum
+weight triangulation) which is NP-hard \cite{mwt_complexity}. 
+Maximizing the minimum edge length was stated an open problem
+\cite{triangulation_minmax_length} but 20 years later it has been
+shown that it is NP-complete \cite{mmlt_complexity}. The latter one
+remains NP-hard for polygons with holes and interior points
+\cite{mmlt_polygons} but can be solved in \(O(n^3)\) time for simple
+polygons and even in linear time for convex polygons
+\cite{mmlt_convex_polygons}.
 
-\todo[inline]{Write about related work}
-\begin{itemize}
-  \item Edelsbrunner paper -- open problem \cite{mmlt_problem}
-  \item Sándor's paper --  NP-complete \cite{mmlt_complexity}
-  \item Christiane's paper -- MMLT in polygons \cite{mmlt_polygons}
-  \item Hu paper -- convex polygons in linear time \cite{mmlt_convex_polygons}
-  \item Delaunay triangulation
-\end{itemize}
+%---------------------------------------------------------------------##########
