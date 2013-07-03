@@ -1,0 +1,70 @@
+\documentclass{minimal}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{
+	amsmath
+}
+
+\newcommand{\igroups}{\text{igroups}}
+\newcommand{\sep}{\text{sep}}
+
+\begin{document}
+	\textbf{Notation}
+	
+	\begin{alignat*}{1}
+		s_i: &~\text{segments sorted ascending by length} \\\\
+		\igroups(i): &~\text{intersection groups of segment \(i\)} \\
+		& \bigcup\limits_{g\in\igroups(i)} g = \left\{ j : s_i\cap s_j\neq\emptyset \right\}  \\
+		& \text{(each \(g\) represents one intersection point)} \\\\
+		\sep(i): &~\text{set of separators for segment \(i\)} \\
+		& \sep(i) = \left\{ s : s\in g, g\in\igroups(i), s>i \right\}  \\\\
+		K: &~\text{upper bound of ``short'' segments}
+	\end{alignat*}
+	
+	\[I := \{1,\ldots,K\} \]
+
+	\textbf{Winnie}
+	
+	\begin{alignat*}{2}
+		&& \min~ K-x_{\min} \\
+		\intertext{\centering (biggest ``penalty'' for smallest segment)}
+		&\text{s.t.} \\
+		&\forall~i\in I:
+			&~ i\cdot x_i &\leq x_{\min} \\
+		\intertext{\centering (set \(x_{\min}\) to index of smallest picked segment)}
+		&\forall~s\in\bigcup\limits_{i\in I} \sep(i):
+			& \sum\limits_{g\in\igroups(s)}\sum\limits_{j\in g} x_j &\leq 1 \\
+		\intertext{\centering (prevent intersecting separators)}
+		&\forall~i\in I
+			& x_i + \sum\limits_{j\in\sep(i)} x_j &\geq 1 \\
+		\intertext{\centering (pick either segment or separator)}
+		&\forall~i\in I
+			& x_i &\in \{0,1\} \\\\
+		&\forall~s\in\bigcup\limits_{i\in I} \sep(i):
+			& x_s &\in \{0,1\} \\\\
+	\end{alignat*}\pagebreak
+
+	\textbf{Sándor}
+	
+	\begin{alignat*}{2}
+		&& \max~ x_{\max} \\
+		&\text{s.t.} \\
+		&& \sum\limits_{j=1}^K x_j &= x_{\max} \\
+		\intertext{\centering (count the picked segments)}
+		&\forall~i\in\{1,\ldots,K-1\}:
+			& x_i &\geq x_{i+1} \\
+		\intertext{\centering (pick a segment if any longer segment was picked)}
+		&\forall~i\in I :
+			& \sum\limits_{s\in\sep(i)} y_s &= x_i \\
+		\intertext{\centering (count the separators)}
+		&\forall~s\in\bigcup\limits_{i\in I} \sep(i):
+			& \sum\limits_{g\in\igroups(s)}\sum\limits_{j\in g} y_j &\leq 1 \\
+		\intertext{\centering (prevent intersecting separators)}
+		&\forall~i\in I
+			& x_i &\geq 0 \\\\
+		&\forall~s\in\bigcup\limits_{i\in I} \sep(i):
+			& y_s &\in \{0,1\} \\\\
+	\end{alignat*}
+
+\end{document}

@@ -1,2 +1,34 @@
 \chapter{Introduction}
-\todo[inline]{Be a little more verbose}
+Triangulations, that is subdividing the plane (or a polygon) into
+triangles, are a popular topic in computational geometry --- not
+only because of their connections to other problems but also due to
+their practical applications. They can be helpful as a preprocessing 
+in other algorithms
+or as a tool in geometric proofs. One popular example is the
+artgallery problem \todo{cite}. Another area where triangulations
+are widely used is mesh generation and approximation of complex
+geometric structures. \todo{cite}
+
+For different use cases the objectives for a triangulation vary. For
+example, the widely known Delaunay triangulation
+\cite[Section 9.2]{deberg_compgeom} tends to avoid `"skinny'"
+triangles and is therefore useful for meshes. One can image many
+different properties to be optimized: Edge lengths, triangle area,
+angle, and degree in a vertex are some of them. Many have already
+been looked into, but for some of them no application is known by
+now --- so they remain theoretical problems. In
+\cref{cha:triangulations} we will have a brief overview of different
+kinds of triangulations.
+
+This thesis will focus on the \gls{MMLT}. Stated an open problem in
+1991 \cite{triangulation_minmax_length}, it has been proven to be
+NP-complete in 2012 \cite{mmlt_complexity}. However our assumption
+is that the hard instances are rare and that random instances can
+be solved in polynomial time on average. Therefore we provide an
+algorithmic idea in \cref{cha:mmlt} and its implementation in
+\cref{cha:implementation}.
+
+Even though there seems to be no known application of \gls{MMLT} yet,
+it is Greg's \cite{greg} preferred kind of triangulation.
+
+%---------------------------------------------------------------------##########

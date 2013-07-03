@@ -2,13 +2,14 @@
 	a4paper,
 	abstracton,
 	english,
+  ngerman,
 	twoside
 ] {scrreprt}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
-\usepackage[english,ngerman]{babel}
+\usepackage{babel}
 
 \usepackage{
 	amsmath,
@@ -20,6 +21,7 @@
 	isodate,
 	microtype,
 	multirow,
+	pdfpages,
 	todonotes,
 	upgreek,
 	url,
@@ -41,13 +43,14 @@
 % meta data
 \newcommand{\docadvisor}{Prof.~Dr.~Sándor Fekete}
 \newcommand{\docauthor}{Winfried Hellmann}
-\renewcommand{\docdate}{2013-07-01}
+\renewcommand{\docdate}{2013-07-11}
 \newcommand{\docsubject}{Masterarbeit}
 \newcommand{\doctitle}{\foreignlanguage{english}{Computational aspects of%
 \texorpdfstring{\linebreak}{} maxmin (length) triangulations}}
 
 \author{\docauthor}
-\date{\isodate{\docdate}}
+%\date{\isodate{\docdate}}
+\date{\today~(DRAFT)}
 \publishers{\small\textbf{Betreuer: }\docadvisor}
 \subject{\docsubject}
 \title{\doctitle}
@@ -115,6 +118,7 @@ Technische Universität Braunschweig}
 
 \begin{document}
 \selectlanguage{ngerman}
+\isodate
 \pagenumbering{roman}
 %\frontmatter
 
@@ -130,11 +134,12 @@ for my daughter --- in the hope that she will understand sometime
 
 \subsubsection*{\centering Erklärung}
 Ich versichere, die vorliegende Arbeit selbstständig und nur unter
-Benutzung der angegebenen Hilfsmittel angefertigt zu haben.
+Benutzung der angegebenen Hilfsmittel angefertigt zu haben. Bei den
+Experimenten sind keine unbeteiligten Dreiecke zu Schaden gekommen.
 
 \vspace{2em}
 
-Braunschweig, den \printdate{\docdate}
+Braunschweig, den {\origdate\printdate{\docdate}}
 \vspace{5em}
 \cleardoublepage
 
@@ -169,6 +174,11 @@ Braunschweig, den \printdate{\docdate}
 \includeChapter{implementation}
 \includeChapter{results}
 \includeChapter{conclusion}
+
+\begin{appendix}
+  \chapter{Documentation}
+  \includepdf[pages={2-}]{doxygen.pdf}
+\end{appendix}
 
 \addchap{Glossary}
 \printglossary[style=listdotted,type=main]

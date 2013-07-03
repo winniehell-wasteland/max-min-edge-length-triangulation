@@ -1,4 +1,4 @@
-\chapter{Triangulations}
+\chapter{Triangulations}\label{cha:triangulations}
 One day Greg had art class and the children were given sheets of
 paper with points on them. The task was to connect all the points 
 such that they have as many bounded areas as possible. Greg 
@@ -46,16 +46,17 @@ Greg had to quickly come up with another rule only allowing the
 existing points to take part of the competition.
 
 \begin{definition}[Induced Segments]\label{def:induced_segments}
-The set of induced line segments \(S_P\) of a planar point set \(P\)
-consists of all line segments which have endpoints in \(P\):
+  The set of induced line segments \(S_P\) of a planar point set \(P\)
+  consists of all line segments which have endpoints in \(P\):
 
-\[ S_P := \{\{p,q\} : p,q\in P, p\neq q\} \]
+  \[ S_P := \{\{p,q\} : p,q\in P, p\neq q\} \]
 
-Hereby we consider the line segment from a point \(p\) to a point
-\(q\) as equivalent to the line segment from \(q\) to \(p\) as 
-replacing one by the other does not change the \gls{MMLT}:
+  Hereby we consider the line segment from a point \(p\) to a point
+  \(q\) as equivalent to the line segment from \(q\) to \(p\) as 
+  replacing one by the other does not change the \gls{MMLT}:
 
-\[ \{p, q\} \equiv \{q, p\} \]
+  \[ \{p, q\} \equiv \{q, p\} \]
+  \todo[inline]{distinguish segments and edges}
 \end{definition}
 
 With those two new rules no one could think of a better way to make
@@ -64,9 +65,9 @@ conditions it would not be possible to come up with a subdivision
 which has more faces than a triangulation.
 
 \begin{definition}[Triangulation]\label{def:triangulation}
-The \cref{def:triangulation_subdivision} is equivalent to saying
-a triangulation \(T\) of a planar point set \(P\) is a maximal
-\gls{ncross} subset of the induced segments \(S_P\) of \(P\).
+  The \cref{def:triangulation_subdivision} is equivalent to saying
+  a triangulation \(T\) of a planar point set \(P\) is a maximal
+  \gls{ncross} subset of the induced segments \(S_P\) of \(P\).
 \end{definition}
 
 \section{Related Work}

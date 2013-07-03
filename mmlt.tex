@@ -1,15 +1,18 @@
-\chapter{\glsdesc{MMLT}}
-
-This chapter introduces the \gls{MMLT} problem and
-some of its properties. First of all, the formal definition
-of the problem:
+\chapter{\texorpdfstring{\glsdesc{MMLT}}{MMLT}}\label{cha:mmlt}
+During lunch, Greg thought about the different types of triangles
+Mrs. Minerva had told him about (\cref{cha:triangulations}) and which ones
+he liked the most. On one hand he liked triangles with long edges,
+on the other hand Greg was very interested in NP-complete problems.
+Therefore he decided to find out more about \gls{MMLT}, which forces
+the shortest edge to be as long as possible and was proven 
+NP-complete \cite{mmlt_complexity}.
 
 \begin{problem}[\gls{MMLT}]
   \hfill
   \begin{labeling}{\hspace{4em}}
     \item[\textbf{Given:}]
       Set of points in the plane \(P\) and implicitly their induced segments
-      \(S_P\) (see \cref{sec:pre_induced_segments})
+      \(S_P\) (see \cref{def:induced_segments})
     \item[\textbf{Sought:}]
       Triangulation \(\gls{Topt}\subseteq S_P\) of \(P\) which maximizes
       \(\min\limits_{s\in \gls{Topt}} |s|\) 
@@ -17,9 +20,15 @@ of the problem:
   \end{labeling}
 \end{problem}
 
-Note that an optimal solution for \gls{MMLT} need not be unique as
-\cref{fig:non_unique_optimal} shows. As mentioned earlier, the
-\gls{MMLT} problem is NP-complete \cite{mmlt_complexity}.
+When playing around with some small instances \footnote{Greg drew them
+on napkins in the cafeteria.}, Greg discovered two 
+properties of \gls{MMLT}[s]. An optimal solution need not be unique as
+\cref{fig:non_unique_optimal} shows. Additionally 
+\cref{fig:nonoptimal_flips} is an example where an edge flip
+\todo{explain edge flips} is necessary in a local optimum to gain 
+global optimality. Therefore it is not always possible to retrieve an
+optimal \gls{MMLT} solution by starting with an arbitrary
+triangulation and applying locally optimal edge flips.
 
 \begin{figure}[ht]
   \centering
@@ -28,50 +37,88 @@ Note that an optimal solution for \gls{MMLT} need not be unique as
   \caption{Example of different optimal solutions for the same point set.\label{fig:non_unique_optimal}}
 \end{figure}
 
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.5\textwidth]{img/example_nonoptimal_flips.jpg}
+  \todo[inline]{replace}
+  \caption{Example of necessary locally non-optimal flips.\label{fig:nonoptimal_flips}}
+\end{figure}
 
+He tried to identify the good, the bad, and the ugly edges. Bad are
+clearly all short edges as they can worsen the \gls{MMLT} solution.
+Step by step, Greg found the set of all segments which were
+shorter than a certain threshold and named them the
+``short segments''.
 
+\begin{definition}[Short Segments]\label{def:short_segments}
+  Short segments within induced segments \(S_P\) of a planar 
+  point set \(P\) are all segments shorter than a specific length
+  \(\ell\):
 
-\section{Intersection Graph}\label{sec:pre_intersection_graph}
-For a point set \(P\) with \(n\) points in the plane 
-the induced segments (see
-\cref{sec:pre_induced_segments}) have \(\Theta(n^4)\) intersections.
-\cite{quadrilaterals_bound} Thus calculating the intersection graph
-takes \(\Omega(n^4)\) time.
+  \[
+    \gls{Sshort}[(P, \ell)] := \{ s \in S_P : |s| < \ell \}
+  \]
+\end{definition}
 
-\section{Separators}\label{sec:pre_separators}
-The set of separators \(\gls{Ssep}[(s)]\) for a line segment
-\(s\) are all induced line segments \(S_P\) that improve the
-\gls{MMLT} solution, i.e. all with \(s\) \gls{cross} line segments
-which are longer than \(s\):
+The next observation Greg made is that there were some long segments
+which cross the short segments. Greg called them ``separators'' as
+they separate the endpoints of short segments. When the shortest
+segment which is part of the \gls{MMLT} solution has separators, it
+can (under certain conditions) be replaced by a longer segment to
+improve the solution. Therefore separators are the good segments.
 
-\[
-	\gls{Ssep}[(s)] := \{
-		\gls{ssep} : \gls{ssep}\in S_P,
-		|s| < |\gls{ssep}|\land~ s,\gls{ssep}~\gls{cross}
-	\}
-\]
+\begin{definition}[Separators]\label{def:separators}
+  The set of separators \(\gls{Ssep}[(P, s)]\) for a planar point set
+  \(P\) and a line segment
+  \(s\) are all induced line segments \(S_P\) that improve the
+  \gls{MMLT} solution, i.e. all with \(s\) \gls{cross} line segments
+  which are longer than \(s\):
 
-\section{Short Segments}\label{sec:pre_short_segments}
-Short segments are all segments shorter than a specific length:
+  \[
+	  \gls{Ssep}[(P,s)] := \{
+		  \gls{ssep} \in S_P :
+		  |s| < |\gls{ssep}|\land~ s,\gls{ssep}~\gls{cross}
+	  \}
+  \]
+\end{definition}
 
-\[
-  \gls{Sshort}[(l)] := \{ s : \gls{ssep}\in S_P,~ |s| < l \}
-\]
+Finally, there are the ugly segments which are short but have no
+separators such that they can not be replaced \footnote{\ldots which
+is not their fault!}. A special case are segments which do not cross
+at all --- for example those on the convex hull. The ugliest segment
+is the shortest of all ugly segments \gls{snose}.
 
-
+\begin{definition}[shortest non-separable segment]
+  For a set of points in the plane \(P\) and its induced segments
+  \(S_P\) let the shortest non-separable segment \gls{snose} be:
+  \[ 
+    \gls{snose} := \argmin\limits_{
+      s \in S_P~:~ 
+      \gls{Ssep}[(s)] = \emptyset
+    } |s|
+  \]
+\end{definition}
 
 \section{Upper Bounds}
-Every triangulation \(T\subseteq S_P\) of a point set \(P\) itself is
-a maximum set of non-crossing segments. Therefore every segment 
-\(s \in S_P\) that is not crossed by a segment \(s_c \in T\) has
-to be part of \(T\). This leads to the following statement:
+Greg pities the ugly segments because nobody likes them even though
+they are not bad. So he tries to find something where they are good
+at. When the boy thinks back to the art class, he remembers that a 
+triangulation \(T\subseteq S_P\) of a point set \(P\) is a maximum
+set of non-crossing segments (\cref{def:triangulation_subdivision}).
+So any segment \(s \in S_P\) that is
+not crossed by another segment \(\gls{scross} \in T\) has to be part
+of \(T\) itself. A similar property applies to the ugly segments
+in a \gls{MMLT}: Every segment \(s \in S_P\) with no separators
+is either part of an optimal \gls{MMLT} solution \gls{Topt} or
+crosses a shorter (or equal length) segment
+\(\gls{scross} \in \gls{Topt}\).
 
 \begin{theorem}[upper bound]\label{thm:upper_bound}
   Given a point set \(P\) and its induced segments \(S_P\). Let
   \gls{Topt} be an optimal \gls{MMLT} solution for \(P\). Every
   segment \(s\) without separators is an upper bound for \gls{Topt}:
   \[
-    \forall s \in S_P,~ \gls{Ssep}[(s)] = \emptyset :
+    \forall s \in S_P,~ \gls{Ssep}[(P,s)] = \emptyset :
     \min\limits_{s_{\min} \in \gls{Topt}} |s_{\min}| \leq |s|
   \]
   which is equivalent to
@@ -83,95 +130,130 @@ to be part of \(T\). This leads to the following statement:
 \end{theorem}
 
 \begin{proof}
-  Assume \(
-    \exists s \in S_P,~ \gls{Ssep}[(s)] = \emptyset :
-    \min\limits_{s_{\min} \in \gls{Topt}} |s_{\min}| > |s|
-  \). This implies \(s \not\in \gls{Topt}\) and
-  \(\forall s' \in S_P,~ |s'| \leq |s| : s' \not\in \gls{Topt}\).
-  Therefore \(\forall s_c \in S_P,~
-   s, s_c~\gls{cross} : s_c \not\in \gls{Topt}\). This means 
-   that for \gls{Topt} to be a triangulation \(s\) has to be in
-   \gls{Topt} -- which is a contradiction.
+  Assume
+  \[
+    \exists s \in S_P,~ \gls{Ssep}[(P,s)] = \emptyset :
+    \min\limits_{s_{\min} \in \gls{Topt}} |s_{\min}| > |s|.
+  \]
+  This implies \(s \not\in \gls{Topt}\) and
+  \[
+    \forall s' \in S_P :
+    |s'| \leq |s| \implies s' \not\in \gls{Topt}.
+  \]
+  With \(\gls{Ssep}[(P,s)] = \emptyset\) it follows that
+  \[
+    \forall \gls{scross} \in S_P :
+    s, \gls{scross}~\gls{cross}
+    \implies \gls{scross} \not\in \gls{Topt}.
+  \]
+  This means that for \gls{Topt} to be a triangulation \(s\) has 
+  to be in \gls{Topt}---which is a contradiction.
 \end{proof}
 
-This upper bound is not tight as can be seen in
-\cref{fig:upper_bound_tightness}. One of the short segments (red)
-has to be in an optimal \gls{MMLT} solution because their separators
-(green) cross. The short segments are clearly shorter than the 
-segments without separators (blue).
+Unfortunately, Greg soon found an example where the ugly segments did
+not help: \cref{fig:upper_bound_tightness}. In this instance, there
+are short segments which have conflicting (crossing) separators. This
+forces one short segment to be part of the optimal triangulation as
+only one of the separators can be selected. Therefore the upper bound
+for an optimal \gls{MMLT} solution in \cref{thm:upper_bound} is not
+tight.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.5\textwidth]{img/upper_bound_tightness.jpg}
   \todo[inline]{replace}
-  \caption{\label{fig:upper_bound_tightness}Example where the upper
-    bound from \cref{thm:upper_bound} is not tight.}
-\end{figure}
+  \caption{
+    \label{fig:upper_bound_tightness}
+    Example where the upper bound from \cref{thm:upper_bound} is not 
+    tight. One of the short segments (red) is part of an optimal 
+    \gls{MMLT} solution because their separators (green) cross. Thus
+    the shortest segment in the solution is shorter than the shortest
+    one of all segments without separators (blue).
+  }
+\end{figure}  
 
-\begin{definition}[shortest non-separable segment]
-  For a set of points in the plane \(P\) and its induced segments
-  \(S_P\) let the shortest non-separable segment \gls{snose} be:
-  \[ \gls{snose} := \argmin\limits_{s \in S_P,~\gls{Ssep}[(s)] = \emptyset} |s| \]
+Greg remembered that he had met conflicting segments in 
+\cref{fig:nonoptimal_flips} already. By conflicting he meant that the
+separator \gls{ssep} of a segment \(s\) either crossed any segment
+\gls{scross} shorter than \(s\) or the separator which replaced
+\gls{scross}. 
+
+%---------------------------------------------------------------------##########
+
+\begin{definition}[Conflicting Segments]\label{def:conflicting_segments}
+  Given planar point set \(P\) and its induced segments \(S_P\). The
+  (potentially) conflicting segments for a segment \(s \in S_P\) are:
+  \[
+    \gls{Sconf}[(P,s)] :=
+      \bigcup_{\gls{scross} \in \gls{Sshort}[(|s|)]}
+      \gls{scross} \cup \gls{Ssep}[(\gls{scross})]
+  \]
 \end{definition}
 
-\Cref{thm:upper_bound} can be generalized by taking
-conflicting separators into account. A segment may be part of an
-optimal \gls{MMLT} solution because all of its separators interfere
-with those of a shorter segment.
+Greg immediately started to rethink his earlier understanding of ugly
+segment. His opinion was that short segments with only conflicting
+separators were as ugly as those with no separators at all. The latter
+ones are even a special case of the first group. So he changed
+\cref{thm:upper_bound} to take conflicting separators into account. A 
+segment may be part of an optimal \gls{MMLT} solution because all of
+its separators interfere with other segments. The following
+\namecref{thm:tight_upper_bound}
+assumes knowledge of the optimal triangulation, so conflicting segments 
+can only be found iteratively after the triangulation has already be 
+calculated for shorter segments. However, we will see how conflicts can 
+be formulated independently later on.
 
 \begin{theorem}[tight upper bound]\label{thm:tight_upper_bound}
   Given a point set \(P\) and its induced segments \(S_P\). Let
-  \gls{Topt} be an optimal \gls{MMLT} solution for \(P\). Let
-  \(S_\textnormal{conf}(s)\) be the potentially conflicting
-  separators for a segment \(s\):
-  \[
-    \gls{Sconf}[(s)] :=
-      \gls{Topt} \cap \bigcup_{s' \in \gls{Sshort}[(|s|)]}
-      \gls{Ssep}[(s')]
-  \]
+  \gls{Topt} be an optimal \gls{MMLT} solution for \(P\).
   Every segment \(s\) without non-conflicting separators is an upper
   bound for \gls{Topt}:
   \[
-    \forall s \in S_P,~ 
+    \gls{Ssep}['(P,s)] := 
     \{
-      \gls{ssep} \in \gls{Ssep}[(s)] : 
-      \gls{ssep} \cup \gls{Sconf}[(s)]~\gls{ncross}
-    \} = \emptyset :
+      \gls{ssep} \in \gls{Ssep}[(P,s)] : 
+      \gls{ssep} \cup (\gls{Topt} \cap \gls{Sconf}[(P,s)])~\gls{ncross}
+    \}
+  \]
+  \[
+    \forall s \in S_P : \gls{Ssep}['(P,s)] = \emptyset \implies
     \min\limits_{s_{\min} \in \gls{Topt}} |s_{\min}| \leq |s|
   \]
+  \todo[inline]{can we get \gls{Topt} out of the bound?}
 \end{theorem}
+
 
 \begin{proof}
   This proof is very similar to the proof of \cref{thm:upper_bound}.
   Assume
   \[
-    \exists s \in S_P,~ 
-    \{
-      \gls{ssep} \in \gls{Ssep}[(s)] : 
-      \gls{ssep} \cup \gls{Sconf}[(s)]~\gls{ncross}
-    \} = \emptyset :
-    \min\limits_{s_{\min} \in \gls{Topt}} |s_{\min}| > |s|
+    \exists s \in S_P :
+    \gls{Ssep}['(P,s)] = \emptyset
+    \land \min\limits_{s_{\min} \in \gls{Topt}} |s_{\min}| > |s|.
   \]
-  which implies \(s \not\in \gls{Topt}\) and
-  \(\forall s' \in S_P,~ |s'| \leq |s| : s' \not\in \gls{Topt}\).
+  That implies \(s \not\in \gls{Topt}\) and
+  \[
+    \forall s' \in S_P : |s'| \leq |s| \implies s' \not\in \gls{Topt}.
+  \]
   
-  If \(\gls{Ssep}[(s)] = \emptyset\) itself, according to
+  If \(\gls{Ssep}[(P,s)] = \emptyset\) itself, according to
   \cref{thm:upper_bound} it holds that
   \[ \min\limits_{s_{\min} \in \gls{Topt}} |s_{\min}| \leq |s|\]
   which is a contradiction.
   
-  Now assume \(\gls{Ssep}[(s)] \not= \emptyset\). The
+  Now assume \(\gls{Ssep}[(P,s)] \not= \emptyset\). The
   following holds:
   \[
-    \forall \gls{ssep} \in \gls{Ssep}[(s)] :
-    \gls{ssep} \cup \gls{Sconf}[(s)]~\gls{cross}.
+    \forall \gls{ssep} \in \gls{Ssep}[(P,s)] :
+    \gls{ssep} \cup (\gls{Topt} \cap \gls{Sconf}[(P,s)])~\gls{cross}.
   \]
   
-  With \(\gls{Sconf}[(s)] \subseteq \gls{Topt}\) this implies
-  \(
-    \forall \gls{ssep} \in \gls{Ssep}[(s)] :
-    \gls{ssep} \not\in \gls{Topt}
-  \). Therefore
+  With \gls{Topt} being a triangulation this implies
+  \[
+    \forall \gls{ssep} \in \gls{Ssep}[(P,s)] :
+    \gls{ssep} \not\in \gls{Topt}.
+  \]
+  Therefore
   \[
     \forall s_c \in S_P,~ s, s_c~\gls{cross} : 
     s_c \not\in \gls{Topt}.
@@ -188,7 +270,7 @@ with those of a shorter segment.
   \[
     \lnot\exists
     \gls{ssep} \in \gls{Ssep}[(s_{\min})] : 
-    \gls{ssep} \cup \gls{Sconf}[(s_{\min})]~\gls{ncross}
+    \gls{ssep} \cup (\gls{Topt} \cap \gls{Sconf}[(s_{\min})])~\gls{ncross}
   \]
   
   Then \(T\) is optimal.
@@ -226,8 +308,7 @@ as an optimal \gls{MMLT} solution \gls{Topt}:
 \end{problem}
 
 The \gls{NCS} problem can be modeled as a weighted set cover problem. 
-Therefore it is also NP-hard. \todo{where did the NP-completeness go?}
-\ldots
+Therefore it is also NP-hard.
 
 \begin{problem}
   \hfill
@@ -235,26 +316,83 @@ Therefore it is also NP-hard. \todo{where did the NP-completeness go?}
     \item[\textbf{Given:}]
       Set of short segments \(S\) and their separators \gls{Ssep}.  
     \item[\textbf{Sought:}]
+      \todo[inline]{here comes the reduction}
   \end{labeling}
 \end{problem}
 
 
 \section{Algorithm}
+Now that Greg knew all about \gls{MMLT} he could start developing
+\cref{alg:mmlt}. It consists of three main components: Constructing
+the partial intersection graph, running a binary search over the short
+segments and solving the smaller \gls{NCS} problem in each step, and
+using the resulting segments in a constrained triangulation.
 
-\begin{verbatim}
-- induced segments
-- intersection graph (finding s_nose & separators)
-- binary search
-  - linear programming for non-separable segment
-- adding segments for triangulation
-\end{verbatim}
+\todo[inline]{mention segment index and introduce notation \protect\ensuremath{S_P[i]}}
+\begin{algorithm}
+  \DontPrintSemicolon
+  \KwIn{Planar point set \(P\)}
+  \KwOut{An optimal \gls{MMLT}} solution for \(P\)
+  
+  \SetKwData{last}{last}
+  \SetKwData{lb}{lb}
+  \SetKwData{mid}{mid}
+  \SetKwData{ub}{ub}
+  
+  Generate the induced segments \(S_P\) for \(P\) \;
+  Find the shortest non-separable segment \gls{snose}
+  and calculate intersections for 
+  \(\gls{Sshort}[(|\gls{snose}|)]\) and their separators \;
+  Set the lower bound \(\lb = 0\) \;
+  Set the upper bound \ub such that \(S_P[\ub] = \gls{snose}\) \;
+  Set \(\last = \emptyset\) \;
+  \While{\lb < \ub}{
+    Set \(\mid = \left\lceil\frac{\lb + \ub}{2}\right\rceil\) \;
+    Find optimal \gls{NCS} solution \gls{Sopt}
+    for \(\gls{Sshort}[(P,|S_P[\ub]|)]\) \linebreak
+    without using any segment from \(\gls{Sshort}[(P,|S_P[\mid]|)]\) \;
+    \eIf{there is a solution \gls{Sopt}}{
+      Set \(\last = \gls{Sopt}\) \;
+      Maximize \lb such that \(|S_P[\lb]| = \min\limits_{s \in \gls{Sopt}} |s|\) \;
+      \If{\lb > \ub}{
+        \lb = \ub \;
+      }
+    }{
+      \eIf{\(\lb < \mid\)}{
+        Set \(\ub = \mid - 1\) \;
+      }{
+        Set \(\ub = \lb\) \;
+      }
+    }
+  }
+  \KwRet{constrained triangulation \gls{Topt} with \last as constraints}
+  \caption{\label{alg:mmlt}\gls{MMLT} algorithm}
+\end{algorithm}
 
 \begin{algorithm}
-\DontPrintSemicolon
-\KwIn{A set of points in the plane \(P\)}
-\KwOut{An optimal solution for \gls{MMLT} -- if there is one}
-Generate the induced segments \(S_P\) for \(P\) \;
-bar \;
-\caption{\gls{MMLT} algorithm}
+  \DontPrintSemicolon
+  
+  \KwIn{Set of segments \(S\)}
+  \KwOut{Intersection graph \(G=(S,C)\) where \(C \subseteq S^2\) 
+    are the intersections}
+  
+  Set \(C = \emptyset\) \;
+  \ForEach{\(s \in S\)}{
+    \ForEach{\(\gls{scross} \in S\) with \(|s| \leq |\gls{scross}|\)}{
+      \If{\(s\) and \gls{scross} are \gls{cross}}{
+        Add \(\{s, \gls{scross}\}\) to \(C\) \;
+      }
+    }
+  }
+  \KwRet{\(G=(S,C)\)}
+  \caption{intersection algorithm}
 \end{algorithm}
-\todo{foo and bar}
+  
+%---------------------------------------------------------------------##########
+
+% \section{Intersection Graph}\label{sec:pre_intersection_graph}
+% For a point set \(P\) with \(n\) points in the plane 
+% the induced segments (see
+% \cref{def:induced_segments}) have \(\Theta(n^4)\) intersections.
+% \cite{quadrilaterals_bound} Thus calculating the intersection graph
+% takes \(\Omega(n^4)\) time.
