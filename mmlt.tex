@@ -44,6 +44,50 @@ triangulation and applying locally optimal edge flips.
   \caption{Example of necessary locally non-optimal flips.\label{fig:nonoptimal_flips}}
 \end{figure}
 
+\begin{problem}[\gls{TMMLT}]
+  \hfill
+  \begin{labeling}{\hspace{4em}}
+    \item[\textbf{Given:}]
+      Set of points in the plane \(P\)
+    \item[\textbf{Sought:}]
+      Topological triangulation \(\gls{Topt} = (V,E)\) of \(P\)
+      which maximizes \(\min\limits_{e\in E} e\) with
+      \[
+        e_{s_i} < e_{s_j}
+        \iff |s_i| < |s_j|
+        \lor ((|s_i| = |s_j|) \land (s_i < s_j))
+      \]
+      and \( s_i < s_j \) being the lexicographical order of
+      the segments.
+  \end{labeling}
+\end{problem}
+
+\begin{theorem}
+  The optimal edge in a \gls{TMMLT} solution is unique.
+\end{theorem}
+
+\begin{proof}
+  \ldots\todo[inline]{proof}
+\end{proof}
+
+\begin{theorem}
+  Every optimal \gls{TMMLT} solution is an optimal \gls{MMLT} solution.
+\end{theorem}
+
+\begin{proof}
+  \ldots\todo[inline]{proof}
+\end{proof}
+
+\begin{verbatim}
+  IP:
+  - maximize min. edge index
+  - no conflicting edges
+  - for every edge: either edge or crossing edge picked
+  - n^2 variables, O(n^4) restrictions
+\end{verbatim}
+\todo[inline]{notes}
+
+\section{Separators}
 He tried to identify the good, the bad, and the ugly edges. Bad are
 clearly all short edges as they can worsen the \gls{MMLT} solution.
 Step by step, Greg found the set of all segments which were
@@ -99,7 +143,6 @@ is the shortest of all ugly segments \gls{snose}.
   \]
 \end{definition}
 
-\section{Upper Bounds}
 Greg pities the ugly segments because nobody likes them even though
 they are not bad. So he tries to find something where they are good
 at. When the boy thinks back to the art class, he remembers that a 
@@ -310,6 +353,16 @@ as an optimal \gls{MMLT} solution \gls{Topt}:
 The \gls{NCS} problem can be modeled as a weighted set cover problem. 
 Therefore it is also NP-hard.
 
+\begin{verbatim}
+  IP:
+  - maximize min. edge index
+  - no conflicting edges
+  - for every short edge: either edge or separator picked
+  - worst case: n^2 variables, O(n^4) restrictions
+  - random points: O(n) variables, < O(n^3) restrictions?
+\end{verbatim}
+\todo[inline]{notes}
+
 \begin{problem}
   \hfill
   \begin{labeling}{\hspace{4em}}
@@ -369,6 +422,20 @@ using the resulting segments in a constrained triangulation.
   \caption{\label{alg:mmlt}\gls{MMLT} algorithm}
 \end{algorithm}
 
+\section{Intersection Graph}\label{sec:mmlt_intersection_graph}
+For a point set \(P\) with \(n\) points in the plane 
+the induced segments (see
+\cref{def:induced_segments}) have \(\Theta(n^4)\) intersections.
+\cite{quadrilaterals_bound} Thus calculating the intersection graph
+takes \(\Omega(n^4)\) time.
+
+\begin{verbatim}
+  - link to sweep line algorithm
+  - sweep line takes O(n^4 \log n) time => brute force is faster
+  - adjacency list, because sparse (experiment? proof?)
+\end{verbatim}
+\todo[inline]{notes}
+
 \begin{algorithm}
   \DontPrintSemicolon
   
@@ -389,10 +456,3 @@ using the resulting segments in a constrained triangulation.
 \end{algorithm}
   
 %---------------------------------------------------------------------##########
-
-% \section{Intersection Graph}\label{sec:pre_intersection_graph}
-% For a point set \(P\) with \(n\) points in the plane 
-% the induced segments (see
-% \cref{def:induced_segments}) have \(\Theta(n^4)\) intersections.
-% \cite{quadrilaterals_bound} Thus calculating the intersection graph
-% takes \(\Omega(n^4)\) time.
