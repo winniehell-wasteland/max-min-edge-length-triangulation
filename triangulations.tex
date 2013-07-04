@@ -1,7 +1,13 @@
 \chapter{Triangulations}\label{cha:triangulations}
 One day Greg had art class and the children were given sheets of
 paper with points on them. The task was to connect all the points 
-such that they have as many bounded areas as possible. Greg 
+such that they have as many bounded areas as possible. 
+
+\begin{definition}[Planar Subdivision]
+  \ldots\todo[inline]{definition}
+\end{definition}
+
+Greg 
 connected all the points taking care that the connections would only 
 intersect in the given points. He was happy to see that the result 
 consisted only of triangles filling up the whole space within the 
@@ -9,13 +15,13 @@ points. Also he had more bounded areas than any other child ---
 even more than Joey who filled up his sheet with quadrangles. Greg's
 teacher, Mrs. Minerva, told him that he made a triangulation.
 
-\section{Definitions}
 \begin{definition}[Triangulation]\label{def:triangulation_subdivision}
 As defined in \cite[Section 9.1]{deberg_compgeom}, the
 triangulation \(T\) of a planar point set \(P\) is a maximal planar 
 subdivision where \(P\) are the vertices.
 \end{definition}
 
+\section{Basics}
 After seeing Greg's sheet, some of his friends let their connections
 cross each other to get more areas, but Greg considered that
 cheating. To stay the winner of the competition he made a new rule
@@ -48,15 +54,14 @@ existing points to take part of the competition.
 \begin{definition}[Induced Segments]\label{def:induced_segments}
   The set of induced line segments \(S_P\) of a planar point set \(P\)
   consists of all line segments which have endpoints in \(P\):
-
-  \[ S_P := \{\{p,q\} : p,q\in P, p\neq q\} \]
-
-  Hereby we consider the line segment from a point \(p\) to a point
-  \(q\) as equivalent to the line segment from \(q\) to \(p\) as 
-  replacing one by the other does not change the \gls{MMLT}:
-
-  \[ \{p, q\} \equiv \{q, p\} \]
-  \todo[inline]{distinguish segments and edges}
+  \[
+    S_P := \{(p,q) : p,q\in P, p < q\}
+  \]
+  Let \(<\) hereby denote the lexicographical order, that is for
+  \(p = (p_x,p_y)\) and \(q = (q_x,q_y)\):
+  \[
+    p < q \iff (p_x < q_x) \lor ((p_x = q_x) \land (p_y < q_y)).
+  \]
 \end{definition}
 
 With those two new rules no one could think of a better way to make
@@ -69,6 +74,103 @@ which has more faces than a triangulation.
   a triangulation \(T\) of a planar point set \(P\) is a maximal
   \gls{ncross} subset of the induced segments \(S_P\) of \(P\).
 \end{definition}
+
+\begin{definition}[Constrained Triangulation]
+  \label{def:constrained_triangulation}
+  \ldots\todo[inline]{definition}
+\end{definition}
+
+\section{Topological Triangulations}
+\todo[inline]{glue text}
+
+\begin{verbatim}
+  - observation: when changing geometry but not topology,
+    certain properties stay the same
+  - e.g. angle/area/length preserving transformation
+    => many optimal triangulations map to one topological
+    (size doesn't matter)
+\end{verbatim}
+
+\begin{definition}[Conflicting Edges]\label{def:conflicting}
+  For a set of edges \(E\) and a set of conflicts \(C \subseteq E^2\):
+  \begin{alignat*}{1}
+    e_i, e_j~\gls{conf} &\iff (e_i, e_j) \in C \\
+    e_i, e_j~\gls{nconf} &\iff (e_i, e_j) \not\in C \\
+    E' \subseteq E~\gls{conf} &\iff \exists~e_i, e_j \in E' : e_i, e_j~\gls{conf} \\
+    E' \subseteq E~\gls{nconf} &\iff \lnot(E'~\gls{conf})
+  \end{alignat*}
+\end{definition}
+
+\todo[inline]{glue text}
+
+\begin{definition}[Conflicting Graph]\label{def:conflict_graph}
+  The conflict graph \(G_C(S) = (V,E)\) for a set of segments \(S\)
+  is an undirected graph with
+  \begin{alignat*}{1}
+    V &= \{e_s = \{v_p, v_q\} : s = (p,q) \in S\} \\
+    E &= \{
+      \{e_{s_i}, e_{s_j}\} : 
+      e_{s_i}, e_{s_j} \in V 
+      \land s_i, s_j~\gls{cross}
+    \}.
+  \end{alignat*}
+  For convenience we define \(e \in G_C(S) \iff e \in E\).
+\end{definition}
+
+\todo[inline]{glue text}
+
+\begin{definition}[Topological Triangulation]
+  A topological triangulation \(T=(V,E)\) of a planar point set \(P\)
+  is an undirected planar graph with the vertex set
+  \( V = \{v_p : p \in P\} \)
+  representing \(P\) and a maximal \gls{nconf} edge set
+  \(E \subseteq V^2\) with respect to the conflict graph
+  \(G_C(S_P)\).
+\end{definition}
+
+\todo[inline]{glue text}
+
+\begin{theorem}
+  Every triangulation \(T\) of a planar point set \(P\) can be
+  transformed into a topological triangulation \(T'\) of \(P\)
+  and vice versa in \(O(|P|^2)\) time.
+\end{theorem}
+
+\begin{proof}
+  \ldots\todo[inline]{proof}
+\end{proof}
+
+\todo[inline]{glue text}
+
+\begin{definition}[Constrained Topological Triangulation]
+  \label{def:constr_top_triangulation}
+  A constrained topological triangulation \(T=(V,E)\) of a planar
+  point set \(P\) with constraints \(C \subseteq P^2\) is a
+  topological triangulation with
+  \[
+    \{\{v_p,v_q\} : (p,q) \in C\} \subseteq E.
+  \]
+\end{definition}
+
+\begin{theorem}
+  Every constrained triangulation \(T\) of a planar point set \(P\) can be
+  transformed into a constrained topological triangulation \(T'\) of \(P\)
+  and vice versa in \(O(|P|^2)\) time.
+\end{theorem}
+
+\begin{proof}
+  \ldots\todo[inline]{proof}
+\end{proof}
+
+%---------------------------------------------------------------------##########
+
+\section{Edge Flipping}
+\begin{verbatim}
+  - what is a flip?
+  - flip graph complexity
+  - local vs. global optimal
+  - hint to edge flipping paper
+\end{verbatim}
 
 \section{Related Work}
 After class was over, Greg asked Mrs. Minerva if there are different
