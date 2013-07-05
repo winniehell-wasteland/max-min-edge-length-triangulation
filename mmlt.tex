@@ -44,26 +44,42 @@ triangulation and applying locally optimal edge flips.
   \caption{Example of necessary locally non-optimal flips.\label{fig:nonoptimal_flips}}
 \end{figure}
 
-\begin{problem}[\gls{TMMLT}]
+\begin{definition}[Edge Length Order]
+  Given a set of edges \(E\) representing a set of line segments
+  \(S\) and two edges \(e_{s_i}, e_{s_j} \in E\) representing two
+  line segments \(s_i,s_j \in S\), respectively. Let \(|s|\) for
+  \(s \in S\) be the segment length and \( s_i < s_j \) the
+  lexicographical order of \(s_i, s_j \in S\). The edge length
+  order is defined as  
+  \[
+    e_{s_i} < e_{s_j}
+    \iff |s_i| < |s_j|
+    \lor ((|s_i| = |s_j|) \land (s_i < s_j)).
+  \]
+\end{definition}
+
+\begin{definition}[Edge Length Index]
+  Given a set of edges \(E\) representing a set of line segments
+  \(S\) and an edge \(e \in E\). The edge length index \(|e|\) is the
+  index of \(e\) in \(E\) sorted by edge length order.
+\end{definition}
+
+%---------------------------------------------------------------------##########
+
+\begin{problem}[\gls{MMELIT}]
   \hfill
   \begin{labeling}{\hspace{4em}}
     \item[\textbf{Given:}]
       Set of points in the plane \(P\)
     \item[\textbf{Sought:}]
       Topological triangulation \(\gls{Topt} = (V,E)\) of \(P\)
-      which maximizes \(\min\limits_{e\in E} e\) with
-      \[
-        e_{s_i} < e_{s_j}
-        \iff |s_i| < |s_j|
-        \lor ((|s_i| = |s_j|) \land (s_i < s_j))
-      \]
-      and \( s_i < s_j \) being the lexicographical order of
-      the segments.
+      which maximizes the minimum edge length index: 
+      \(\min\limits_{e\in E} |e|\).
   \end{labeling}
 \end{problem}
 
 \begin{theorem}
-  The optimal edge in a \gls{TMMLT} solution is unique.
+  The optimal edge in a \gls{MMELIT} solution is unique.
 \end{theorem}
 
 \begin{proof}
@@ -71,7 +87,7 @@ triangulation and applying locally optimal edge flips.
 \end{proof}
 
 \begin{theorem}
-  Every optimal \gls{TMMLT} solution is an optimal \gls{MMLT} solution.
+  Every optimal \gls{MMELIT} solution is an optimal \gls{MMLT} solution.
 \end{theorem}
 
 \begin{proof}
@@ -220,8 +236,6 @@ Greg remembered that he had met conflicting segments in
 separator \gls{ssep} of a segment \(s\) either crossed any segment
 \gls{scross} shorter than \(s\) or the separator which replaced
 \gls{scross}. 
-
-%---------------------------------------------------------------------##########
 
 \begin{definition}[Conflicting Segments]\label{def:conflicting_segments}
   Given planar point set \(P\) and its induced segments \(S_P\). The
