@@ -54,6 +54,13 @@
   type={prop}
 }
 
+\newglossaryentry{noverlap}
+{
+  name={non-overlapping},
+  description={see \cref{def:overlapping_segments}},
+  type={prop}
+}
+
 % sets
 \newglossary{set}{sets.gls}{sets.glo}{Sets}
 \newglossaryentry{R}
@@ -61,6 +68,13 @@
   name={\ensuremath{\mathbb{R}}},
   description={real numbers},
   type={ignored}
+}
+
+\newglossaryentry{Gconf}
+{
+  name={\ensuremath{G_\textnormal{conf}}},
+  description={conflict graph (see \cref{def:conflict_graph})},
+  type={set}
 }
 
 \newglossaryentry{Sconf}
@@ -77,17 +91,17 @@
   type={set}
 }
 
-\newglossaryentry{Ssep}
+\newglossaryentry{Esep}
 {
-  name={\ensuremath{S_\textnormal{sep}}},
+  name={\ensuremath{E_\textnormal{sep}}},
   description={set of separators (see \cref{def:separators})},
   type={set}
 }
 
-\newglossaryentry{Sshort}
+\newglossaryentry{Eshort}
 {
-  name={\ensuremath{S_\textnormal{short}}},
-  description={set of short segments (see \cref{def:short_segments})},
+  name={\ensuremath{E_\textnormal{short}}},
+  description={set of short edges (see \cref{def:short_edges})},
   type={set}
 }
 
@@ -99,6 +113,18 @@
 }
 
 % variables
+\newglossaryentry{enose}
+{
+  name={\ensuremath{e_\textnormal{nose}}},
+  description={shortest non-separable edge}
+}
+
+\newglossaryentry{esep}
+{
+  name={\ensuremath{e_\textnormal{sep}}},
+  description={separating edge}
+}
+
 \newglossaryentry{snc}
 {
   name={\ensuremath{s_\textnormal{nc}}},
@@ -110,16 +136,4 @@
   name={\ensuremath{s_{\times}}},
   description={crossing segment},
   first={\ensuremath{s_{\times}}}
-}
-
-\newglossaryentry{snose}
-{
-  name={\ensuremath{s_\textnormal{nose}}},
-  description={non-separable segment}
-}
-
-\newglossaryentry{ssep}
-{
-  name={\ensuremath{s_\textnormal{sep}}},
-  description={separating segment}
 }

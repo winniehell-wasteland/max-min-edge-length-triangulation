@@ -64,8 +64,6 @@ triangulation and applying locally optimal edge flips.
   index of \(e\) in \(E\) sorted by edge length order.
 \end{definition}
 
-%---------------------------------------------------------------------##########
-
 \begin{problem}[\gls{MMELIT}]
   \hfill
   \begin{labeling}{\hspace{4em}}
@@ -110,13 +108,12 @@ Step by step, Greg found the set of all segments which were
 shorter than a certain threshold and named them the
 ``short segments''.
 
-\begin{definition}[Short Segments]\label{def:short_segments}
-  Short segments within induced segments \(S_P\) of a planar 
-  point set \(P\) are all segments shorter than a specific length
-  \(\ell\):
-
+\begin{definition}[Short Edges]\label{def:short_edges}
+  Given a set of edges \(E\) representing a set of line segments
+  \(S\). Short edges within \(E\) are all edges with an edge
+  length index smaller than a certain threshold:
   \[
-    \gls{Sshort}[(P, \ell)] := \{ s \in S_P : |s| < \ell \}
+    \gls{Eshort}[(P, \ell)] := \{ e \in E : |e| < \ell \}
   \]
 \end{definition}
 
@@ -128,16 +125,15 @@ can (under certain conditions) be replaced by a longer segment to
 improve the solution. Therefore separators are the good segments.
 
 \begin{definition}[Separators]\label{def:separators}
-  The set of separators \(\gls{Ssep}[(P, s)]\) for a planar point set
-  \(P\) and a line segment
-  \(s\) are all induced line segments \(S_P\) that improve the
-  \gls{MMLT} solution, i.e. all with \(s\) \gls{cross} line segments
-  which are longer than \(s\):
-
+  Given a set of edges \(E\) representing a set of line segments
+  \(S\) and a set of conflicts \(C \subseteq E^2\). The set of separators
+  \(\gls{Esep}[(E, C, e)]\) for an edge \(e \in E\) are all edges
+  that improve the \gls{MMELIT} solution, i.e. all in \(C\) with
+  \(e\) \gls{conf} edges which have a higher edge length index:
   \[
-	  \gls{Ssep}[(P,s)] := \{
-		  \gls{ssep} \in S_P :
-		  |s| < |\gls{ssep}|\land~ s,\gls{ssep}~\gls{cross}
+	  \gls{Esep}[(E,C,e)] := \{
+		  \gls{esep} \in E:
+		  |e| < |\gls{esep}|\land \{e,\gls{esep}\} \in C
 	  \}
   \]
 \end{definition}
@@ -146,16 +142,18 @@ Finally, there are the ugly segments which are short but have no
 separators such that they can not be replaced \footnote{\ldots which
 is not their fault!}. A special case are segments which do not cross
 at all --- for example those on the convex hull. The ugliest segment
-is the shortest of all ugly segments \gls{snose}.
+is the shortest of all ugly segments \gls{enose}.
 
-\begin{definition}[shortest non-separable segment]
-  For a set of points in the plane \(P\) and its induced segments
-  \(S_P\) let the shortest non-separable segment \gls{snose} be:
+\begin{definition}[Shortest Non-separable Edge]
+  Given a set of edges \(E\) representing a set of line segments
+  \(S\) and a set of conflicts \(C \subseteq E^2\). The
+  \emph{shortest non-separable edge} \gls{enose} is the edge with 
+  the smallest edge length index which has no separators:
   \[ 
-    \gls{snose} := \argmin\limits_{
-      s \in S_P~:~ 
-      \gls{Ssep}[(s)] = \emptyset
-    } |s|
+    \gls{enose} := \argmin\limits_{
+      e \in E :
+      \gls{Esep}[(E,C,e)] = \emptyset
+    } |e|
   \]
 \end{definition}
 
@@ -167,31 +165,32 @@ set of non-crossing segments (\cref{def:triangulation_subdivision}).
 So any segment \(s \in S_P\) that is
 not crossed by another segment \(\gls{scross} \in T\) has to be part
 of \(T\) itself. A similar property applies to the ugly segments
-in a \gls{MMLT}: Every segment \(s \in S_P\) with no separators
-is either part of an optimal \gls{MMLT} solution \gls{Topt} or
+in a \gls{MMELIT}: Every segment \(s \in S_P\) with no separators
+is either part of an optimal \gls{MMELIT} solution \gls{Topt} or
 crosses a shorter (or equal length) segment
 \(\gls{scross} \in \gls{Topt}\).
 
 \begin{theorem}[upper bound]\label{thm:upper_bound}
-  Given a point set \(P\) and its induced segments \(S_P\). Let
-  \gls{Topt} be an optimal \gls{MMLT} solution for \(P\). Every
+  Given a set of edges \(E\) representing a set of line segments
+  \(S\) and a set of conflicts \(C \subseteq E^2\). Let
+  \gls{Topt} be an optimal \gls{MMELIT} solution for \(P\). Every
   segment \(s\) without separators is an upper bound for \gls{Topt}:
   \[
-    \forall s \in S_P,~ \gls{Ssep}[(P,s)] = \emptyset :
+    \forall s \in S_P,~ \gls{Esep}[(P,s)] = \emptyset :
     \min\limits_{s_{\min} \in \gls{Topt}} |s_{\min}| \leq |s|
   \]
   which is equivalent to
   \[
-    \forall s \in S_P:~ \lnot\exists \gls{ssep} \in S_P :
-    |s| < |\gls{ssep}| \land~ s, \gls{ssep}~ \gls{cross}
+    \forall s \in S_P:~ \lnot\exists \gls{Esep} \in S_P :
+    |s| < |\gls{Esep}| \land~ s, \gls{Esep}~ \gls{cross}
     \implies \min\limits_{s_{\min} \in \gls{Topt}} |s_{\min}| \leq |s|
   \]
 \end{theorem}
-
+%---------------------------------------------------------------------##########
 \begin{proof}
   Assume
   \[
-    \exists s \in S_P,~ \gls{Ssep}[(P,s)] = \emptyset :
+    \exists s \in S_P,~ \gls{Esep}[(P,s)] = \emptyset :
     \min\limits_{s_{\min} \in \gls{Topt}} |s_{\min}| > |s|.
   \]
   This implies \(s \not\in \gls{Topt}\) and
@@ -199,7 +198,7 @@ crosses a shorter (or equal length) segment
     \forall s' \in S_P :
     |s'| \leq |s| \implies s' \not\in \gls{Topt}.
   \]
-  With \(\gls{Ssep}[(P,s)] = \emptyset\) it follows that
+  With \(\gls{Esep}[(P,s)] = \emptyset\) it follows that
   \[
     \forall \gls{scross} \in S_P :
     s, \gls{scross}~\gls{cross}
@@ -233,7 +232,7 @@ tight.
 
 Greg remembered that he had met conflicting segments in 
 \cref{fig:nonoptimal_flips} already. By conflicting he meant that the
-separator \gls{ssep} of a segment \(s\) either crossed any segment
+separator \gls{Esep} of a segment \(s\) either crossed any segment
 \gls{scross} shorter than \(s\) or the separator which replaced
 \gls{scross}. 
 
@@ -242,8 +241,8 @@ separator \gls{ssep} of a segment \(s\) either crossed any segment
   (potentially) conflicting segments for a segment \(s \in S_P\) are:
   \[
     \gls{Sconf}[(P,s)] :=
-      \bigcup_{\gls{scross} \in \gls{Sshort}[(|s|)]}
-      \gls{scross} \cup \gls{Ssep}[(\gls{scross})]
+      \bigcup_{\gls{scross} \in \gls{Eshort}[(|s|)]}
+      \gls{scross} \cup \gls{Esep}[(\gls{scross})]
   \]
 \end{definition}
 
@@ -266,14 +265,14 @@ be formulated independently later on.
   Every segment \(s\) without non-conflicting separators is an upper
   bound for \gls{Topt}:
   \[
-    \gls{Ssep}['(P,s)] := 
+    \gls{Esep}['(P,s)] := 
     \{
-      \gls{ssep} \in \gls{Ssep}[(P,s)] : 
-      \gls{ssep} \cup (\gls{Topt} \cap \gls{Sconf}[(P,s)])~\gls{ncross}
+      \gls{Esep} \in \gls{Esep}[(P,s)] : 
+      \gls{Esep} \cup (\gls{Topt} \cap \gls{Sconf}[(P,s)])~\gls{ncross}
     \}
   \]
   \[
-    \forall s \in S_P : \gls{Ssep}['(P,s)] = \emptyset \implies
+    \forall s \in S_P : \gls{Esep}['(P,s)] = \emptyset \implies
     \min\limits_{s_{\min} \in \gls{Topt}} |s_{\min}| \leq |s|
   \]
   \todo[inline]{can we get \gls{Topt} out of the bound?}
@@ -285,7 +284,7 @@ be formulated independently later on.
   Assume
   \[
     \exists s \in S_P :
-    \gls{Ssep}['(P,s)] = \emptyset
+    \gls{Esep}['(P,s)] = \emptyset
     \land \min\limits_{s_{\min} \in \gls{Topt}} |s_{\min}| > |s|.
   \]
   That implies \(s \not\in \gls{Topt}\) and
@@ -293,22 +292,22 @@ be formulated independently later on.
     \forall s' \in S_P : |s'| \leq |s| \implies s' \not\in \gls{Topt}.
   \]
   
-  If \(\gls{Ssep}[(P,s)] = \emptyset\) itself, according to
+  If \(\gls{Esep}[(P,s)] = \emptyset\) itself, according to
   \cref{thm:upper_bound} it holds that
   \[ \min\limits_{s_{\min} \in \gls{Topt}} |s_{\min}| \leq |s|\]
   which is a contradiction.
   
-  Now assume \(\gls{Ssep}[(P,s)] \not= \emptyset\). The
+  Now assume \(\gls{Esep}[(P,s)] \not= \emptyset\). The
   following holds:
   \[
-    \forall \gls{ssep} \in \gls{Ssep}[(P,s)] :
-    \gls{ssep} \cup (\gls{Topt} \cap \gls{Sconf}[(P,s)])~\gls{cross}.
+    \forall \gls{Esep} \in \gls{Esep}[(P,s)] :
+    \gls{Esep} \cup (\gls{Topt} \cap \gls{Sconf}[(P,s)])~\gls{cross}.
   \]
   
   With \gls{Topt} being a triangulation this implies
   \[
-    \forall \gls{ssep} \in \gls{Ssep}[(P,s)] :
-    \gls{ssep} \not\in \gls{Topt}.
+    \forall \gls{Esep} \in \gls{Esep}[(P,s)] :
+    \gls{Esep} \not\in \gls{Topt}.
   \]
   Therefore
   \[
@@ -326,8 +325,8 @@ be formulated independently later on.
   non-conflicting separators:
   \[
     \lnot\exists
-    \gls{ssep} \in \gls{Ssep}[(s_{\min})] : 
-    \gls{ssep} \cup (\gls{Topt} \cap \gls{Sconf}[(s_{\min})])~\gls{ncross}
+    \gls{Esep} \in \gls{Esep}[(s_{\min})] : 
+    \gls{Esep} \cup (\gls{Topt} \cap \gls{Sconf}[(s_{\min})])~\gls{ncross}
   \]
   
   Then \(T\) is optimal.
@@ -342,7 +341,7 @@ be formulated independently later on.
 As a consequence of \cref{thm:tight_upper_bound} with 
 \cref{thm:tighness}, we introduce the following smaller (in terms
 of input and output size) problem \gls{NCS}.
-For \(S = \{s \in S_P : |s| \leq |\gls{snose}|\}\) an optimal 
+For \(S = \{s \in S_P : |s| \leq |\gls{enose}|\}\) an optimal 
 solution \gls{Sopt} for \gls{NCS} has the same shortest segment 
 as an optimal \gls{MMLT} solution \gls{Topt}:
 \[
@@ -354,12 +353,12 @@ as an optimal \gls{MMLT} solution \gls{Topt}:
   \hfill
   \begin{labeling}{\hspace{4em}}
     \item[\textbf{Given:}]
-      Set of short segments \(S\) and their separators \gls{Ssep}.
+      Set of short segments \(S\) and their separators \gls{Esep}.
     \item[\textbf{Sought:}]
       Set of \gls{ncross} segments \(\gls{Sopt} \subseteq S \cup
-      \bigcup\limits_{s \in S} \gls{Ssep}[(s)] \) which contains
+      \bigcup\limits_{s \in S} \gls{Esep}[(s)] \) which contains
       for each segment \(s \in S\) either the segment itself or at
-      least one separator \(\gls{ssep} \in \gls{Ssep}[(s)]\) and
+      least one separator \(\gls{Esep} \in \gls{Esep}[(s)]\) and
       maximizes \(\min\limits_{s \in \gls{Sopt}} |s|\).
   \end{labeling}
 \end{problem}
@@ -381,12 +380,11 @@ Therefore it is also NP-hard.
   \hfill
   \begin{labeling}{\hspace{4em}}
     \item[\textbf{Given:}]
-      Set of short segments \(S\) and their separators \gls{Ssep}.  
+      Set of short segments \(S\) and their separators \gls{Esep}.  
     \item[\textbf{Sought:}]
       \todo[inline]{here comes the reduction}
   \end{labeling}
 \end{problem}
-
 
 \section{Algorithm}
 Now that Greg knew all about \gls{MMLT} he could start developing
@@ -407,17 +405,17 @@ using the resulting segments in a constrained triangulation.
   \SetKwData{ub}{ub}
   
   Generate the induced segments \(S_P\) for \(P\) \;
-  Find the shortest non-separable segment \gls{snose}
+  Find the shortest non-separable segment \gls{enose}
   and calculate intersections for 
-  \(\gls{Sshort}[(|\gls{snose}|)]\) and their separators \;
+  \(\gls{Eshort}[(|\gls{enose}|)]\) and their separators \;
   Set the lower bound \(\lb = 0\) \;
-  Set the upper bound \ub such that \(S_P[\ub] = \gls{snose}\) \;
+  Set the upper bound \ub such that \(S_P[\ub] = \gls{enose}\) \;
   Set \(\last = \emptyset\) \;
   \While{\lb < \ub}{
     Set \(\mid = \left\lceil\frac{\lb + \ub}{2}\right\rceil\) \;
     Find optimal \gls{NCS} solution \gls{Sopt}
-    for \(\gls{Sshort}[(P,|S_P[\ub]|)]\) \linebreak
-    without using any segment from \(\gls{Sshort}[(P,|S_P[\mid]|)]\) \;
+    for \(\gls{Eshort}[(P,|S_P[\ub]|)]\) \linebreak
+    without using any segment from \(\gls{Eshort}[(P,|S_P[\mid]|)]\) \;
     \eIf{there is a solution \gls{Sopt}}{
       Set \(\last = \gls{Sopt}\) \;
       Maximize \lb such that \(|S_P[\lb]| = \min\limits_{s \in \gls{Sopt}} |s|\) \;
