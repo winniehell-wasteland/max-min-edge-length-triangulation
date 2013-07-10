@@ -1,15 +1,144 @@
 \chapter{Integer Programming}
+\ldots\todo[inline]{8 pages}
+
+\todo[inline]{glue text}
+
+\begin{definition}[Integer Program]
+  \ldots\todo[inline]{definition}
+\end{definition}
+
+\todo[inline]{example}
 
 \section{SAT}
+\todo[inline]{glue text}
 
-\section{Independent Set}
+\begin{definition}[SAT]
+  \ldots\todo[inline]{definition}
+\end{definition}
+\todo[inline]{glue text}
+
+\begin{problem}[IP formulation of SAT]
+  \ldots\todo[inline]{problem}
+\end{problem}
+
+\section{Vertex Cover}
+\todo[inline]{glue text}
+
+\begin{definition}[Vertex Cover]
+  \ldots\todo[inline]{definition}
+  A vertex cover in a graph is a set of vertices that touches every edge in the graph. 
+\end{definition}
+
+\todo[inline]{glue text}
+
+\begin{definition}[Minimal Vertex Cover]
+  \ldots\todo[inline]{definition}
+  A vertex cover is minimal, or irredundant, if removing any vertex from it would destroy the covering property. 
+\end{definition}
+
+\todo[inline]{glue text}
+
+\begin{definition}[Minimum Vertex Cover]
+  \ldots\todo[inline]{definition}
+  It is minimum if there is no other vertex cover with fewer vertices. 
+\end{definition}
+
+\todo[inline]{glue text}
+
+\todo[inline]{example}
+
+\begin{problem}[IP formulation of Minimum Vertex Cover]
+  \ldots\todo[inline]{problem}
+\end{problem}
+
+\todo[inline]{glue text}
 
 \begin{definition}[\gls{wcover}]
   \label{def:well_covered}
   \ldots\todo[inline]{definition}
+  A well-covered graph is one in which every minimal cover is also minimum; 
+  \cite{graph_well_covered}
 \end{definition}
 
+\todo[inline]{glue text}
+
+\begin{theorem}
+  \ldots\todo[inline]{theorem}
+  in the original paper defining well-covered graphs, Plummer (1970) writes that this is "obviously equivalent" to the property that every two minimal covers have the same number of vertices as each other.
+\end{theorem}
+
+\section{Independent Set}
+
+\todo[inline]{glue text}
+
+\begin{definition}[Independent Set]
+  \ldots\todo[inline]{definition}
+\end{definition}
+
+\todo[inline]{glue text}
+
+\begin{definition}[Minimal Independent Set]
+  \ldots\todo[inline]{definition}
+\end{definition}
+
+\todo[inline]{glue text}
+
+\begin{definition}[Minimum Independent Set]
+  \ldots\todo[inline]{definition}
+\end{definition}
+
+\todo[inline]{glue text}
+
+\begin{problem}[IP formulation of Minimum Independent Set]
+  \ldots\todo[inline]{problem}
+\end{problem}
+
+\todo[inline]{glue text}
+
+\begin{theorem}
+  \ldots\todo[inline]{theorem}
+  G \gls{wcover} iff minimal IS = minimum IS
+\end{theorem}
+
+\begin{proof}
+  \ldots\todo[inline]{proof}
+\end{proof}
+
+\todo[inline]{example}
+
+\todo[inline]{glue text}
+
+\todo[inline]{algorithm}
+\begin{algorithm}
+  \caption{\label{alg:greedy_independent_set}greedy algorithm for IS}
+\end{algorithm}
+
+\todo[inline]{glue text}
+
+\begin{theorem}
+  \ldots\todo[inline]{theorem}
+  \cref{alg:greedy_independent_set} always finds a minimal IS in polynomial time.
+\end{theorem}
+
+\begin{proof}
+  \ldots\todo[inline]{proof}
+\end{proof}
+
+\todo[inline]{glue text}
+
+\begin{theorem}
+  \label{thm:well_covered_minimum_independent_set}
+  \ldots\todo[inline]{theorem}
+  \cref{alg:greedy_independent_set} always finds a minimum IS in a \gls{wcover} graph in polynomial time.
+\end{theorem}
+
+\begin{proof}
+  \ldots\todo[inline]{proof}
+\end{proof}
+
 \section{Set Cover}
+\ldots\todo[inline]{evaluate if we really need set cover}
+
 % In the next recess Greg and his friends were discussing again what
 % to play. It was always hard to find games that everybody liked.
 % For example, Greg likes to play tables tennis or Duck, Duck, Goose but

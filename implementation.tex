@@ -1,4 +1,5 @@
 \chapter{Implementation}\label{cha:implementation}
+\ldots\todo[inline]{2 pages}
 To get his algorithm implemented Greg asked Winfried Hellmann, a
 friend of him who studied computer science. He instantly agreed and
 started to plan the structure. There were two main components:
@@ -65,6 +66,13 @@ For the algorithm this class is not necessary as its bound is worse
 than the one of the SAT solution. It is left in the implementation
 though as a measure of quality for the other bound.
 
+\subsection{Intersection Graph}
+\begin{verbatim}
+  - crossing segments as conflict edges
+  - adjacency list
+  - maybe later replaced by boost graph?
+\end{verbatim}
+
 \section{Optimization}
 The optimization part itself consists mainly of data structures for
 SAT problems and solutions, an interface for SAT solvers and the
@@ -117,14 +125,41 @@ states of the algorithm to SVG.
 
 \subsection{Boost}
 \url{https://www.boost.org/}
+\begin{verbatim}
+  - boost spirit for JSON parsing
+  - maybe later: boost datetime and format for logging, 
+    boost graph for intersection graph and SVG output
+\end{verbatim}
 
 \subsection{Qt}\label{sec:Qt}
 \url{https://qt-project.org/}
+\begin{verbatim}
+  - event-based programming framework
+  - logging
+  - SVG output
+  - simplified build system and IDE
+\end{verbatim}
 
 \subsection{JSON Parser}
+\begin{verbatim}
+  - JSON spirit (url!)
+  - built-in JSON of Qt 5 has bug => no STL/boost/CGAL compatibility
+\end{verbatim}
 
 \subsection{Logger}
+\begin{verbatim}
+  - conditional output of different information
+  - used for evaluation of algorithm output
+\end{verbatim}
 
 \subsection{Point Generator}
+\begin{verbatim}
+  - CGAL point generator
+  - evenly distributed points in (unit) square
+\end{verbatim}
 
 \subsection{SVG Painter}\label{sec:svg_painter}
+\begin{verbatim}
+  - conditional algorithm state output
+  - example?
+\end{verbatim}
