@@ -1,91 +1,162 @@
 \chapter{Integer Programming}
-\ldots\todo[inline]{8 pages}
+\todo[inline]{8 pages: {||||}}
 
 \todo[inline]{glue text}
 
-\begin{definition}[Integer Program]
-  \ldots\todo[inline]{definition}
+\begin{definition}[(Linear) \gls{IP}]
+  An \gls{IP} is a system of integer variables
+  \(x \in \gls{Z}^n\) with a set of constraints on them and often an 
+  objective function \(c^T x\). We consider only the case where the 
+  constraints are linear: \(Ax \leq b\) or \(Ax \geq b\).
 \end{definition}
 
-\todo[inline]{example}
-
-\section{SAT}
 \todo[inline]{glue text}
 
-\begin{definition}[SAT]
-  \ldots\todo[inline]{definition}
-\end{definition}
-\todo[inline]{glue text}
-
-\begin{problem}[IP formulation of SAT]
-  \ldots\todo[inline]{problem}
+\begin{problem}[\gls{IP} in canonical form \cite{combinatorial_optimization}]
+  \begin{alignat*}{2}
+    &\text{maximize } & c^Tx \\
+    &\text{subject to } & Ax &\leq b \\
+    && x &\geq 0 \\
+    && x &\in \gls{Z}
+  \intertext{or}
+    &\text{minimize } & c^Tx \\
+    &\text{subject to } & Ax &\geq b \\
+    && x &\leq 0 \\
+    && x &\in \gls{Z}
+  \end{alignat*}
 \end{problem}
+
+\begin{theorem}
+  Solving \gls{IP}[s] is NP-hard.
+\end{theorem}
+
+\begin{proof}
+  Even the special case where there is no objective function, only
+  binary variables, and only equality constraints is NP-complete
+  \cite{karp_np_complete}. Therefore the more general problem is
+  NP-hard.
+\end{proof}
+
+% \section{SAT}
+% \todo[inline]{glue text}
+% 
+% \begin{definition}[SAT]
+%   \ldots\todo[inline]{definition}
+% \end{definition}
+% \todo[inline]{glue text}
+% 
+% \begin{problem}[IP formulation of SAT]
+%   \ldots\todo[inline]{problem}
+% \end{problem}
 
 \section{Vertex Cover}
 \todo[inline]{glue text}
 
 \begin{definition}[Vertex Cover]
-  \ldots\todo[inline]{definition}
-  A vertex cover in a graph is a set of vertices that touches every edge in the graph. 
+  Given an undirected graph \(G=(V,E)\), a vertex cover
+  \(V_{\text{cover}} \subseteq V\) for \(G\) is a vertex set such that
+  every edge \(e \in E\) is incident to at least one vertex
+  \(v \in V_{\text{cover}}\):
+  \[ \forall e \in E: \exists v \in V_{\text{cover}}: v \in e \]
 \end{definition}
 
 \todo[inline]{glue text}
 
 \begin{definition}[Minimal Vertex Cover]
-  \ldots\todo[inline]{definition}
-  A vertex cover is minimal, or irredundant, if removing any vertex from it would destroy the covering property. 
+  A vertex cover \(V_{\text{cover}}\) for an undirected graph
+  \(G=(V,E)\) is minimal if there is no vertex
+  \(v \in V_{\text{cover}}\) such that
+  \(V_{\text{cover}} \setminus \{v\}\) remains a vertex cover.
 \end{definition}
 
 \todo[inline]{glue text}
 
 \begin{definition}[Minimum Vertex Cover]
-  \ldots\todo[inline]{definition}
-  It is minimum if there is no other vertex cover with fewer vertices. 
+  A vertex cover \(V_{\text{cover}}\) for an undirected graph
+  \(G=(V,E)\) is minimum if there is no other vertex cover
+  \(V_{\text{cover}}'\) for \(G\) which has fewer vertices:
+  \[
+    \forall~V_{\text{cover}}'\text{ vertex cover} :
+    |V_{\text{cover}}| \leq |V_{\text{cover}}'|
+  \]
 \end{definition}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.5\textwidth]{img/example_vertex_cover.jpg}
+  \todo[inline]{replace}
+  \caption{Example of minimal vs. minimum vertex cover}
+\end{figure}
 
 \todo[inline]{glue text}
 
-\todo[inline]{example}
-
-\begin{problem}[IP formulation of Minimum Vertex Cover]
-  \ldots\todo[inline]{problem}
+\begin{problem}[\gls{IP} Formulation of Minimum Vertex Cover]
+  \begin{alignat*}{3}
+    &\text{minimize } & \sum\limits_{v \in V} x_v \\
+    &\text{subject to } & \forall \{v,w\} \in E : &~& x_v + x_w &\geq 1 \\
+    && \forall v \in V : &~& x_v &\in \{0,1\}
+  \end{alignat*}
 \end{problem}
 
 \todo[inline]{glue text}
 
-\begin{definition}[\gls{wcover}]
+\begin{theorem}
+  Vertex Cover is NP-complete. \cite{karp_np_complete}
+\end{theorem}
+
+\todo[inline]{glue text}
+
+\begin{definition}[\Gls{wcover} Graph]
   \label{def:well_covered}
-  \ldots\todo[inline]{definition}
-  A well-covered graph is one in which every minimal cover is also minimum; 
+  An undirected graph \(G=(V,E)\) is \gls{wcover} iff every minimal
+  vertex cover for \(G\) is also a minimum vertex cover for \(G\).
   \cite{graph_well_covered}
 \end{definition}
 
 \todo[inline]{glue text}
 
 \begin{theorem}
-  \ldots\todo[inline]{theorem}
-  in the original paper defining well-covered graphs, Plummer (1970) writes that this is "obviously equivalent" to the property that every two minimal covers have the same number of vertices as each other.
+  In a \gls{wcover} graph, all minimal vertex covers have the same
+  cardinality. \cite{graph_well_covered}
 \end{theorem}
 
 \section{Independent Set}
 
 \todo[inline]{glue text}
 
-\begin{definition}[Independent Set]
-  \ldots\todo[inline]{definition}
+\begin{definition}[\gls{IS}]
+  Given an undirected graph \(G=(V,E)\), an independent set
+  \(V_{\gls{IS}} \subseteq V\) is a vertex set such that no two
+  vertices \(v,w \in V_{\gls{IS}}\) are incident to the same edge 
+  \(\{v,w\} \in E\):
+  \[
+    \forall v \in V_{\gls{IS}}:
+    \forall \{v,w\} \in E:
+    w \not\in V_{\gls{IS}}
+  \]
 \end{definition}
 
 \todo[inline]{glue text}
 
-\begin{definition}[Minimal Independent Set]
-  \ldots\todo[inline]{definition}
+\begin{definition}[Maximal/Maximum Independent Set]
+  For an undirected graph \(G=(V,E)\), an independent set
+  \(V_{\gls{IS}}\subseteq V\) is maximal if there is no vertex
+  \(v \in V\setminus V_{\gls{IS}}\) such that
+  \(V_{\gls{IS}} \cup \{v\}\) remains an independent set. It is
+  maximum if there is no independent set \(V_{\gls{IS}}'\) with
+  larger cardinality.
 \end{definition}
 
 \todo[inline]{glue text}
 
-\begin{definition}[Minimum Independent Set]
-  \ldots\todo[inline]{definition}
-\end{definition}
+\begin{theorem}[Independent Set and Vertex Cover]
+  For an undirected graph \(G=(V,E)\), \(V_{\gls{IS}} \subseteq V\)
+  is a maximum independent set iff
+  \(V_{\text{cover}} = V \setminus V_{\gls{IS}}\) is a minimum vertex
+  cover.
+\end{theorem}
+
+%---------------------------------------------------------------------##########
 
 \todo[inline]{glue text}
 
@@ -209,6 +280,6 @@
 
 \Cref{prob:mwsc} is NP-hard \cite{set_cover} and the related decision 
 problem was already one of the problems Karp has shown to be 
-NP-complete \cite{set_cover_decision}.
+NP-complete \cite{karp_np_complete}.
 
 %---------------------------------------------------------------------##########
