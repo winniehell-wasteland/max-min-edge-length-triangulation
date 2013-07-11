@@ -4,7 +4,6 @@
 \newglossary{ignored}{ignored.gls}{ignored.glo}{Ignored Glossary}
 
 \newacronym{IP}{IP}{Integer Program}
-\newacronym{IS}{IS}{Independent Set}
 \newacronym{MMLT}{MMLT}{MaxMin Length Triangulation}
 \newacronym{NCS}{NCS}{Non-Conflicting Separators}
 \newacronym{MMELIT}{MMELIT}{MaxMin Edge Length Index Triangulation}
@@ -122,10 +121,24 @@
   type={set}
 }
 
+\newglossaryentry{IS}
+{
+  name={\ensuremath{V_\textnormal{IS}}},
+  description={independent set (see \cref{def:independent_set})},
+  type={set}
+}
+
 \newglossaryentry{Topt}
 {
   name={\ensuremath{T_\textnormal{opt}}},
   description={an optimal triangulation},
+  type={set}
+}
+
+\newglossaryentry{VC}
+{
+  name={\ensuremath{V_\textnormal{cover}}},
+  description={vertex cover (see \cref{def:vertex_cover})},
   type={set}
 }
 

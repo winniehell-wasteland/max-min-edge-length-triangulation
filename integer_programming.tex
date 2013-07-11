@@ -1,5 +1,5 @@
 \chapter{Integer Programming}
-\todo[inline]{8 pages: {||||}}
+\todo[inline]{8 pages: \cancel{||||}~|}
 
 \todo[inline]{glue text}
 
@@ -54,30 +54,30 @@
 
 \begin{definition}[Vertex Cover]
   Given an undirected graph \(G=(V,E)\), a vertex cover
-  \(V_{\text{cover}} \subseteq V\) for \(G\) is a vertex set such that
+  \(\gls{VC} \subseteq V\) for \(G\) is a vertex set such that
   every edge \(e \in E\) is incident to at least one vertex
-  \(v \in V_{\text{cover}}\):
-  \[ \forall e \in E: \exists v \in V_{\text{cover}}: v \in e \]
+  \(v \in \gls{VC}\):
+  \[ \forall e \in E: \exists v \in \gls{VC}: v \in e \]
 \end{definition}
 
 \todo[inline]{glue text}
 
 \begin{definition}[Minimal Vertex Cover]
-  A vertex cover \(V_{\text{cover}}\) for an undirected graph
+  A vertex cover \gls{VC} for an undirected graph
   \(G=(V,E)\) is minimal if there is no vertex
-  \(v \in V_{\text{cover}}\) such that
-  \(V_{\text{cover}} \setminus \{v\}\) remains a vertex cover.
+  \(v \in \gls{VC}\) such that
+  \(\gls{VC} \setminus \{v\}\) remains a vertex cover.
 \end{definition}
 
 \todo[inline]{glue text}
 
 \begin{definition}[Minimum Vertex Cover]
-  A vertex cover \(V_{\text{cover}}\) for an undirected graph
+  A vertex cover \gls{VC} for an undirected graph
   \(G=(V,E)\) is minimum if there is no other vertex cover
-  \(V_{\text{cover}}'\) for \(G\) which has fewer vertices:
+  \(\gls{VC}[']\) for \(G\) which has fewer vertices:
   \[
     \forall~V_{\text{cover}}'\text{ vertex cover} :
-    |V_{\text{cover}}| \leq |V_{\text{cover}}'|
+    |\gls{VC}| \leq |\gls{VC}[']|
   \]
 \end{definition}
 
@@ -85,7 +85,7 @@
   \centering
   \includegraphics[width=0.5\textwidth]{img/example_vertex_cover.jpg}
   \todo[inline]{replace}
-  \caption{Example of minimal vs. minimum vertex cover}
+  \caption{\label{fig:example_vertex_cover}Example of minimal vs. minimum vertex cover}
 \end{figure}
 
 \todo[inline]{glue text}
@@ -116,6 +116,7 @@
 \todo[inline]{glue text}
 
 \begin{theorem}
+  \label{thm:well_covered_vertex_cover}
   In a \gls{wcover} graph, all minimal vertex covers have the same
   cardinality. \cite{graph_well_covered}
 \end{theorem}
@@ -124,15 +125,15 @@
 
 \todo[inline]{glue text}
 
-\begin{definition}[\gls{IS}]
+\begin{definition}[Independent Set]
   Given an undirected graph \(G=(V,E)\), an independent set
-  \(V_{\gls{IS}} \subseteq V\) is a vertex set such that no two
-  vertices \(v,w \in V_{\gls{IS}}\) are incident to the same edge 
+  \(\gls{IS} \subseteq V\) is a vertex set such that no two
+  vertices \(v,w \in \gls{IS}\) are incident to the same edge 
   \(\{v,w\} \in E\):
   \[
-    \forall v \in V_{\gls{IS}}:
+    \forall v \in \gls{IS}:
     \forall \{v,w\} \in E:
-    w \not\in V_{\gls{IS}}
+    w \not\in \gls{IS}
   \]
 \end{definition}
 
@@ -140,69 +141,127 @@
 
 \begin{definition}[Maximal/Maximum Independent Set]
   For an undirected graph \(G=(V,E)\), an independent set
-  \(V_{\gls{IS}}\subseteq V\) is maximal if there is no vertex
-  \(v \in V\setminus V_{\gls{IS}}\) such that
-  \(V_{\gls{IS}} \cup \{v\}\) remains an independent set. It is
-  maximum if there is no independent set \(V_{\gls{IS}}'\) with
+  \(\gls{IS}\subseteq V\) is maximal if there is no vertex
+  \(v \in V\setminus \gls{IS}\) such that
+  \(\gls{IS} \cup \{v\}\) remains an independent set. It is
+  maximum if there is no independent set \(\gls{IS}'\) with
   larger cardinality.
 \end{definition}
 
 \todo[inline]{glue text}
 
-\begin{theorem}[Independent Set and Vertex Cover]
-  For an undirected graph \(G=(V,E)\), \(V_{\gls{IS}} \subseteq V\)
-  is a maximum independent set iff
-  \(V_{\text{cover}} = V \setminus V_{\gls{IS}}\) is a minimum vertex
-  cover.
-\end{theorem}
-
-%---------------------------------------------------------------------##########
-
-\todo[inline]{glue text}
-
-\begin{problem}[IP formulation of Minimum Independent Set]
-  \ldots\todo[inline]{problem}
+\begin{problem}[\gls{IP} Formulation of Maximum Independent Set]
+  \begin{alignat*}{3}
+    &\text{maximize } & \sum\limits_{v \in V} x_v \\
+    &\text{subject to } & \forall \{v,w\} \in E : &~& x_v + x_w &\leq 1 \\
+    && \forall v \in V : &~& x_v &\in \{0,1\}
+  \end{alignat*}
 \end{problem}
 
 \todo[inline]{glue text}
 
-\begin{theorem}
-  \ldots\todo[inline]{theorem}
-  G \gls{wcover} iff minimal IS = minimum IS
+\begin{theorem}[Independent Set and Vertex Cover]
+  \label{thm:independent_set_vertex_cover}
+  For an undirected graph \(G=(V,E)\), \(\gls{IS} \subseteq V\)
+  is a maximum independent set iff
+  \(\gls{VC} = V \setminus \gls{IS}\) is a minimum vertex
+  cover.
 \end{theorem}
 
 \begin{proof}
-  \ldots\todo[inline]{proof}
+  Let \gls{VC} be a vertex cover for \(G\). 
+  \begin{alignat*}{1}
+    \forall e \in E : \exists v \in \gls{VC} : v \in e
+    &\iff \forall \{v,w\} \in E :
+      v \in \gls{VC} \lor w \in \gls{VC} \\
+    &\iff \forall \{v, w\} \in E :
+      \lnot(v \not\in \gls{VC} \land w \not\in \gls{VC}) \\
+    &\iff \forall \{v, w\} \in E :
+      \lnot(v \in (V \setminus \gls{VC})
+        \land w \in (V \setminus \gls{VC})) \\
+    &\iff \forall v \in (V \setminus \gls{VC}) :
+      \forall \{v, w\} \in E :
+      w \not\in (V \setminus \gls{VC}) \\
+    &\iff (V \setminus \gls{VC}) \text{ independent set}
+  \end{alignat*}
+  
+  Assume \gls{VC} is a minimum vertex cover for \(G\) and the
+  independent set \(\gls{IS} = V \setminus \gls{VC}\) is not maximum.
+  Then there is an independent \(\gls{IS}['] \subseteq V\) with
+  \(|\gls{IS}| < |\gls{IS}[']|\). But then for the vertex cover
+  \(\gls{VC}['] = V \setminus \gls{IS}[']\) the following holds:
+  \(|\gls{VC}[']| < |\gls{VC}|\)---which is a contradiction to
+  \gls{VC} being minimum. The same argumentation applies in the other
+  direction.
 \end{proof}
-
-\todo[inline]{example}
 
 \todo[inline]{glue text}
 
-\todo[inline]{algorithm}
+\begin{theorem}
+  \label{thm:well_covered_independent_set}
+  For a \gls{wcover} graph \(G=(V,E)\), every maximal independent set
+  has the same size and is therefore maximum.
+\end{theorem}
+
+\begin{proof}
+  \Cref{thm:well_covered_independent_set} follows directly from
+  \cref{%
+    def:well_covered,%
+    thm:well_covered_vertex_cover,%
+    thm:independent_set_vertex_cover%
+  }.
+\end{proof}
+
+\todo[inline]{examples: \cref{fig:example_vertex_cover}}
+
+\todo[inline]{glue text}
+
 \begin{algorithm}
-  \caption{\label{alg:greedy_independent_set}greedy algorithm for IS}
+  \DontPrintSemicolon
+  
+  \KwIn{Undirected graph \(G=(V,E)\)}
+  \KwOut{Maximal independent set \(\gls{IS} \subseteq V\) for \(G\)}
+  
+  Set \(\gls{IS} = \emptyset\) \;
+  \ForEach{\(v \in V\)}{
+    \If{\(\forall \{v,w\} \in E: (w \not\in \gls{IS})\)}{
+        Set \(\gls{IS} = \gls{IS} \cup \{v\}\) \;
+    }
+  }
+  \KwRet{\gls{IS}}
+  \caption{\label{alg:greedy_independent_set}Greedy algorithm for independent set}
 \end{algorithm}
 
 \todo[inline]{glue text}
 
-\begin{theorem}
-  \ldots\todo[inline]{theorem}
-  \cref{alg:greedy_independent_set} always finds a minimal IS in polynomial time.
+\begin{theorem}[Correctness and Complexity of \Cref{alg:greedy_independent_set}]
+  \Cref{alg:greedy_independent_set} always finds a maximal independent
+  set in \(O(|E|)\) time.
 \end{theorem}
 
 \begin{proof}
-  \ldots\todo[inline]{proof}
+  Because the vertices are processed sequentially, for every edge
+  \(\{v,w\} \in E\) at most one of \(v\) and \(w\) is added to
+  \gls{IS}. Therefore \gls{IS} is an independent set. Additionally 
+  every vertex \(v \in V\) is processed and if there is no
+  \(w \in \gls{IS}\) with \(\{v,w\} \in E\) then \(v \in \gls{IS}\).
+  So \gls{IS} is maximal.
+  
+  The for-loop runs \(|V|\) times but the if-statement is only
+  executed twice for every edge \(e \in E\). Every other statement
+  runs in \(O(1)\) time. Thus \cref{alg:greedy_independent_set} needs
+  \(O(|E|)\) time.
 \end{proof}
 
 \todo[inline]{glue text}
 
 \begin{theorem}
   \label{thm:well_covered_minimum_independent_set}
-  \ldots\todo[inline]{theorem}
-  \cref{alg:greedy_independent_set} always finds a minimum IS in a \gls{wcover} graph in polynomial time.
+  For a \gls{wcover} graph \cref{alg:greedy_independent_set} always
+  finds a maximum independent set in \(O(|E|)\) time.
 \end{theorem}
 
+%---------------------------------------------------------------------##########
 \begin{proof}
   \ldots\todo[inline]{proof}
 \end{proof}
