@@ -3,28 +3,46 @@
 
 \todo[inline]{glue text}
 
+\begin{definition}[Complete Graph]
+  Given a vertex set \(V\), the complete graph \(K_V=(V,E)\) for \(V\)
+  contains all possibles undirected edges between two vertices of
+  \(V\):
+  \[ E = \{e=\{v,w\} : v,w \in V \land v\not=w\}) \]
+\end{definition}
+
+\todo[inline]{glue text}
+
+\begin{definition}[Conflict Graph]
+  \label{def:conflict_graph}
+  The conflict graph \(\gls{Gconf}[(E,X)] = (E,X)\) for a set of
+  edges \(E\) and a set of edge conflicts
+  \[
+    X \subseteq
+    \{\{e_i, e_j\} : e_i,e_j \in E \land e_i \not= e_j\}
+  \]
+  is an undirected graph with \(E\) as vertices and \(X\) as edges.
+\end{definition}
+
+\todo[inline]{glue text}
+
 \begin{definition}[Triangulation]
-  Given the complete undirected graph
-  \[ K_{|V|} = (V,E = \{e=\{v,w\} : v,w \in V \land v\not=w\}) \]
-  of a vertex set \(V\) and a set of conflicts \(X \subseteq
-  \{\{e_i, e_j\} : e_i,e_j \in E \land e_i \not= e_j\} \).
+  Given the complete graph \(K_V = (V,E)\) for a vertex set \(V\)
+  and a set of edge conflicts
+  \[
+    X \subseteq
+    \{\{e_i, e_j\} : e_i,e_j \in E \land e_i \not= e_j\}
+  \]
+  such that the conflict graph \(\gls{Gconf}[(E,X)]\) is \gls{wcover}.
   A \emph{triangulation} \(T(V,X) \subseteq E\) of \(V\) with respect
   to \(X\) is a maximum set of non-conflicting edges:
   \[
     e_i \in T(V,X)
     \iff e_i \in E
-    \land \forall e_j \in T(V,X) : \{e_i,e_j\} \not\in C
+    \land \forall e_j \in T(V,X) : \{e_i,e_j\} \not\in X
   \]
 \end{definition}
 
 \todo[inline]{glue text}
-
-\begin{definition}[Conflict Graph]\label{def:conflict_graph}
-  The conflict graph \(\gls{Gconf}[(E,X)] = (E,X)\) for a set of
-  edges \(E\) and conflicts
-  \(X \subseteq \{ \{e_i,e_j\} : e_i,e_j \in E \land e_i \not= e_j\}\)
-  is an undirected graph with \(E\) as vertices and \(X\) as edges.
-\end{definition}
 
 \begin{figure}[ht]
   \centering
@@ -40,21 +58,23 @@
   Every triangulation \(T(V,X)\) of a vertex set \(V\) with respect
   to conflicts \(X\) is a maximum independent set for the conflict
   graph \(\gls{Gconf}[(E,X)]\) and vice versa. Hereby \(E\) are the
-  edges of the complete undirected graph \(K_{|V|}\) for \(V\).
+  edges of the complete graph \(K_V\).
 \end{theorem}
 
 \begin{proof}
-  \ldots\todo[inline]{proof}
+  \Cref{thm:triangulation_independent_set} follows directly from
+  \cref{def:max_independent_set,thm:well_covered_independent_set}.
 \end{proof}
 
 \begin{theorem}
   From
-  \cref{thm:triangulation_independent_set}
-  and
-  \cref{thm:well_covered_minimum_independent_set}
+  \cref{%
+    thm:triangulation_independent_set,%
+    thm:well_covered_maximum_independent_set%
+  }
   follows that finding the triangulation \(T(V,X)\) of a vertex set
   \(V\) with respect to conflicts \(X\) can be calculated in
-  polynomial time.
+  \(O(|X|)\) time.
 \end{theorem}
 
 \todo[inline]{glue text}
@@ -68,15 +88,20 @@
 
 \todo[inline]{glue text}
 
-\begin{theorem}
+\begin{theorem}[NP-completeness of Triangulation with Forbidden Edges]
   The decision problem whether a triangulation with forbidden edges
   \(T(V,X,F)\) exists is NP-complete.
-  \todo[inline]{cite Lloyd: On Triangulations of a Set of Points in the Plane, triangulation existence problem}
+  \cite[triangulation existence problem]{triangulation_forbidden_edges}
 \end{theorem}
+
+\todo[inline]{glue text}
 
 \begin{definition}[Constrained Triangulation]
   \label{def:constrained_triangulation}
-  \ldots\todo[inline]{definition}
+  A \emph{constrained triangulation} \(T(V,X,C)\) is a triangulation
+  of the vertex set \(V\) with respect to conflicts \(X\) which 
+  contains the edge constrains \(C\):
+  \[ \forall e \in C : e \in T(V,X,C) \]
 \end{definition}
 
 \section{Point Set Triangulations}
@@ -166,46 +191,49 @@
 \begin{definition}[Point Set Triangulation]
   \label{def:point_set_triangulation}
   The triangulation \(T(P)\) of a point set \(P\) is a triangulation
-  with forbidden edges \(T(P) = T(V,X,F)\) where the vertex set
+  \(T(P) = T(V,X)\) where the vertex set
   \(V=V(P)\) represents \(P\), the conflicts \(X\) are all
-  \gls{cross} segments and the forbidden edges \(F\) are the
-  \gls{overlap} segments:
+  \gls{cross} segments and which contains no \gls{overlap} segments:
   \begin{alignat*}{1}
-    \left\{ \{v_p,v_q\}, \{v_{p'},v_{q'}\} \right\} \in X
-    &\iff (p,q), (p',q')~\gls{cross} \\
-    \{v_p,v_q\} \in F
-    &\iff (p,q)~\gls{overlap}
+    (p,q), (p',q')~\gls{cross}
+    &\iff \left\{ \{v_p,v_q\}, \{v_{p'},v_{q'}\} \right\} \in X \\
+     (p,q)~\gls{overlap}
+    &\implies \{v_p,v_q\} \not\in T(P)
   \end{alignat*}
 
   For convenience we define \(s=(p,q) \equiv e=\{v_p,v_q\}\) such
   that \(s \in T(P) \iff e \in T(P)\). For a slightly different yet
   equivalent definition of a point set triangulation see also
-  \cite[Section 9.1]{deberg_compgeom}. Note that for \(P\) in general
-  position \(F\) is empty.
+  \cite[Section 9.1]{deberg_compgeom}.
 \end{definition}
 
-\begin{theorem}
-  A point set triangulation can be calculated in polynomial time.
+\todo[inline]{glue text}
+
+\begin{theorem}[Time for Planar Point Set Triangulation]
+  A point set \(P \subseteq \gls{R}\) can be triangulated
+  in \(O(n \log n)\) time with \(n = |P|\).
+  \cite[Theorem 9.12]{deberg_compgeom}
 \end{theorem}
 
-\begin{proof}
-  \ldots\todo[inline]{proof}
-\end{proof}
+\todo[inline]{glue text}
 
 \begin{definition}[Constrained Point Set Triangulation]
   \label{def:constrained_point_set_triangulation}
-  \ldots\todo[inline]{definition}
+  Analogous to the Constrained Triangulation
+  (\cref{def:constrained_triangulation}), a 
+  \emph{constrained point set triangulation} \(T(P,C)\) of a point
+  set \(P\) with line segment constraints \(C\) is a point set
+  triangulation \(T(P,C) = T(P)\) such that \(C \subseteq T(P, C)\).
 \end{definition}
 
+\todo[inline]{glue text}
+
 \begin{theorem}
-  A constrained point set triangulation can be calculated in polynomial time.
+  A constrained point set triangulation \(T(P, C)\) for a point set
+  \(P \subseteq R\) and line segment constraints \(C \subseteq P^2\)
+  can be calculated in \(O(n \log n)\) time.
+  \cite{constrained_triangulation}
 \end{theorem}
-
-\begin{proof}
-  \ldots\todo[inline]{proof}
-\end{proof}
-
-%---------------------------------------------------------------------##########
 
 % One day Greg had art class and the children were given sheets of
 % paper with points on them. The task was to connect all the points 
@@ -258,6 +286,8 @@
 
 \section{Polygon Triangulations}
 \todo[inline]{definitions (and related work?)}
+
+%---------------------------------------------------------------------##########
 
 \section{Edge Flipping}
 \begin{verbatim}

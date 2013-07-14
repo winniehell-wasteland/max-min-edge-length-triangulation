@@ -53,6 +53,7 @@
 \todo[inline]{glue text}
 
 \begin{definition}[Vertex Cover]
+  \label{def:vertex_cover}
   Given an undirected graph \(G=(V,E)\), a vertex cover
   \(\gls{VC} \subseteq V\) for \(G\) is a vertex set such that
   every edge \(e \in E\) is incident to at least one vertex
@@ -126,6 +127,7 @@
 \todo[inline]{glue text}
 
 \begin{definition}[Independent Set]
+  \label{def:independent_set}
   Given an undirected graph \(G=(V,E)\), an independent set
   \(\gls{IS} \subseteq V\) is a vertex set such that no two
   vertices \(v,w \in \gls{IS}\) are incident to the same edge 
@@ -140,6 +142,7 @@
 \todo[inline]{glue text}
 
 \begin{definition}[Maximal/Maximum Independent Set]
+  \label{def:max_independent_set}
   For an undirected graph \(G=(V,E)\), an independent set
   \(\gls{IS}\subseteq V\) is maximal if there is no vertex
   \(v \in V\setminus \gls{IS}\) such that
@@ -197,7 +200,7 @@
 
 \todo[inline]{glue text}
 
-\begin{theorem}
+\begin{theorem}[Independent Set in \gls{wcover} Graphs]
   \label{thm:well_covered_independent_set}
   For a \gls{wcover} graph \(G=(V,E)\), every maximal independent set
   has the same size and is therefore maximum.
@@ -235,6 +238,7 @@
 \todo[inline]{glue text}
 
 \begin{theorem}[Correctness and Complexity of \Cref{alg:greedy_independent_set}]
+  \label{thm:greedy_independent_set}
   \Cref{alg:greedy_independent_set} always finds a maximal independent
   set in \(O(|E|)\) time.
 \end{theorem}
@@ -255,15 +259,15 @@
 
 \todo[inline]{glue text}
 
-\begin{theorem}
-  \label{thm:well_covered_minimum_independent_set}
+\begin{theorem}[\Cref{alg:greedy_independent_set} in \gls{wcover} Graphs]
+  \label{thm:well_covered_maximum_independent_set}
   For a \gls{wcover} graph \cref{alg:greedy_independent_set} always
   finds a maximum independent set in \(O(|E|)\) time.
 \end{theorem}
 
-%---------------------------------------------------------------------##########
 \begin{proof}
-  \ldots\todo[inline]{proof}
+  \Cref{thm:well_covered_maximum_independent_set} follows directly
+  from \cref{thm:well_covered_independent_set,thm:greedy_independent_set}.
 \end{proof}
 
 \section{Set Cover}
