@@ -20,9 +20,9 @@ def err(x):
     return 2.0 * np.std(x, ddof=1) / np.sqrt(len(x))
 
 
-def fit(data):
-    A = np.vstack([data.index, np.ones(len(data.index))]).T
-    return np.linalg.lstsq(A, data['mean'])[0]
+#def fit(data):
+#    A = np.vstack([data.index, np.ones(len(data.index))]).T
+#    return np.linalg.lstsq(A, data['mean'])[0]
 
 
 def flatten(obj, prefix=''):
