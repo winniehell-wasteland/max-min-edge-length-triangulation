@@ -1,0 +1,17 @@
+[2013-07-04 16:59:29.522] [INFO] Running in directory /tmp/hellmann/current_run
+[2013-07-04 16:59:29.523] [INFO] Reading settings from /tmp/hellmann/current_run/config.json
+[2013-07-04 16:59:29.523] [INFO] Reading input file ./0030/random_in_square_0030_0548_027.json ...
+[2013-07-04 16:59:29.527] [TIME] generating segments=4ms
+[2013-07-04 16:59:29.527] points=30 segments=435 convex hull=9
+[2013-07-04 16:59:29.528] [INFO] shortest input segment: 0:(-122,-310)->(-122,-307) (len^2=9)
+[2013-07-04 16:59:29.529] [INFO] shortest non-crossing segment: 0:(-122,-310)->(-122,-307) (len^2=9)
+[2013-07-04 16:59:29.529] separators=0
+[2013-07-04 16:59:29.529] [TIME] intersection graph=1ms
+[2013-07-04 16:59:29.529] [INFO] shortest triangulation segment: 0:(-122,-310)->(-122,-307) (len^2=9)
+[2013-07-04 16:59:29.529] [INFO] shortest convex hull segment: 38:(268,-537)->(428,-432) (len^2=36625)
+[2013-07-04 16:59:29.529] [TIME] controller initialization=6ms
+[2013-07-04 16:59:29.529] [INFO] shortest constrained triangulation segment: 0:(-122,-310)->(-122,-307) (len^2=9)
+[2013-07-04 16:59:29.529] [STATS] it=0	lb=0	ub=0
+[2013-07-04 16:59:29.529] iterations=0 gap=0
+[2013-07-04 16:59:29.529] [TIME] SAT solving=0ms
+[2013-07-04 16:59:29.529] [TIME] total=6ms

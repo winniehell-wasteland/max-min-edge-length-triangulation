@@ -1,0 +1,8 @@
+[2013-07-10 18:54:26.172] [INFO] Running in directory /tmp/hellmann/current_run
+[2013-07-10 18:54:26.172] [INFO] Reading settings from /tmp/hellmann/current_run/config.json
+[2013-07-10 18:54:26.189] [INFO] Reading input file ./0280/random_in_square_0280_1673_055.json ...
+[2013-07-10 18:54:28.531] [TIME] generating segments=2328ms
+[2013-07-10 18:54:28.533] points=280 segments=39060 convex hull=14
+[2013-07-10 18:54:28.533] [INFO] shortest input segment: 0:(1499,207)->(1486,212) (len^2=194)
+[2013-07-10 18:54:32.381] [INFO] shortest non-crossing segment: 168:(592,-1664)->(474,-1663) (len^2=13925)
+[2013-07-10 18:54:32.381] separators=23453

@@ -1,0 +1,32 @@
+[2013-07-06 12:05:38.282] [INFO] Running in directory /tmp/hellmann/current_run
+[2013-07-06 12:05:38.282] [INFO] Reading settings from /tmp/hellmann/current_run/config.json
+[2013-07-06 12:05:38.282] [INFO] Reading input file ./0200/random_in_square_0200_1414_014.json ...
+[2013-07-06 12:05:38.945] [TIME] generating segments=648ms
+[2013-07-06 12:05:38.946] points=200 segments=19900 convex hull=12
+[2013-07-06 12:05:38.946] [INFO] shortest input segment: 0:(157,-506)->(168,-497) (len^2=202)
+[2013-07-06 12:05:39.451] [INFO] shortest non-crossing segment: 38:(-450,1357)->(-379,1366) (len^2=5122)
+[2013-07-06 12:05:39.452] separators=3918
+[2013-07-06 12:06:50.970] [TIME] intersection graph=72023ms
+[2013-07-06 12:06:50.971] [INFO] shortest triangulation segment: 3:(-1363,425)->(-1355,447) (len^2=548)
+[2013-07-06 12:06:50.971] [INFO] shortest convex hull segment: 253:(1388,1217)->(1223,1303) (len^2=34621)
+[2013-07-06 12:06:50.971] [STATS] it=0	lb=3	ub=38
+[2013-07-06 12:06:50.971] [TIME] controller initialization=72689ms
+IBM ILOG License Manager: "university-braunschweig" is accessing CPLEX 12 with option(s): "e m b q use=10 MaintenanceEnd=20110128 ".
+[2013-07-06 12:12:16.746] [TIME] iteration 1=325775ms
+[2013-07-06 12:12:16.769] [STATS] it=1	lb=23	ub=38
+[2013-07-06 12:13:23.179] [ERROR] Solution is infeasible
+[2013-07-06 12:13:23.270] [TIME] iteration 2=66500ms
+[2013-07-06 12:13:23.307] [STATS] it=2	lb=23	ub=30
+[2013-07-06 12:14:58.672] [ERROR] Solution is infeasible
+[2013-07-06 12:14:58.790] [TIME] iteration 3=95439ms
+[2013-07-06 12:14:58.790] [STATS] it=3	lb=23	ub=26
+[2013-07-06 12:16:36.956] [ERROR] Solution is infeasible
+[2013-07-06 12:16:37.016] [TIME] iteration 4=98214ms
+[2013-07-06 12:16:37.034] [STATS] it=4	lb=23	ub=24
+[2013-07-06 12:16:51.003] [ERROR] Solution is infeasible
+[2013-07-06 12:16:51.017] [TIME] iteration 5=13966ms
+[2013-07-06 12:16:51.299] [INFO] shortest constrained triangulation segment: 23:(-1413,51)->(-1374,89) (len^2=2965)
+[2013-07-06 12:16:51.325] [STATS] it=5	lb=23	ub=23
+[2013-07-06 12:16:51.326] iterations=5 gap=0
+[2013-07-06 12:16:51.338] [TIME] SAT solving=599875ms
+[2013-07-06 12:16:51.338] [TIME] total=673055ms

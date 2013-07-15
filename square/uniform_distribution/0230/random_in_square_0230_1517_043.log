@@ -1,0 +1,29 @@
+[2013-07-07 18:58:11.563] [INFO] Running in directory /tmp/hellmann/current_run
+[2013-07-07 18:58:11.564] [INFO] Reading settings from /tmp/hellmann/current_run/config.json
+[2013-07-07 18:58:11.564] [INFO] Reading input file ./0230/random_in_square_0230_1517_043.json ...
+[2013-07-07 18:58:12.613] [TIME] generating segments=1037ms
+[2013-07-07 18:58:12.614] points=230 segments=26335 convex hull=17
+[2013-07-07 18:58:12.614] [INFO] shortest input segment: 0:(-1447,-270)->(-1451,-263) (len^2=65)
+[2013-07-07 18:58:12.953] [INFO] shortest non-crossing segment: 23:(-1326,1448)->(-1363,1477) (len^2=2210)
+[2013-07-07 18:58:12.953] separators=2008
+[2013-07-07 18:58:31.647] [TIME] intersection graph=19032ms
+[2013-07-07 18:58:31.648] [INFO] shortest triangulation segment: 0:(-1447,-270)->(-1451,-263) (len^2=65)
+[2013-07-07 18:58:31.648] [INFO] shortest convex hull segment: 67:(-1363,1477)->(-1284,1503) (len^2=6917)
+[2013-07-07 18:58:31.648] [STATS] it=0	lb=0	ub=23
+[2013-07-07 18:58:31.648] [TIME] controller initialization=20084ms
+IBM ILOG License Manager: "university-braunschweig" is accessing CPLEX 12 with option(s): "e m b q use=10 MaintenanceEnd=20110128 ".
+[2013-07-07 18:58:36.501] [ERROR] Solution is infeasible
+[2013-07-07 18:58:36.501] [TIME] iteration 1=4853ms
+[2013-07-07 18:58:36.501] [STATS] it=1	lb=0	ub=11
+[2013-07-07 18:58:42.357] [TIME] iteration 2=5855ms
+[2013-07-07 18:58:42.359] [STATS] it=2	lb=6	ub=11
+[2013-07-07 18:58:44.453] [ERROR] Solution is infeasible
+[2013-07-07 18:58:44.454] [TIME] iteration 3=2094ms
+[2013-07-07 18:58:44.454] [STATS] it=3	lb=6	ub=8
+[2013-07-07 18:58:46.079] [ERROR] Solution is infeasible
+[2013-07-07 18:58:46.079] [TIME] iteration 4=1625ms
+[2013-07-07 18:58:46.081] [INFO] shortest constrained triangulation segment: 6:(-889,1485)->(-867,1502) (len^2=773)
+[2013-07-07 18:58:46.081] [STATS] it=4	lb=6	ub=6
+[2013-07-07 18:58:46.081] iterations=4 gap=0
+[2013-07-07 18:58:46.081] [TIME] SAT solving=14427ms
+[2013-07-07 18:58:46.081] [TIME] total=34517ms

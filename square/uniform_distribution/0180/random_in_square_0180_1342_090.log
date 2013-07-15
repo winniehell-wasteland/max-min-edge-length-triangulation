@@ -1,0 +1,31 @@
+[2013-07-06 02:24:31.923] [INFO] Running in directory /tmp/hellmann/current_run
+[2013-07-06 02:24:31.923] [INFO] Reading settings from /tmp/hellmann/current_run/config.json
+[2013-07-06 02:24:31.923] [INFO] Reading input file ./0180/random_in_square_0180_1342_090.json ...
+[2013-07-06 02:24:32.391] [TIME] generating segments=458ms
+[2013-07-06 02:24:32.392] points=180 segments=16110 convex hull=13
+[2013-07-06 02:24:32.392] [INFO] shortest input segment: 0:(-302,-192)->(-295,-189) (len^2=58)
+[2013-07-06 02:24:32.607] [INFO] shortest non-crossing segment: 20:(-1136,-1340)->(-1080,-1331) (len^2=3217)
+[2013-07-06 02:24:32.607] separators=1313
+[2013-07-06 02:24:40.082] [TIME] intersection graph=7690ms
+[2013-07-06 02:24:40.083] [INFO] shortest triangulation segment: 0:(-302,-192)->(-295,-189) (len^2=58)
+[2013-07-06 02:24:40.083] [INFO] shortest convex hull segment: 345:(-1136,-1340)->(-1328,-1212) (len^2=53248)
+[2013-07-06 02:24:40.083] [STATS] it=0	lb=0	ub=20
+[2013-07-06 02:24:40.083] [TIME] controller initialization=8159ms
+IBM ILOG License Manager: "university-braunschweig" is accessing CPLEX 12 with option(s): "e m b q use=10 MaintenanceEnd=20110128 ".
+[2013-07-06 02:24:41.981] [ERROR] Solution is infeasible
+[2013-07-06 02:24:41.981] [TIME] iteration 1=1898ms
+[2013-07-06 02:24:41.981] [STATS] it=1	lb=0	ub=9
+[2013-07-06 02:24:42.611] [ERROR] Solution is infeasible
+[2013-07-06 02:24:42.611] [TIME] iteration 2=631ms
+[2013-07-06 02:24:42.611] [STATS] it=2	lb=0	ub=4
+[2013-07-06 02:24:42.935] [TIME] iteration 3=324ms
+[2013-07-06 02:24:42.935] [STATS] it=3	lb=2	ub=4
+[2013-07-06 02:24:43.260] [TIME] iteration 4=324ms
+[2013-07-06 02:24:43.260] [STATS] it=4	lb=3	ub=4
+[2013-07-06 02:24:43.581] [ERROR] Solution is infeasible
+[2013-07-06 02:24:43.581] [TIME] iteration 5=321ms
+[2013-07-06 02:24:43.582] [INFO] shortest constrained triangulation segment: 3:(-1285,108)->(-1299,124) (len^2=452)
+[2013-07-06 02:24:43.582] [STATS] it=5	lb=3	ub=3
+[2013-07-06 02:24:43.582] iterations=5 gap=0
+[2013-07-06 02:24:43.582] [TIME] SAT solving=3497ms
+[2013-07-06 02:24:43.582] [TIME] total=11660ms

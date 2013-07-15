@@ -1,0 +1,34 @@
+[2013-07-06 01:33:06.132] [INFO] Running in directory /tmp/hellmann/current_run
+[2013-07-06 01:33:06.132] [INFO] Reading settings from /tmp/hellmann/current_run/config.json
+[2013-07-06 01:33:06.132] [INFO] Reading input file ./0180/random_in_square_0180_1342_069.json ...
+[2013-07-06 01:33:06.612] [TIME] generating segments=465ms
+[2013-07-06 01:33:06.613] points=180 segments=16110 convex hull=13
+[2013-07-06 01:33:06.613] [INFO] shortest input segment: 0:(-382,1089)->(-391,1090) (len^2=82)
+[2013-07-06 01:33:07.207] [INFO] shortest non-crossing segment: 53:(1089,1245)->(1020,1289) (len^2=6697)
+[2013-07-06 01:33:07.207] separators=4344
+[2013-07-06 01:34:27.642] [TIME] intersection graph=81029ms
+[2013-07-06 01:34:27.643] [INFO] shortest triangulation segment: 0:(-382,1089)->(-391,1090) (len^2=82)
+[2013-07-06 01:34:27.643] [INFO] shortest convex hull segment: 53:(1089,1245)->(1020,1289) (len^2=6697)
+[2013-07-06 01:34:27.643] [STATS] it=0	lb=0	ub=53
+[2013-07-06 01:34:27.643] [TIME] controller initialization=81512ms
+IBM ILOG License Manager: "university-braunschweig" is accessing CPLEX 12 with option(s): "e m b q use=10 MaintenanceEnd=20110128 ".
+[2013-07-06 01:42:13.096] [ERROR] Solution is infeasible
+[2013-07-06 01:42:13.186] [TIME] iteration 1=465542ms
+[2013-07-06 01:42:13.190] [STATS] it=1	lb=0	ub=26
+[2013-07-06 01:43:30.087] [ERROR] Solution is infeasible
+[2013-07-06 01:43:30.130] [TIME] iteration 2=76934ms
+[2013-07-06 01:43:30.140] [STATS] it=2	lb=0	ub=12
+[2013-07-06 01:43:37.030] [TIME] iteration 3=6881ms
+[2013-07-06 01:43:37.030] [STATS] it=3	lb=7	ub=12
+[2013-07-06 01:43:45.447] [ERROR] Solution is infeasible
+[2013-07-06 01:43:45.450] [TIME] iteration 4=8419ms
+[2013-07-06 01:43:45.451] [STATS] it=4	lb=7	ub=9
+[2013-07-06 01:43:49.339] [TIME] iteration 5=3886ms
+[2013-07-06 01:43:49.339] [STATS] it=5	lb=8	ub=9
+[2013-07-06 01:43:53.043] [ERROR] Solution is infeasible
+[2013-07-06 01:43:53.046] [TIME] iteration 6=3706ms
+[2013-07-06 01:43:53.197] [INFO] shortest constrained triangulation segment: 8:(1099,-841)->(1117,-821) (len^2=724)
+[2013-07-06 01:43:53.197] [STATS] it=6	lb=8	ub=8
+[2013-07-06 01:43:53.198] iterations=6 gap=0
+[2013-07-06 01:43:53.198] [TIME] SAT solving=565363ms
+[2013-07-06 01:43:53.198] [TIME] total=647065ms

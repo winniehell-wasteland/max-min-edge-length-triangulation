@@ -1,0 +1,30 @@
+[2013-07-04 22:36:00.645] [INFO] Running in directory /tmp/hellmann/current_run
+[2013-07-04 22:36:00.646] [INFO] Reading settings from /tmp/hellmann/current_run/config.json
+[2013-07-04 22:36:00.687] [INFO] Reading input file ./0120/random_in_square_0120_1095_080.json ...
+[2013-07-04 22:36:00.838] [TIME] generating segments=126ms
+[2013-07-04 22:36:00.838] points=120 segments=7140 convex hull=10
+[2013-07-04 22:36:00.838] [INFO] shortest input segment: 0:(-997,852)->(-988,856) (len^2=97)
+[2013-07-04 22:36:01.094] [INFO] shortest non-crossing segment: 37:(-901,-1073)->(-852,-997) (len^2=8177)
+[2013-07-04 22:36:01.094] separators=1833
+[2013-07-04 22:36:14.165] [TIME] intersection graph=13326ms
+[2013-07-04 22:36:14.166] [INFO] shortest triangulation segment: 0:(-997,852)->(-988,856) (len^2=97)
+[2013-07-04 22:36:14.166] [INFO] shortest convex hull segment: 184:(930,998)->(750,1077) (len^2=38641)
+[2013-07-04 22:36:14.166] [STATS] it=0	lb=0	ub=37
+[2013-07-04 22:36:14.166] [TIME] controller initialization=13497ms
+IBM ILOG License Manager: "university-braunschweig" is accessing CPLEX 12 with option(s): "e m b q use=10 MaintenanceEnd=20110128 ".
+[2013-07-04 22:36:18.953] [ERROR] Solution is infeasible
+[2013-07-04 22:36:18.953] [TIME] iteration 1=4787ms
+[2013-07-04 22:36:18.953] [STATS] it=1	lb=0	ub=18
+[2013-07-04 22:36:21.401] [TIME] iteration 2=2448ms
+[2013-07-04 22:36:21.401] [STATS] it=2	lb=11	ub=18
+[2013-07-04 22:36:22.652] [ERROR] Solution is infeasible
+[2013-07-04 22:36:22.652] [TIME] iteration 3=1252ms
+[2013-07-04 22:36:22.652] [STATS] it=3	lb=11	ub=14
+[2013-07-04 22:36:24.297] [TIME] iteration 4=1644ms
+[2013-07-04 22:36:24.297] [STATS] it=4	lb=13	ub=14
+[2013-07-04 22:36:25.953] [TIME] iteration 5=1656ms
+[2013-07-04 22:36:25.954] [INFO] shortest constrained triangulation segment: 14:(-753,-940)->(-701,-910) (len^2=3604)
+[2013-07-04 22:36:25.954] [STATS] it=5	lb=14	ub=14
+[2013-07-04 22:36:25.954] iterations=5 gap=0
+[2013-07-04 22:36:25.954] [TIME] SAT solving=11787ms
+[2013-07-04 22:36:25.954] [TIME] total=25285ms
