@@ -4,18 +4,16 @@
 
 #include "config.h"
 
-#include <QCoreApplication>
 #include <QFile>
-#include <QElapsedTimer>
 #include <QSettings>
-#include <QSvgGenerator>
 
 #include "stats.h"
 
-#include "cgal/triangulation.h"
+#include "cgal/bounding_box.h"
 
 #include "containers/convex_hull.h"
 #include "containers/segment_container.h"
+#include "containers/triangulation.h"
 
 #include "cplex/cplex_sat_solver.h"
 
@@ -24,29 +22,40 @@
 
 #include "sat/sat_solution.h"
 
-#include "utils/abort_timer.h"
-#include "utils/elapsed_timer.h"
+#include "utils/svg_painter.h"
 
-class Controller :
-        public QObject
+class Controller
 {
-    Q_OBJECT
 public:
-    Controller(QCoreApplication& application, const QSettings& settings);
-public Q_SLOTS:
-    void iteration();
-    void start();
-private:
-    using BoundingBox = CGAL::Iso_rectangle_2<Kernel>;
+    Controller(const QString& file_prefix,
+               QFile& input_file,
+               const QSettings& settings);
 
+    /**
+     * called after the algorithm finished
+     */
+    void done();
+
+    /**
+     * run next iteration
+     * @return true if next iteration should be triggered
+     */
+    bool iteration();
+
+
+    /**
+     * start the algorithm
+     * @return true if iteration should be triggered
+     */
+    bool start();
+private:
     /**
      * @name independent members
      * @{
      */
-    ElapsedTimer                         timer_;
     CplexSATSolver                       cplex_solver_;
     IntersectionAlgorithm                intersection_algorithm_;
-    SATSolution                          sat_solution_;
+    SATSolution                          last_sat_solution_;
     Stats                                stats_;
     /**
      * @}
@@ -56,8 +65,8 @@ private:
      * @name input parameters
      * @{
      */
-    QCoreApplication&                    application_;
-    QFile                                input_file_;
+    const QString&                       file_prefix_;
+    QFile&                               input_file_;
     const QSettings&                     settings_;
     /**
      * @}
@@ -67,8 +76,6 @@ private:
      * @name dependent on input parameter
      * @{
      */
-    AbortTimer                           abort_timer_;
-    QString                              file_prefix_;
     const PointSet                       points_;
     /**
      * @}
@@ -94,77 +101,6 @@ private:
     /**
      * @}
      */
-
-    class SVGPainter :
-            public QPainter
-    {
-    public:
-        SVGPainter(const Controller* controller, const QString& file_name) :
-            QPainter(),
-            generator_(),
-            pen_()
-        {
-            generator_.setFileName(controller->file_prefix_ + "_" + file_name);
-            generator_.setTitle(controller->file_prefix_);
-
-            generator_.setSize(QSize(
-                CGAL::to_double(controller->bounding_box_.xmax())
-                    - CGAL::to_double(controller->bounding_box_.xmin()) + 2 * SVG_PADDING,
-                CGAL::to_double(controller->bounding_box_.ymax())
-                    - CGAL::to_double(controller->bounding_box_.ymin()) + 2 * SVG_PADDING) * SVG_SCALE
-            );
-
-            generator_.setViewBox(QRect(
-                CGAL::to_double(SVG_SCALE*(controller->bounding_box_.xmin() - SVG_PADDING)),
-                CGAL::to_double(SVG_SCALE*(controller->bounding_box_.ymin() - SVG_PADDING)),
-                generator_.size().width(), generator_.size().height())
-            );
-
-            this->begin(&generator_);
-
-            pen_.setWidthF(0.5);
-            pen_.setCosmetic(true);
-            this->setPen(pen_);
-
-            this->scale(SVG_SCALE, SVG_SCALE);
-        }
-
-        void setPenColor(const QColor& color)
-        {
-            pen_.setColor(color);
-            this->setPen(pen_);
-        }
-
-        void setPenWidth(int width)
-        {
-            pen_.setWidth(width);
-            this->setPen(pen_);
-        }
-
-        ~SVGPainter()
-        {
-            this->end();
-        }
-
-    private:
-        /**
-         * padding for SVG images
-        */
-        static const int SVG_PADDING;
-
-        /**
-         * scale for SVG images
-        */
-        static const double SVG_SCALE;
-
-        QSvgGenerator generator_;
-        QPen          pen_;
-    };
-
-    /**
-     * called when algorithm finishes
-     */
-    void done();
 
     void draw_bounds() const;
     void draw_intersections() const;

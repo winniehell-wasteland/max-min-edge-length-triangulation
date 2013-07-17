@@ -1,6 +1,8 @@
 #include <QDateTime>
 #include <QTextStream>
 
+//static const boost::format fmt_log();
+
 static QTextStream qout(stdout);
 
 #include "logger.h"

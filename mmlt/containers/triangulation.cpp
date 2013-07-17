@@ -5,7 +5,7 @@
 
 Triangulation::Triangulation(const PointSet& points)
 {
-    logger.info(mmlt_msg("Adding points to triangulation..."));
+    logger.debug( mmlt_msg( "Adding points to triangulation..." ) );
     this->insert(points.begin(), points.end());
 }
 

@@ -1,7 +1,4 @@
-#include <QDebug>
-#include <QFileInfo>
-
-#include <CGAL/bounding_box.h>
+#include <QElapsedTimer>
 
 #include "sat/sat_problem.h"
 
@@ -9,55 +6,51 @@
 
 #include "controller.h"
 
-const int Controller::SVGPainter::SVG_PADDING = 10;
-const double Controller::SVGPainter::SVG_SCALE = 4.0;
-
-Controller::Controller(QCoreApplication& application, const QSettings& settings) :
-    timer_(true),
+Controller::Controller(const QString& file_prefix,
+                       QFile& input_file,
+                       const QSettings& settings) :
     cplex_solver_(),
     intersection_algorithm_(),
-    sat_solution_(),
+    last_sat_solution_(),
     stats_(),
 
-    application_(application),
-    input_file_(application.arguments().at(1)),
-    settings_(settings),
+    file_prefix_( file_prefix ),
+    input_file_( input_file ),
+    settings_( settings ),
 
-    abort_timer_(settings_.value("controller/abort_timeout", 60*60*1000).toUInt()),
-    file_prefix_(
-        input_file_.fileName().left(input_file_.fileName().lastIndexOf('.'))
-        ),
     points_(input_file_),
 
-    bounding_box_(CGAL::bounding_box(points_.begin(), points_.end())),
+    bounding_box_(points_),
     convex_hull_(points_),
     segments_(points_),
     triangulation_(points_),
 
     intersection_graph_(segments_.size())
 {
-    logger.time("controller initialization", timer_.elapsed());
-
-    logger.print(mmlt_msg("points=%1 segments=%2 convex hull=%3")
+    logger.print( mmlt_msg( "points=%1 segments=%2 convex hull=%3" )
                  .arg(points_.size())
                  .arg(segments_.size())
                  .arg(convex_hull_.size()));
 
+    const Segment& shortest_input_segment = segments_[0];
     logger.info(
         mmlt_msg("shortest input segment: %1 (%2)")
-        .arg(segments_[0].to_string())
-        .arg(segment_length_to_string(segments_[0]))
+        .arg(shortest_input_segment.to_string())
+        .arg(segment_length_to_string(shortest_input_segment))
     );
 
-    abort_timer_.start();
-    intersection_algorithm_.run(intersection_graph_, segments_);
-    abort_timer_.stop();
+    {
+        QElapsedTimer timer;
+        timer.start();
+        intersection_algorithm_.run(intersection_graph_, segments_);
+        logger.time( mmlt_msg( "intersection graph" ), timer.elapsed() );
+    }
 
     if(settings_.value("draw/segments").toBool())
     {
-        logger.info(mmlt_msg("Drawing segments..."));
+        logger.debug(mmlt_msg("Drawing segments..."));
 
-        SVGPainter painter(this, "segments.svg");
+        SVGPainter painter(file_prefix_, "segments.svg", bounding_box_);
         draw_segments(painter);
         draw_points(painter);
     }
@@ -73,186 +66,150 @@ Controller::Controller(QCoreApplication& application, const QSettings& settings)
     }
 }
 
-void Controller::iteration()
+bool Controller::iteration()
 {
-    abort_timer_.start();
+    QElapsedTimer iteration_time;
+    iteration_time.start();
 
-    ElapsedTimer iteration_timer(true);
     ++stats_.iteration;
 
     SATProblem sat_problem(intersection_graph_, segments_);
 
     SegmentIndex new_bound = (stats_.lower_bound() + stats_.upper_bound() + 1)/2;
 
-    logger.info(mmlt_msg("Trying new lower bound: %1").arg(new_bound));
+    logger.debug( mmlt_msg( "Trying new lower bound: %1" )
+                  .arg(new_bound));
 
     sat_problem.set_short_segment_range(new_bound, stats_.upper_bound());
 
-    cplex_solver_.solve_decision_problem(
-                settings_,
-                file_prefix_,
-                sat_problem,
-                sat_solution_
-                );
-
-    logger.time(QString("iteration %1").arg(stats_.iteration), iteration_timer.elapsed());
-
-    // there is no feasible triangulation
-    if(sat_solution_.empty())
     {
-        if(new_bound > stats_.lower_bound())
-        {
-            new_bound = new_bound - 1;
-        }
+        SATSolution sat_solution;
 
-        logger.info(mmlt_msg("New upper bound: %1").arg(new_bound));
-        stats_.add_upper_bound(new_bound);
+        QElapsedTimer sat_time;
+        sat_time.start();
+
+        cplex_solver_.solve_decision_problem(
+                    settings_,
+                    file_prefix_,
+                    sat_problem,
+                    sat_solution
+                    );
+
+        stats_.sat_solving_time += sat_time.elapsed();
+
+        // there is no feasible triangulation
+        if(sat_solution.empty())
+        {
+	    if(new_bound > stats_.lower_bound())
+	      {
+		new_bound = new_bound - 1;
+	      }
+
+	    logger.debug( mmlt_msg( "New upper bound: %1" )
+			  .arg(new_bound));
+	    stats_.add_upper_bound(new_bound);
+	}
+	// there is a feasible triangulation
+	else
+	  {
+	    SegmentIndex sat_bound = sat_solution.shortest_segment();
+
+	    if(sat_bound > stats_.upper_bound())
+	      {
+		sat_bound = stats_.upper_bound();
+	      }
+
+	    logger.debug( mmlt_msg( "New lower bound: %1" ).arg(sat_bound) );
+	    stats_.add_lower_bound(sat_bound);
+
+	    // remember last solution
+	    last_sat_solution_.clear();
+	    std::copy(sat_solution.begin(), sat_solution.end(), std::back_inserter(last_sat_solution_));
+
+	    if(settings_.value("draw/sat_solution").toBool())
+	      {
+		draw_sat_solution();
+	      }
+	  }
     }
-    // there is a feasible triangulation
+
+    logger.time( mmlt_msg( "iteration %1" )
+                 .arg(stats_.iteration),
+                 iteration_time.elapsed());
+
+    if( (stats_.gap() < 1)
+        || (stats_.iteration > settings_.value("controller/max_iterations", 20).toUInt()) )
+    {
+        return false;
+    }
     else
     {
-        SegmentIndex sat_bound = sat_solution_.shortest_segment();
-
-        if(sat_bound > stats_.upper_bound())
-        {
-            sat_bound = stats_.upper_bound();
-        }
-
-        logger.info(mmlt_msg("New lower bound: %1").arg(sat_bound));
-        stats_.add_lower_bound(sat_bound);
-
-        if(settings_.value("draw/sat_solution").toBool())
-        {
-            draw_sat_solution();
-        }
+        output_status();
+        return true;
     }
-
-    if((stats_.gap() < 1) || (stats_.iteration > settings_.value("controller/max_iterations", 20).toUInt()))
-    {
-        done();
-        return;
-    }
-    else
-    {
-        QTimer::singleShot(0, this, SLOT(iteration()));
-    }
-
-    output_status();
-
-    abort_timer_.stop();
 }
 
-void Controller::start()
+bool Controller::start()
 {
     if(points_.empty())
     {
-        logger.error(mmlt_msg("There are no points!"));
-        done();
-        return;
+        logger.error( mmlt_msg( "There are no points!" ) );
+        return false;
     }
 
     pre_solving();
 
-    if((stats_.gap() < 1) || (settings_.value("controller/max_iterations").toUInt() == 0))
+    if((stats_.gap() < 1)
+            || (settings_.value("controller/max_iterations").toUInt() == 0))
     {
-        done();
-        return;
+        return false;
     }
-
-    /*
-    SATProblem sat_problem(intersection_graph_, segments_);
-    sat_problem.set_short_segment_range(stats_.lower_bound(), stats_.upper_bound());
-
-    cplex_solver_.solve_optimization_problem(
-                settings_,
-                file_prefix_,
-                sat_problem,
-                sat_solution_
-                );
-
-    logger.time(QString("iteration %1").arg(stats_.iteration), iteration_timer.elapsed());
-
-    if(sat_solution_.empty())
-    {
-        logger.error(mmlt_msg("No feasible solution could be found!"));
-        done();
-        return;
-    }
-
-    if(settings_.value("draw/sat_solution").toBool())
-    {
-        draw_sat_solution();
-    }
-
-    SegmentIndex sat_bound = sat_solution_.shortest_segment();
-    logger.info(mmlt_msg("shortest SAT solution segment: %1 (%2)")
-                .arg(segments_[sat_bound].to_string())
-                .arg(segment_length_to_string(segments_[sat_bound])));
-
-    // check bounds
-    MMLT_postcondition(sat_problem.lower_bound() <= sat_bound);
-    if(sat_bound > sat_problem.upper_bound())
-    {
-        sat_bound = sat_problem.upper_bound();
-    }
-
-    stats_.add_lower_bound(sat_bound);
-    stats_.add_upper_bound(sat_bound);
-
-    if(stats_.gap() < 1)
-    {
-        done();
-        return;
-    }
-    */
 
     output_status();
 
-    // next iteration
-    QTimer::singleShot(0, this, SLOT(iteration()));
+    return true;
 }
 
 void Controller::done()
 {
-    if(!sat_solution_.empty())
+    if(!last_sat_solution_.empty())
     {
-        logger.info(mmlt_msg("Adding separators and non-separable segments to triangulation..."));
-        for(const SegmentIndex& seg_index : sat_solution_)
+        logger.debug( mmlt_msg( "Adding separators and non-separable segments to triangulation..." ) );
+
+        for(const SegmentIndex& seg_index : last_sat_solution_)
         {
             logger.debug(mmlt_msg("Segment index: %1").arg(seg_index));
             const Segment& segment = segments_[seg_index];
             triangulation_.insert_constraint(segment.source(), segment.target());
         }
-
-        const SegmentIndex& shortest_triangulation_segment =
-                triangulation_.shortest_segment(segments_);
-
-        logger.info(
-            mmlt_msg("shortest constrained triangulation segment: %1 (%2)")
-            .arg(segments_[shortest_triangulation_segment].to_string())
-            .arg(segment_length_to_string(segments_[shortest_triangulation_segment]))
-        );
-
-        if(settings_.value("draw/triangulation").toBool())
-        {
-            draw_triangulation();
-        }
     }
 
-    logger.time("total", timer_.elapsed());
+    const Segment& shortest_triangulation_segment =
+            segments_[triangulation_.shortest_segment(segments_)];
+
+    logger.info(
+        mmlt_msg("shortest constrained triangulation segment: %1 (%2)")
+        .arg(shortest_triangulation_segment.to_string())
+        .arg(segment_length_to_string(shortest_triangulation_segment))
+    );
+
+    if(settings_.value("draw/triangulation").toBool())
+    {
+        draw_triangulation();
+    }
+    
 
     output_status();
 
     logger.print(mmlt_msg("iterations=%1 gap=%2").arg(stats_.iteration).arg(stats_.gap()));
-    logger.info(mmlt_msg("Done."));
-    application_.quit();
+    logger.time( mmlt_msg( "SAT solving" ), stats_.sat_solving_time);
 }
 
 void Controller::draw_bounds() const
 {
     logger.info(mmlt_msg("Drawing bounds..."));
 
-    SVGPainter painter(this, QString("bounds_%1.svg").arg(stats_.iteration));
+    SVGPainter painter(file_prefix_, QString("bounds_%1.svg").arg(stats_.iteration), bounding_box_);
     draw_segments(painter);
 
     painter.setPenColor(QColor(255, 255, 0));
@@ -269,13 +226,13 @@ void Controller::draw_bounds() const
 
 void Controller::draw_intersections() const
 {
-    logger.info(mmlt_msg("Drawing intersections..."));
+    logger.info( mmlt_msg( "Drawing intersections..." ) );
 
     SegmentIndex segment_index = 0;
 
     for(const Intersections& intersections : intersection_graph_)
     {
-        SVGPainter painter(this, QString("%1_intersections.svg").arg(segment_index, 5, 10, QChar('0')));
+        SVGPainter painter(file_prefix_, QString("%1_intersections.svg").arg(segment_index, 5, 10, QChar('0')), bounding_box_);
 
         draw_segments(painter);
 
@@ -302,9 +259,9 @@ void Controller::draw_points(SVGPainter& painter) const
 
 void Controller::draw_sat_solution() const
 {
-    logger.info(mmlt_msg("Drawing SAT solution..."));
+    logger.debug( mmlt_msg( "Drawing SAT solution..." ) );
 
-    SVGPainter painter(this, QString("sat_%1.svg").arg(stats_.iteration));
+    SVGPainter painter(file_prefix_, QString("sat_%1.svg").arg(stats_.iteration), bounding_box_);
 
     //draw_segments(painter);
 
@@ -312,10 +269,10 @@ void Controller::draw_sat_solution() const
     segments_.draw_range(painter, stats_.lower_bound(), stats_.upper_bound());
 
     painter.setPenColor(QColor(255, 0, 0));
-    sat_solution_.draw_short_segments(painter, stats_.upper_bound(), segments_);
+    last_sat_solution_.draw_short_segments(painter, stats_.upper_bound(), segments_);
 
     painter.setPenColor(QColor(0, 255, 0));
-    sat_solution_.draw_separators(painter, stats_.upper_bound(), segments_);
+    last_sat_solution_.draw_separators(painter, stats_.upper_bound(), segments_);
 
     draw_points(painter);
 }
@@ -332,7 +289,7 @@ void Controller::draw_separators() const
 
     for(SegmentIndex index = 0; index < intersection_algorithm_.shortest_noncrossing_segment_; ++index)
     {
-        SVGPainter painter(this, QString("separators_%1.svg").arg(index));
+        SVGPainter painter(file_prefix_, QString("separators_%1.svg").arg(index), bounding_box_);
 
         //draw_segments(painter);
 
@@ -361,9 +318,9 @@ void Controller::draw_separators() const
 
 void Controller::draw_triangulation() const
 {
-    logger.info(mmlt_msg("Drawing triangulation..."));
+    logger.debug( mmlt_msg( "Drawing triangulation..." ) );
 
-    SVGPainter painter(this, "solution.svg");
+    SVGPainter painter(file_prefix_, "solution.svg", bounding_box_);
 
     //draw_segments(painter);
 
@@ -385,8 +342,6 @@ void Controller::output_status() const
 
 void Controller::pre_solving()
 {
-    ElapsedTimer presolving_timer(true);
-
     // use non-constrained triangulation as a feasible solution
     const SegmentIndex& shortest_triangulation_segment =
             triangulation_.shortest_segment(segments_);
@@ -404,6 +359,4 @@ void Controller::pre_solving()
 
     // each non-intersected segment must be part of the triangulation
     stats_.add_upper_bound(intersection_algorithm_.shortest_noncrossing_segment_);
-
-    logger.time("pre solving", presolving_timer.elapsed());
 }

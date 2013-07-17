@@ -2,6 +2,8 @@
 #ifndef MMLT_UTILS_LOGGER_H
 #define MMLT_UTILS_LOGGER_H
 
+#include <boost/format.hpp>
+
 #include <QObject>
 #include <QString>
 
@@ -11,6 +13,8 @@
 class Logger
 {
 public:
+    static const boost::format fmt_log;
+
     Logger();
 
     void debug(const QString& message) const;

@@ -1,5 +1,7 @@
 #include <vector>
 
+#include <QElapsedTimer>
+
 #include "utils/assertions.h"
 #include "utils/logger.h"
 
@@ -25,6 +27,9 @@ void generate_segments(const PointSet& points, OutputIterator output)
 SegmentContainer::SegmentContainer(const PointSet& points) :
     boost::container::flat_multiset<Segment, STLSegmentLengthOrder>(stl_segment_length_order)
 {
+    QElapsedTimer timer;
+    timer.start();
+
     // restrict scope for temporary vector
     {
         // temporary vector for increased insertion speed
@@ -48,6 +53,8 @@ SegmentContainer::SegmentContainer(const PointSet& points) :
         ++seg_index;
     }
     MMLT_postcondition(seg_index == this->size());
+
+    logger.time( mmlt_msg( "generating segments" ), timer.elapsed());
 }
 
 Segment& SegmentContainer::operator[](const SegmentIndex& index)

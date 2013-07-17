@@ -142,7 +142,10 @@ void CplexSATSolver::init_optimization_problem(const SATProblem* problem)
     MMLT_precondition(problem_data_.count(problem) == 0);
 
     auto entry = std::make_pair(problem, ProblemData(problem->size()));
-    auto it = problem_data_.insert(entry).first;
+#ifndef NDEBUG
+    auto it =
+#endif
+    problem_data_.insert(entry).first;
     MMLT_postcondition(it->first == problem);
 }
 

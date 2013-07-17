@@ -58,9 +58,9 @@ private:
         for(std::size_t i = 0; i < num_iterations; ++i)
         {
             QString file_name = base_name
-                .arg(qulonglong(num_points), 4, 10, QChar('0'))
-                .arg(qulonglong(range),      4, 10, QChar('0'))
-                .arg(qulonglong(i),          3, 10, QChar('0'));
+                .arg(quint64(num_points), 4, 10, QChar('0'))
+                .arg(quint64(range),      4, 10, QChar('0'))
+                .arg(quint64(i),          3, 10, QChar('0'));
 
             if(QFile(file_name).exists())
             {

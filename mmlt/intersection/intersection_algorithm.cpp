@@ -128,9 +128,9 @@ void IntersectionAlgorithm::handle_overlap(IntersectionGraph& igraph,
                     const Segment& s1,
                     const Segment& s2)
 {
-    logger.info(mmlt_msg("segments %1 and %2 overlap")
-                .arg(s1.to_string())
-                .arg(s2.to_string()));
+    logger.debug( mmlt_msg( "segments %1 and %2 overlap" )
+                  .arg(s1.to_string())
+                  .arg(s2.to_string()));
 
     igraph.add_intersection(s1, s2);
 }

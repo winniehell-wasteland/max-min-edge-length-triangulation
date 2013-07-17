@@ -8,6 +8,9 @@
 
 #include "utils/logger.h"
 
+/**
+ * flatten nested JSON objects to QSettings paths
+ */
 void parseJSONSetting(QVariantMap& map, const QString& prefix, const QJsonObject& setting)
 {
     foreach(QString key, setting.keys())
@@ -59,31 +62,70 @@ bool writeJSONSettings(QIODevice&, const QSettings::SettingsMap&)
 const QSettings::Format JSONFormat =
         QSettings::registerFormat("json", readJSONSettings, writeJSONSettings);
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     if(argc != 2)
     {
-        logger.error(mmlt_msg("Invalid number of arguments!"));
+        logger.error(mmlt_msg("Invalid number of arguments! Expected input file name."));
         return EXIT_FAILURE;
     }
 
-    logger.info(mmlt_msg("Running in directory %1").arg(QDir::currentPath()));
+    QStringList arguments;
 
-    QGuiApplication application(argc, argv);
-    const QSettings settings( QDir::currentPath() + "/config.json", JSONFormat);
+    // read in arguments
+    for(int i = 0; i < argc; ++i)
+    {
+        QString arg( argv[i] );
+        arguments.append(arg);
+    }
 
-    if(application.arguments().at(1) == "--generate")
+    logger.info( mmlt_msg("Running in directory %1").arg( QDir::currentPath() ) );
+
+    QString settings_path( QDir::currentPath() + "/config.json" );
+    logger.info( mmlt_msg( "Reading settings from %1" )
+                 .arg( settings_path ) );
+    const QSettings settings( settings_path, JSONFormat);
+
+    if( arguments.at(1) == "--generate" )
     {
         PointGenerator::run(settings);
-        //exit(EXIT_SUCCESS);
-
         return EXIT_SUCCESS;
     }
     else
     {
-        Controller controller(application, settings);
-        QTimer::singleShot(0, &controller, SLOT(start()));
+        QElapsedTimer total_time;
+        total_time.start();
 
-        return application.exec();
+        QFile input_file( arguments.at(1) );
+        QString file_prefix(
+                    input_file
+                    .fileName()
+                    .left(
+                        input_file
+                        .fileName()
+                        .lastIndexOf('.')
+                        )
+                    );
+
+        Controller controller(file_prefix, input_file, settings);
+
+        if( controller.start() )
+        {
+            logger.time( mmlt_msg( "controller initialization" ), total_time.elapsed());
+
+            while( controller.iteration() )
+            {
+
+            }
+        }
+        else
+        {
+            logger.time( mmlt_msg( "controller initialization" ), total_time.elapsed());
+        }
+
+        controller.done();
+        logger.time( mmlt_msg( "total" ), total_time.elapsed());
+
+        return EXIT_SUCCESS;
     }
 }

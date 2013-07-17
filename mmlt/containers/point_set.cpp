@@ -1,3 +1,4 @@
+#include <QElapsedTimer>
 #include <QFileInfo>
 
 #include "utils/json.h"
@@ -18,6 +19,7 @@ PointSet::PointSet(QFile &input_file) :
     {
         logger.warn(mmlt_msg("Only JSON files are supported!"));
     }
+
 
     if(!JSON::read_points(input_file, std::inserter(*this, this->end())))
     {

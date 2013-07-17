@@ -76,7 +76,7 @@ void DecisionSATSolver::solve_decision_problem(const QSettings& settings,
         dump_problem(file_prefix, &problem);
     }
 
-    logger.info(mmlt_msg("Solving SAT problem..."));
+    logger.debug( mmlt_msg( "Solving SAT problem..." ) );
     solve_problem(&problem, solution);
 }
 
@@ -101,6 +101,6 @@ void OptimizationSATSolver::solve_optimization_problem(const QSettings& settings
         dump_problem(file_prefix, &problem);
     }
 
-    logger.info(mmlt_msg("Solving SAT problem..."));
+    logger.debug( mmlt_msg( "Solving SAT problem..." ) );
     solve_problem(&problem, solution);
 }

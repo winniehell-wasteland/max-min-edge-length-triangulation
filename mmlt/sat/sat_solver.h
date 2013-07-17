@@ -10,6 +10,9 @@
 #include "sat/sat_problem.h"
 #include "sat/sat_solution.h"
 
+/**
+ * interface for SAT solvers
+ */
 class SATSolver
 {
 protected:
@@ -33,6 +36,9 @@ protected:
                                SATSolution& solution) = 0;
 };
 
+/**
+ * interface for decision SAT solvers
+ */
 class DecisionSATSolver :
         public SATSolver
 {
@@ -45,6 +51,9 @@ protected:
     virtual void init_decision_problem(const SATProblem* problem) = 0;
 };
 
+/**
+ * interface for optimization SAT solvers
+ */
 class OptimizationSATSolver :
         public SATSolver
 {

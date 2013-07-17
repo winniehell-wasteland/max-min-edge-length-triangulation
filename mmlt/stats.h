@@ -11,9 +11,11 @@ class Stats
 {
 public:
     size_t       iteration;
+    quint64      sat_solving_time;
 
     Stats() :
         iteration(0),
+        sat_solving_time(0),
         lower_bound_(0),
         upper_bound_(std::numeric_limits<SegmentIndex>::max())
     {

@@ -71,7 +71,7 @@ public:
             return false;
         }
 
-        logger.info(mmlt_msg("Reading file %1...").arg(file.fileName()));
+        logger.info( mmlt_msg( "Reading input file %1 ..." ).arg(file.fileName()));
 
         JSONValue doc;
         if(!json_spirit::read_stream(input, doc))
