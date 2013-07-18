@@ -1,0 +1,1 @@
+#INCLUDEPATH += json_spirit/

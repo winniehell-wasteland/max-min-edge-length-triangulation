@@ -1,5 +1,4 @@
 QT       -= gui
 
 TEMPLATE = subdirs
-SUBDIRS = mmlt tests
-
+SUBDIRS = src/generator.pro src/mmlt.pro
