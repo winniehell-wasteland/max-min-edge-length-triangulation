@@ -1,0 +1,8 @@
+[2013-07-18 15:48:28.291] [INFO] Running in directory /tmp/hellmann/uniform_distribution
+[2013-07-18 15:48:28.300] [INFO] Reading settings from /tmp/hellmann/uniform_distribution/config.json
+[2013-07-18 15:48:28.317] [INFO] Reading input file ./0380/random_in_square_0380_1949_004.json ...
+[2013-07-18 15:48:43.033] [TIME] generating segments=14681ms
+[2013-07-18 15:48:43.036] points=380 segments=72010 convex hull=13
+[2013-07-18 15:48:43.036] [INFO] shortest input segment: 0:(-1260,-1314)->(-1266,-1304) (len^2=136)
+[2013-07-18 15:48:45.853] [INFO] shortest non-crossing segment: 89:(1669,1841)->(1615,1900) (len^2=6397)
+[2013-07-18 15:48:45.853] separators=21802

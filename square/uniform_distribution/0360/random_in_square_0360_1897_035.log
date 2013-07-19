@@ -1,0 +1,26 @@
+[2013-07-16 22:49:10.678] [INFO] Running in directory /tmp/hellmann/uniform_distribution
+[2013-07-16 22:49:10.678] [INFO] Reading settings from /tmp/hellmann/uniform_distribution/config.json
+[2013-07-16 22:49:10.678] [INFO] Reading input file ./0360/random_in_square_0360_1897_035.json ...
+[2013-07-16 22:49:21.472] [TIME] generating segments=10777ms
+[2013-07-16 22:49:21.475] points=360 segments=64620 convex hull=16
+[2013-07-16 22:49:21.475] [INFO] shortest input segment: 0:(-1696,665)->(-1690,667) (len^2=40)
+[2013-07-16 22:49:21.712] [INFO] shortest non-crossing segment: 9:(1887,-1363)->(1864,-1355) (len^2=593)
+[2013-07-16 22:49:21.712] separators=852
+[2013-07-16 22:49:25.300] [TIME] intersection graph=3824ms
+[2013-07-16 22:49:25.302] [INFO] shortest triangulation segment: 0:(-1696,665)->(-1690,667) (len^2=40)
+[2013-07-16 22:49:25.302] [INFO] shortest convex hull segment: 441:(1513,1793)->(1328,1815) (len^2=34709)
+[2013-07-16 22:49:25.302] [STATS] it=0	lb=0	ub=9
+[2013-07-16 22:49:25.302] [TIME] controller initialization=14623ms
+IBM ILOG License Manager: "university-braunschweig" is accessing CPLEX 12 with option(s): "e m b q use=10 MaintenanceEnd=20110128 ".
+[2013-07-16 22:49:35.162] [TIME] iteration 1=9860ms
+[2013-07-16 22:49:35.162] [STATS] it=1	lb=5	ub=9
+[2013-07-16 22:49:45.036] [TIME] iteration 2=9874ms
+[2013-07-16 22:49:45.036] [STATS] it=2	lb=7	ub=9
+[2013-07-16 22:49:54.897] [TIME] iteration 3=9862ms
+[2013-07-16 22:49:54.897] [STATS] it=3	lb=8	ub=9
+[2013-07-16 22:50:04.818] [TIME] iteration 4=9921ms
+[2013-07-16 22:50:04.820] [INFO] shortest constrained triangulation segment: 9:(1887,-1363)->(1864,-1355) (len^2=593)
+[2013-07-16 22:50:04.820] [STATS] it=4	lb=9	ub=9
+[2013-07-16 22:50:04.820] iterations=4 gap=0
+[2013-07-16 22:50:04.820] [TIME] SAT solving=39517ms
+[2013-07-16 22:50:04.820] [TIME] total=54142ms
