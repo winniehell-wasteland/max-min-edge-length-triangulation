@@ -1,0 +1,8 @@
+Build: 2013-07-19 16:30:18+02:00 by winniehell (last commit: 4db829e21bf3f4afd6088fb814ff065ec189c5e0 by winniehell)
+[2013-07-20 01:00:11.146] [INFO] Running in directory /opt/tmp/hellmann/complete_sat
+[2013-07-20 01:00:11.146] [INFO] Reading config file config.ini
+[2013-07-20 01:00:11.147] [INFO] Reading input file ./0070/random_in_square_0070_0837_008.json ...
+[2013-07-20 01:00:11.174] [TIME] generating segments=25ms
+[2013-07-20 01:00:11.174] points=70 segments=2415 convex hull=11
+[2013-07-20 01:00:11.174] [INFO] shortest input segment: 0:(-374,-829)->(-391,-821) (len^2=353)
+[2013-07-20 01:00:11.177] [INFO] shortest non-crossing segment: 0:(-374,-829)->(-391,-821) (len^2=353)

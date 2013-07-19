@@ -1,0 +1,16 @@
+Build: 2013-07-19 16:30:18+02:00 by winniehell (last commit: 4db829e21bf3f4afd6088fb814ff065ec189c5e0 by winniehell)
+[2013-07-20 00:26:47.291] [INFO] Running in directory /misc/home/hellmann/Projects/masterarbeit/tests/complete_sat/square/uniform_distribution
+[2013-07-20 00:26:47.292] [INFO] Reading config file config.ini
+[2013-07-20 00:26:47.293] [INFO] Reading input file ./0020/random_in_square_0020_0447_053.json ...
+[2013-07-20 00:26:47.295] [TIME] generating segments=1ms
+[2013-07-20 00:26:47.295] points=20 segments=190 convex hull=6
+[2013-07-20 00:26:47.295] [INFO] shortest input segment: 0:(-351,-4)->(-352,45) (len^2=2402)
+[2013-07-20 00:26:47.296] [INFO] shortest non-crossing segment: 1:(253,-146)->(309,-129) (len^2=3425)
+[2013-07-20 00:26:47.411] [TIME] intersection graph=116ms
+IBM ILOG License Manager: "university-braunschweig" is accessing CPLEX 12 with option(s): "e m b q use=10 MaintenanceEnd=20110128 ".
+[2013-07-20 00:26:47.432] [TIME] controller initialization=139ms
+[2013-07-20 00:26:47.432] [INFO] shortest constrained triangulation segment: 0:(-351,-4)->(-352,45) (len^2=2402)
+[2013-07-20 00:26:47.432] [STATS] it=0	lb=0	ub=190
+[2013-07-20 00:26:47.432] iterations=0 gap=190
+[2013-07-20 00:26:47.432] [TIME] SAT solving=20ms
+[2013-07-20 00:26:47.432] [TIME] total=140ms
