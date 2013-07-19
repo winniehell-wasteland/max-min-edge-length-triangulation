@@ -17,7 +17,11 @@ class BoundingBox :
 {
 public:
     BoundingBox( const PointSet& points ) :
-        CGAL::Iso_rectangle_2<Kernel>( CGAL::bounding_box(points.begin(), points.end()) )
+        CGAL::Iso_rectangle_2<Kernel>(
+            points.empty() ?
+                CGAL::Iso_rectangle_2<Kernel>() :
+                CGAL::bounding_box(points.begin(), points.end())
+                )
     {
 
     }

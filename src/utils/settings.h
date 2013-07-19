@@ -11,20 +11,42 @@ namespace MMLT
         std::string  config_file;
         std::string  input_file;
 
-        bool         draw;
-        bool         draw_bounds;
-        bool         draw_intersections;
-        bool         draw_sat_solution;
-        bool         draw_segments;
-        bool         draw_separators;
-        bool         draw_triangulation;
+        /**
+         * @name controller options
+         * @{
+         */
+        bool  complete_igraph;
+        bool  complete_sat;
+        bool  dump_sat_problems;
+        int   max_iterations;
+        /**
+         * @}
+         */
 
-        bool         dump_sat_problems;
+        /**
+         * @name drawing options
+         * @{
+         */
+        bool  draw;
+        bool  draw_bounds;
+        bool  draw_intersections;
+        bool  draw_sat_solution;
+        bool  draw_segments;
+        bool  draw_separators;
+        bool  draw_triangulation;
+        /**
+         * @}
+         */
 
-        int          max_iterations;
-
+        /**
+         * @name generator options
+         * @{
+         */
         std::string  generator_type;
         int          generator_iterations;
+        /**
+         * @}
+         */
     };
 
     void init_command_line_options(Settings& settings,

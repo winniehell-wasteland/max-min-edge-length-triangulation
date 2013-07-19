@@ -29,6 +29,14 @@ void init_controller_options(Settings& settings,
 {
     po::options_description options("Controller Options");
     options.add_options()
+            ("complete_igraph",
+             po::value<bool>(&settings.complete_igraph)
+             ->implicit_value(true)
+             ->default_value(false), "calculate the complete intersection graph")
+            ("complete_sat",
+             po::value<bool>(&settings.complete_sat)
+             ->implicit_value(true)
+             ->default_value(false), "use the complete SAT problem (implies --complete_igraph)")
             ("dump_sat_problems",
              po::value<bool>(&settings.dump_sat_problems)
              ->implicit_value(true)

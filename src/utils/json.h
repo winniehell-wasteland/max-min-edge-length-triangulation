@@ -62,7 +62,7 @@ public:
     {
         if(!file.exists())
         {
-            logger.error(mmlt_msg("File %1 does not exist!").arg(file.fileName()));
+            logger.error( mmlt_msg( "File %1 does not exist!" ).arg( file.fileName() ) );
             return false;
         }
 

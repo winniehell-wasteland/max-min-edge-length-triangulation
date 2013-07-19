@@ -9,12 +9,14 @@ namespace MMLT
 {
 
 IntersectionAlgorithm::IntersectionAlgorithm() :
-    shortest_noncrossing_segment_(0)
+    shortest_noncrossing_segment_( std::numeric_limits< SegmentIndex >::max() )
 {
 
 }
 
-void IntersectionAlgorithm::run(IntersectionGraph& igraph, SegmentContainer& segments)
+void IntersectionAlgorithm::run(const Settings& settings,
+                                IntersectionGraph& igraph,
+                                SegmentContainer& segments)
 {
     // set of separators
     std::set<SegmentIndex>  separators;
@@ -62,54 +64,64 @@ void IntersectionAlgorithm::run(IntersectionGraph& igraph, SegmentContainer& seg
         }
 
         // found first non-crossing segment
-        if(!segment_intersects)
+        if( !segment_intersects )
         {
-            shortest_noncrossing_segment_ = s1->data().index;
-            logger.info(mmlt_msg("shortest non-crossing segment: %1 (%2)")
-                        .arg(s1->to_string())
-                        .arg(segment_length_to_string(*s1)));
+            // store only the first found
+            if ( shortest_noncrossing_segment_ > s1->data().index )
+            {
+                shortest_noncrossing_segment_ = s1->data().index;
+                logger.info(mmlt_msg("shortest non-crossing segment: %1 (%2)")
+                            .arg(s1->to_string())
+                            .arg(segment_length_to_string(*s1)));
+            }
 
-            break;
+            if( !settings.complete_igraph )
+            {
+                break;
+            }
         }
     }
 
-    logger.print(mmlt_msg("separators=%1").arg(separators.size()));
-
-    // loop over all separators into sep1_index
-    for(auto sep1_index = separators.begin(); sep1_index != separators.end(); ++sep1_index)
+    if( !settings.complete_igraph )
     {
-        Segment& sep1 = segments[*sep1_index];
+        logger.print(mmlt_msg("separators=%1").arg(separators.size()));
 
-        // loop over all separators after sep1_index into sep2_index
-        auto s2_index = sep1_index;
-        for(++s2_index; s2_index != separators.end(); ++s2_index)
+        // loop over all separators into sep1_index
+        for(auto sep1_index = separators.begin(); sep1_index != separators.end(); ++sep1_index)
         {
-            Segment& sep2 = segments[*s2_index];
+            Segment& sep1 = segments[*sep1_index];
 
-            MMLT_precondition(segment_length_order(sep1, sep2) != CGAL::LARGER);
-
-            /*
-            logger.debug(mmlt_msg("test separators %1 and %2 for intersection")
-                         .arg(sep1.to_string())
-                         .arg(sep2.to_string()));
-            */
-
-            if(CGAL::do_intersect(sep1, sep2))
+            // loop over all separators after sep1_index into sep2_index
+            auto s2_index = sep1_index;
+            for(++s2_index; s2_index != separators.end(); ++s2_index)
             {
-                // segments share an enpoint
-                if(have_same_endpoint(sep1, sep2))
+                Segment& sep2 = segments[*s2_index];
+
+                MMLT_precondition(segment_length_order(sep1, sep2) != CGAL::LARGER);
+
+                /*
+                logger.debug(mmlt_msg("test separators %1 and %2 for intersection")
+                             .arg(sep1.to_string())
+                             .arg(sep2.to_string()));
+                */
+
+                if(CGAL::do_intersect(sep1, sep2))
                 {
-                    handle_same_endpoint(sep1, sep2);
-                }
-                // segments overlap
-                else if(do_overlap(sep1, sep2))
-                {
-                    handle_overlap(igraph, sep1, sep2);
-                }
-                // segments cross
-                else
-                {
-                    handle_crossing(igraph, sep1, sep2);
+                    // segments share an enpoint
+                    if(have_same_endpoint(sep1, sep2))
+                    {
+                        handle_same_endpoint(sep1, sep2);
+                    }
+                    // segments overlap
+                    else if(do_overlap(sep1, sep2))
+                    {
+                        handle_overlap(igraph, sep1, sep2);
+                    }
+                    // segments cross
+                    else
+                    {
+                        handle_crossing(igraph, sep1, sep2);
+                    }
                 }
             }
         }

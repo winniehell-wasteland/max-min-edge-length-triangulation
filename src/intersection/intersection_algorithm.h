@@ -8,6 +8,8 @@
 
 #include "intersection/intersection_graph.h"
 
+#include "utils/settings.h"
+
 namespace MMLT
 {
 
@@ -18,7 +20,9 @@ public:
 
     IntersectionAlgorithm();
 
-    void run(IntersectionGraph& igraph, SegmentContainer& segments);
+    void run(const Settings& settings,
+             IntersectionGraph& igraph,
+             SegmentContainer& segments);
 private:
     /**
      * segments cross

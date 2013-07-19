@@ -24,7 +24,7 @@ PointSet::PointSet(QFile &input_file) :
     }
 
 
-    if(!JSON::read_points(input_file, std::inserter(*this, this->end())))
+    if( !JSON::read_points( input_file, std::inserter( *this, this->end() ) ) )
     {
         this->clear();
     }

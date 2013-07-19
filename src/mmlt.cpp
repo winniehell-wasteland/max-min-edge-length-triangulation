@@ -84,6 +84,9 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
+    // implications
+    settings.complete_igraph = settings.complete_igraph || settings.complete_sat;
+
     QElapsedTimer total_time;
     total_time.start();
 

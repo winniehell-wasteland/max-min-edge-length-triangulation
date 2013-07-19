@@ -34,7 +34,7 @@ protected:
     virtual void dump_problem(const QString& file_prefix,
                               const SATProblem* problem) = 0;
 
-    void prepare_problem(const SATProblem& problem);
+    void prepare_problem(const SATProblem& problem, bool complete);
 
     virtual void solve_problem(const SATProblem* problem,
                                SATSolution& solution) = 0;
