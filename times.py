@@ -114,7 +114,7 @@ def output_time_noncrossing(data, instances, threshold):
     #def func(n, a, b, c):
     #    return a * np.power(n, b) + c
 
-    #params = curve_fit(func, data.index.values, data['mean'])[0]
+    #params = curve_fit(func, data.index.values, data['median'])[0]
 
     #axes.plot(
     #    data.index, func(data.index, params[0], params[1], params[2]),
