@@ -1,17 +1,13 @@
 #!/usr/bin/env python2
 
-import math
 import numpy as np
 
-import pandas as pd
 import results
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
 DEBUG = False
 #DEBUG = True
-FIG_SIZE = (20, 10)
-X_TICK_STEP = 10
 
 if DEBUG:
     data = 1 / 0
@@ -158,7 +154,7 @@ def output_time_hist(data, threshold):
 
     data.index.name = 'number of points'
 
-    fig = plt.figure(figsize=FIG_SIZE)
+    fig = plt.figure(figsize=results.FIG_SIZE)
     axes = fig.add_subplot(111)
 
     for key, label in columns.iteritems():
@@ -178,7 +174,7 @@ def output_time_allhist(data):
     for points in np.unique(data['file/num_points']):
         hist_data = data[data['file/num_points'] == points]
 
-        fig = plt.figure(figsize=FIG_SIZE)
+        fig = plt.figure(figsize=results.FIG_SIZE)
 
         ax = fig.add_subplot(111)
         #ax.set_xlabel('shortest non-crossing segment index')
@@ -186,28 +182,30 @@ def output_time_allhist(data):
 
         plt.hist(hist_data['time/total'], bins=50)
 
-        results.output('time_hist_' + str(points), hist_data)
+        # TODO
+        #results.output('time_hist_' + str(points), hist_data)
 
-x_column = 'file/num_points'
-instances = {
-    x_val: len(data[data[x_column] == x_val])
-    for x_val
-    in data[x_column]
-}
-data = data.groupby(x_column)
-output_time_comparison(data, instances)
-output_time_total(data, instances)
-data = data.obj
+if __name__ == '__main__':
+    x_column = 'file/num_points'
+    instances = {
+        x_val: len(data[data[x_column] == x_val])
+        for x_val
+        in data[x_column]
+    }
+    data = data.groupby(x_column)
+    output_time_comparison(data, instances)
+    output_time_total(data, instances)
+    data = data.obj
 
-x_column = 'shortest/non-crossing/index'
-instances = {
-    x_val: len(data[data[x_column] == x_val])
-    for x_val
-    in data[x_column]
-}
-data = data.groupby(x_column)
-output_time_noncrossing(data, instances, threshold=50)
-data = data.obj
+    x_column = 'shortest/non-crossing/index'
+    instances = {
+        x_val: len(data[data[x_column] == x_val])
+        for x_val
+        in data[x_column]
+    }
+    data = data.groupby(x_column)
+    output_time_noncrossing(data, instances, threshold=50)
+    data = data.obj
 
-output_time_hist(data, 30000)
-#output_time_allhist(data)
+    output_time_hist(data, 30000)
+    #output_time_allhist(data)
