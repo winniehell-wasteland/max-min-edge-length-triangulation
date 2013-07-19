@@ -15,7 +15,7 @@ def output_segment_index(data, instances):
 
     columns = {
         'shortest/non-crossing/index': 'shortest non-crossing segment index',
-        'optimal segment index': 'shortest/constrained_triangulation/index'
+        'shortest/constrained_triangulation/index': 'optimal segment index'
     }
     aggregations = [
         np.median,
