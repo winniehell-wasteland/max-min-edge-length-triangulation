@@ -140,7 +140,7 @@ def output_segment_ratio(data, instances):
     def func(n, a):
         return np.sqrt(n) / np.sqrt(a)
 
-    params = curve_fit(func, data.index.values, data['median'])[0]
+    params = curve_fit(func, data.index.values, data['shortest/ratio']['median'])[0]
 
     axes.plot(
         data.index, func(data.index, params[0]),
