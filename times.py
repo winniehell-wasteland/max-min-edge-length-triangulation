@@ -81,16 +81,24 @@ def output_time_total(data, instances):
         aggregations=aggregations
     )
 
-    def func(n, a, b, c):
-        return a * np.power(n, b) + c
+    try:
+        def func(n, a, b, c):
+            return a * np.power(n, b) + c
 
-    params = curve_fit(func, data.index.values, data['time/total']['median'])[0]
+        params = curve_fit(
+            func,
+            data.index.values,
+            data['time/total']['median']
+        )[0]
 
-    plt.plot(
-        data.index, func(data.index, params[0], params[1], params[2]),
-        label=r'\({0:.2f} \cdot n^{{1:.2f}} {2:+.2f}\)'
-        .format(*(float(param) for param in params))
-    )
+        plt.plot(
+            data.index, func(data.index, params[0], params[1], params[2]),
+            label=r'\({0:.2f} \cdot n^{{1:.2f}} {2:+.2f}\)'
+            .format(*(float(param) for param in params))
+        )
+    except RuntimeError:
+        # could not fit
+        pass
 
     axes.set_xlabel(data.index.name)
     axes.set_ylabel('time in milliseconds')
