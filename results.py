@@ -159,7 +159,7 @@ def plot_error(data, columns, aggregations):
 
     for key, label in columns.iteritems():
         column = data[key]
-        min_err = np.minimum(column[aggregations[1].__name__], column[aggregations[0].__name__] - 1)
+        min_err = np.minimum(column[aggregations[1].__name__], column[aggregations[0].__name__])
         axes.errorbar(
             column.index, column[aggregations[0].__name__],
             yerr=[min_err, column[aggregations[1].__name__]],
