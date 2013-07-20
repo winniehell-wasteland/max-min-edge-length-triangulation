@@ -152,7 +152,7 @@ def output_segment_ratio(data, instances):
     results.plot_axes(data=data, axes=axes, log_scale=True)
 
     results.output(
-        'segment_length',
+        'segment_ratio',
         data=data,
         columns=columns,
         aggregations=aggregations,
