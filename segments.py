@@ -100,8 +100,8 @@ def output_segment_length(data, instances):
     )
 
     axes.set_xlabel(data.index.name)
-    axes.set_ylabel('segment index')
-    results.plot_axes(data=data, axes=axes, log_scale=True)
+    axes.set_ylabel('segment length')
+    results.plot_axes(data=data, axes=axes, log_scale=True, y_min=10**-3)
 
     results.output(
         'segment_length',
