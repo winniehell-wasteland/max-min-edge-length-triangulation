@@ -142,7 +142,7 @@ def plot_axes(data, axes, log_scale, x_min=None, y_min=None):
         ax2.set_yscale('log')
 
     ax2.set_xlim(x_range)
-    ax2.set_xticks(x_ticks)
+    ax2.set_xticks(x_ticks, minor=True)
     ax2.set_ylim(y_range)
     ax2.set_yticks(y_ticks)
 
