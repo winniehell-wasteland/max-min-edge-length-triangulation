@@ -31,26 +31,35 @@ def output_segment_index(data, instances):
 
     axes = results.plot_error(data=data, columns=columns, aggregations=aggregations)
 
-    def func(n, a, b, c):
-        return a * n ** b + c
+    try:
+        def func(n, a, b, c):
+            return a * n ** b + c
 
-    def linear_func(n, a, b):
-        return a * n + b
+        def linear_func(n, a, b):
+            return a * n + b
 
-    def rt4_func(n, a, b):
-        return a * n ** 0.25 + b
+        def rt4_func(n, a, b):
+            return a * n ** 0.25 + b
 
-    params = curve_fit(rt4_func, data.index.values, data['shortest/non-crossing/index']['median'])[0]
-    axes.plot(
-        data.index, rt4_func(data.index, params[0], params[1]),
-        label=r'\( ' + str(params[0]) + '\cdot n^{0.25} + ' + str(params[1]) + '\)'
-    )
+        params = curve_fit(rt4_func, data.index.values, data['shortest/non-crossing/index']['median'])[0]
+        axes.plot(
+            data.index, rt4_func(data.index, params[0], params[1]),
+            label=r'\( ' + str(params[0]) + '\cdot n^{0.25} + ' + str(params[1]) + '\)'
+        )
 
-    params = curve_fit(func, data.index.values, data['shortest/constrained_triangulation/index']['median'])[0]
-    axes.plot(
-        data.index, func(data.index, params[0], params[1], params[2]),
-        label=r'\( ' + str(params[0]) + '\cdot n^{' + str(params[1]) + '} + ' + str(params[2]) + '\)'
-    )
+        params = curve_fit(
+            func,
+            data.index.values,
+            data['shortest/constrained_triangulation/index']['median']
+        )[0]
+        axes.plot(
+            data.index, func(data.index, params[0], params[1], params[2]),
+            label=r'\( {0:.2f} \cdot n^{{{1:.2f}}} {2:+.2f} \)'
+            .format(*(float(param) for param in params))
+        )
+    except RuntimeError:
+        # could not fit
+        pass
 
     axes.set_xlabel(data.index.name)
     axes.set_ylabel('segment index')
@@ -137,15 +146,23 @@ def output_segment_ratio(data, instances):
         label=r'\( \dfrac{\sqrt{n}}{\sqrt{6}} \)'
     )
 
-    def func(n, a):
-        return np.sqrt(n) / np.sqrt(a)
+    try:
+        def func(n, a):
+            return np.sqrt(n) / np.sqrt(a)
 
-    params = curve_fit(func, data.index.values, data['shortest/ratio']['median'])[0]
+        params = curve_fit(
+            func,
+            data.index.values,
+            data['shortest/ratio']['median']
+        )[0]
 
-    axes.plot(
-        data.index, func(data.index, params[0]),
-        label=r'\( \dfrac{\sqrt{n}}{\sqrt{' + str(params[0]) + '}} \)'
-    )
+        axes.plot(
+            data.index, func(data.index, params[0]),
+            label=r'\( \dfrac{\sqrt{n}}{\sqrt{' + str(params[0]) + '}} \)'
+        )
+    except RuntimeError:
+        # could not fit
+        pass
 
     axes.set_xlabel(data.index.name)
     axes.set_ylabel('segment length ratio')
@@ -194,9 +211,17 @@ if __name__ == '__main__':
         )
 
         print 'Normalizing lengths...'
-        results.normalize(data, ['shortest/input/squared_length', 'shortest/non-crossing/squared_length'])
+        results.normalize(
+            data=data,
+            values=[
+                'shortest/input/squared_length',
+                'shortest/non-crossing/squared_length'
+            ]
+        )
 
-    data['shortest/ratio'] = data['shortest/non-crossing/length'] / data['shortest/input/length']
+    data['shortest/ratio'] = (
+        data['shortest/non-crossing/length'] / data['shortest/input/length']
+    )
 
     x_column = 'file/num_points'
     instances = {
