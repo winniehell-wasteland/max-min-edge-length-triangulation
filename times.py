@@ -219,7 +219,7 @@ def output_time_allhist(data):
 
         axes.hist(hist_data['time/total'], bins=50)
 
-        axes.savefig('time_hist_' + str(points) + '.pdf', bbox_inches='tight')
+        fig.savefig('time_hist_' + str(points) + '.pdf', bbox_inches='tight')
 
 if __name__ == '__main__':
     x_column = 'file/num_points'
