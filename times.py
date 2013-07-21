@@ -93,7 +93,7 @@ def output_time_total(data, instances):
 
         plt.plot(
             data.index, func(data.index, params[0], params[1], params[2]),
-            label=r'\({0:.2f} \cdot n^{{1:.2f}} {2:+.2f}\)'
+            label=r'\({0:.2f} \cdot n^{{{1:.2f}}} {2:+.2f}\)'
             .format(*(float(param) for param in params))
         )
     except RuntimeError:
