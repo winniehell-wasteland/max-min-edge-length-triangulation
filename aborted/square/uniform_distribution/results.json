@@ -1,0 +1,372 @@
+[
+    {
+        "input": {
+            "segments": 4005, 
+            "points": 90, 
+            "convex_hull": 11
+        }, 
+        "stats": {
+            "1": {
+                "lower_bound": 0, 
+                "upper_bound": 37
+            }, 
+            "0": {
+                "lower_bound": 0, 
+                "upper_bound": 75
+            }, 
+            "3": {
+                "lower_bound": 30, 
+                "upper_bound": 37
+            }, 
+            "2": {
+                "lower_bound": 19, 
+                "upper_bound": 37
+            }, 
+            "5": {
+                "lower_bound": 30, 
+                "upper_bound": 31
+            }, 
+            "4": {
+                "lower_bound": 30, 
+                "upper_bound": 33
+            }, 
+            "6": {
+                "lower_bound": 31, 
+                "upper_bound": 31
+            }
+        }, 
+        "file": {
+            "num_points": 90, 
+            "prefix": "/random_in_square", 
+            "iteration": 40, 
+            "range": 949
+        }, 
+        "shortest": {
+            "triangulation": {
+                "index": 0, 
+                "squared_length": 200
+            }, 
+            "input": {
+                "index": 0, 
+                "squared_length": 200
+            }, 
+            "convex_hull": {
+                "index": 117, 
+                "squared_length": 38466
+            }, 
+            "non-crossing": {
+                "index": 75, 
+                "squared_length": 23780
+            }, 
+            "constrained_triangulation": {
+                "index": 31, 
+                "squared_length": 8761
+            }
+        }, 
+        "time": {
+            "intersection_graph": 18675, 
+            "SAT_solving": 4242518, 
+            "iteration_3": 19085, 
+            "iteration_2": 10790, 
+            "controller_initialization": 18754, 
+            "iteration_6": 11891, 
+            "iteration_5": 76542, 
+            "iteration_4": 1144817, 
+            "generating_segments": 50, 
+            "total": 4261311, 
+            "iteration_1": 2979393
+        }
+    }, 
+    {
+        "input": {
+            "segments": 5995, 
+            "points": 110, 
+            "convex_hull": 12
+        }, 
+        "stats": {
+            "1": {
+                "lower_bound": 21, 
+                "upper_bound": 41
+            }, 
+            "0": {
+                "lower_bound": 0, 
+                "upper_bound": 41
+            }, 
+            "3": {
+                "lower_bound": 31, 
+                "upper_bound": 35
+            }, 
+            "2": {
+                "lower_bound": 31, 
+                "upper_bound": 41
+            }, 
+            "5": {
+                "lower_bound": 31, 
+                "upper_bound": 31
+            }, 
+            "4": {
+                "lower_bound": 31, 
+                "upper_bound": 32
+            }
+        }, 
+        "file": {
+            "num_points": 110, 
+            "prefix": "/random_in_square", 
+            "iteration": 60, 
+            "range": 1049
+        }, 
+        "shortest": {
+            "triangulation": {
+                "index": 0, 
+                "squared_length": 68
+            }, 
+            "input": {
+                "index": 0, 
+                "squared_length": 68
+            }, 
+            "convex_hull": {
+                "index": 41, 
+                "squared_length": 7497
+            }, 
+            "non-crossing": {
+                "index": 41, 
+                "squared_length": 7497
+            }, 
+            "constrained_triangulation": {
+                "index": 31, 
+                "squared_length": 6201
+            }
+        }, 
+        "time": {
+            "intersection_graph": 10022, 
+            "SAT_solving": 1887170, 
+            "iteration_3": 344850, 
+            "iteration_2": 65982, 
+            "controller_initialization": 10152, 
+            "iteration_5": 220096, 
+            "iteration_4": 1238744, 
+            "generating_segments": 85, 
+            "total": 1897348, 
+            "iteration_1": 17499
+        }
+    }, 
+    {
+        "input": {
+            "segments": 7140, 
+            "points": 120, 
+            "convex_hull": 14
+        }, 
+        "stats": {
+            "1": {
+                "lower_bound": 28, 
+                "upper_bound": 48
+            }, 
+            "0": {
+                "lower_bound": 1, 
+                "upper_bound": 48
+            }, 
+            "3": {
+                "lower_bound": 28, 
+                "upper_bound": 32
+            }, 
+            "2": {
+                "lower_bound": 28, 
+                "upper_bound": 37
+            }, 
+            "4": {
+                "lower_bound": 32, 
+                "upper_bound": 32
+            }
+        }, 
+        "file": {
+            "num_points": 120, 
+            "prefix": "/random_in_square", 
+            "iteration": 5, 
+            "range": 1095
+        }, 
+        "shortest": {
+            "triangulation": {
+                "index": 1, 
+                "squared_length": 221
+            }, 
+            "input": {
+                "index": 0, 
+                "squared_length": 157
+            }, 
+            "convex_hull": {
+                "index": 126, 
+                "squared_length": 28825
+            }, 
+            "non-crossing": {
+                "index": 48, 
+                "squared_length": 11665
+            }, 
+            "constrained_triangulation": {
+                "index": 32, 
+                "squared_length": 7625
+            }
+        }, 
+        "time": {
+            "intersection_graph": 19698, 
+            "SAT_solving": 1807236, 
+            "iteration_3": 303576, 
+            "iteration_2": 1437849, 
+            "controller_initialization": 19823, 
+            "iteration_4": 21512, 
+            "generating_segments": 116, 
+            "total": 1827079, 
+            "iteration_1": 44300
+        }
+    }, 
+    {
+        "input": {
+            "segments": 7140, 
+            "points": 120, 
+            "convex_hull": 11
+        }, 
+        "stats": {
+            "1": {
+                "lower_bound": 31, 
+                "upper_bound": 55
+            }, 
+            "0": {
+                "lower_bound": 0, 
+                "upper_bound": 55
+            }, 
+            "3": {
+                "lower_bound": 38, 
+                "upper_bound": 42
+            }, 
+            "2": {
+                "lower_bound": 31, 
+                "upper_bound": 42
+            }, 
+            "5": {
+                "lower_bound": 38, 
+                "upper_bound": 38
+            }, 
+            "4": {
+                "lower_bound": 38, 
+                "upper_bound": 39
+            }
+        }, 
+        "file": {
+            "num_points": 120, 
+            "prefix": "/random_in_square", 
+            "iteration": 22, 
+            "range": 1095
+        }, 
+        "shortest": {
+            "triangulation": {
+                "index": 0, 
+                "squared_length": 250
+            }, 
+            "input": {
+                "index": 0, 
+                "squared_length": 250
+            }, 
+            "convex_hull": {
+                "index": 83, 
+                "squared_length": 18701
+            }, 
+            "non-crossing": {
+                "index": 55, 
+                "squared_length": 12402
+            }, 
+            "constrained_triangulation": {
+                "index": 38, 
+                "squared_length": 9050
+            }
+        }, 
+        "time": {
+            "intersection_graph": 26308, 
+            "SAT_solving": 7463144, 
+            "iteration_3": 86133, 
+            "iteration_2": 6912505, 
+            "controller_initialization": 26442, 
+            "iteration_5": 48851, 
+            "iteration_4": 38399, 
+            "generating_segments": 106, 
+            "total": 7489781, 
+            "iteration_1": 377259
+        }
+    }, 
+    {
+        "input": {
+            "segments": 7140, 
+            "points": 120, 
+            "convex_hull": 11
+        }, 
+        "stats": {
+            "1": {
+                "lower_bound": 0, 
+                "upper_bound": 45
+            }, 
+            "0": {
+                "lower_bound": 0, 
+                "upper_bound": 91
+            }, 
+            "3": {
+                "lower_bound": 34, 
+                "upper_bound": 45
+            }, 
+            "2": {
+                "lower_bound": 23, 
+                "upper_bound": 45
+            }, 
+            "5": {
+                "lower_bound": 43, 
+                "upper_bound": 45
+            }, 
+            "4": {
+                "lower_bound": 40, 
+                "upper_bound": 45
+            }, 
+            "6": {
+                "lower_bound": 43, 
+                "upper_bound": 43
+            }
+        }, 
+        "file": {
+            "num_points": 120, 
+            "prefix": "/random_in_square", 
+            "iteration": 61, 
+            "range": 1095
+        }, 
+        "shortest": {
+            "triangulation": {
+                "index": 0, 
+                "squared_length": 185
+            }, 
+            "input": {
+                "index": 0, 
+                "squared_length": 185
+            }, 
+            "convex_hull": {
+                "index": 128, 
+                "squared_length": 33129
+            }, 
+            "non-crossing": {
+                "index": 91, 
+                "squared_length": 22217
+            }, 
+            "constrained_triangulation": {
+                "index": 43, 
+                "squared_length": 9805
+            }
+        }, 
+        "time": {
+            "intersection_graph": 59704, 
+            "SAT_solving": 54936500, 
+            "iteration_3": 157118, 
+            "iteration_2": 127213, 
+            "controller_initialization": 59848, 
+            "iteration_6": 694301, 
+            "iteration_5": 746252, 
+            "iteration_4": 221086, 
+            "generating_segments": 114, 
+            "total": 54996739, 
+            "iteration_1": 52990546
+        }
+    }
+]

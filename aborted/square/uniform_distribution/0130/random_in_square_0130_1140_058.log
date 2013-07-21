@@ -1,0 +1,8 @@
+[2013-07-20 13:35:50.955] [INFO] Running in directory /opt/tmp/hellmann/aborted
+[2013-07-20 13:35:50.955] [INFO] Reading settings from /opt/tmp/hellmann/aborted/config.json
+[2013-07-20 13:35:50.955] [INFO] Reading input file ./0130/random_in_square_0130_1140_058.json ...
+[2013-07-20 13:35:51.123] [TIME] generating segments=141ms
+[2013-07-20 13:35:51.124] points=130 segments=8385 convex hull=12
+[2013-07-20 13:35:51.124] [INFO] shortest input segment: 0:(927,-320)->(926,-314) (len^2=37)
+[2013-07-20 13:35:51.555] [INFO] shortest non-crossing segment: 61:(-1108,893)->(-1013,893) (len^2=9025)
+[2013-07-20 13:35:51.555] separators=3289

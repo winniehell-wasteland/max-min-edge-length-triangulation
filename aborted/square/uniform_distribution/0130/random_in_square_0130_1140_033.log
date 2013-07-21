@@ -1,0 +1,17 @@
+[2013-07-20 13:35:00.775] [INFO] Running in directory /opt/tmp/hellmann/aborted
+[2013-07-20 13:35:00.775] [INFO] Reading settings from /opt/tmp/hellmann/aborted/config.json
+[2013-07-20 13:35:00.775] [INFO] Reading input file ./0130/random_in_square_0130_1140_033.json ...
+[2013-07-20 13:35:00.944] [TIME] generating segments=142ms
+[2013-07-20 13:35:00.944] points=130 segments=8385 convex hull=9
+[2013-07-20 13:35:00.945] [INFO] shortest input segment: 0:(-314,207)->(-310,208) (len^2=17)
+[2013-07-20 13:35:01.458] [INFO] shortest non-crossing segment: 72:(1079,-973)->(988,-902) (len^2=13322)
+[2013-07-20 13:35:01.458] separators=3771
+[2013-07-20 13:35:50.004] [TIME] intersection graph=49059ms
+[2013-07-20 13:35:50.005] [INFO] shortest triangulation segment: 0:(-314,207)->(-310,208) (len^2=17)
+[2013-07-20 13:35:50.005] [INFO] shortest convex hull segment: 760:(692,-1108)->(1079,-973) (len^2=167994)
+[2013-07-20 13:35:50.005] [TIME] controller initialization=49230ms
+[2013-07-20 13:35:50.006] [INFO] shortest constrained triangulation segment: 0:(-314,207)->(-310,208) (len^2=17)
+[2013-07-20 13:35:50.006] [STATS] it=0	lb=0	ub=72
+[2013-07-20 13:35:50.006] iterations=0 gap=72
+[2013-07-20 13:35:50.006] [TIME] SAT solving=0ms
+[2013-07-20 13:35:50.006] [TIME] total=49230ms

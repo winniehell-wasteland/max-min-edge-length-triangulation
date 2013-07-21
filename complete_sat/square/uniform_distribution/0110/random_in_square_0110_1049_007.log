@@ -1,0 +1,16 @@
+Build: 2013-07-19 16:30:18+02:00 by winniehell (last commit: 4db829e21bf3f4afd6088fb814ff065ec189c5e0 by winniehell)
+[2013-07-20 08:08:52.292] [INFO] Running in directory /opt/tmp/hellmann/complete_sat
+[2013-07-20 08:08:52.293] [INFO] Reading config file config.ini
+[2013-07-20 08:08:52.315] [INFO] Reading input file ./0110/random_in_square_0110_1049_007.json ...
+[2013-07-20 08:08:52.413] [TIME] generating segments=90ms
+[2013-07-20 08:08:52.413] points=110 segments=5995 convex hull=14
+[2013-07-20 08:08:52.413] [INFO] shortest input segment: 0:(151,577)->(172,599) (len^2=925)
+[2013-07-20 08:08:52.456] [INFO] shortest non-crossing segment: 8:(-1012,-676)->(-1027,-632) (len^2=2161)
+[2013-07-20 08:10:22.112] [TIME] intersection graph=89700ms
+IBM ILOG License Manager: "university-braunschweig" is accessing CPLEX 12 with option(s): "e m b q use=10 MaintenanceEnd=20110128 ".
+[2013-07-20 08:16:13.283] [TIME] controller initialization=440699ms
+[2013-07-20 08:16:15.412] [INFO] shortest constrained triangulation segment: 1:(877,-977)->(904,-960) (len^2=1018)
+[2013-07-20 08:16:15.631] [STATS] it=0	lb=1	ub=5995
+[2013-07-20 08:16:15.675] iterations=0 gap=5994
+[2013-07-20 08:16:15.816] [TIME] SAT solving=350845ms
+[2013-07-20 08:16:15.875] [TIME] total=443501ms

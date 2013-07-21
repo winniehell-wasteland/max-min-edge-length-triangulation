@@ -1,0 +1,34 @@
+Build: 2013-07-19 16:30:18+02:00 by winniehell (last commit: 4db829e21bf3f4afd6088fb814ff065ec189c5e0 by winniehell)
+[2013-07-20 18:42:24.885] [INFO] Running in directory /opt/tmp/hellmann/aborted
+[2013-07-20 18:42:24.885] [INFO] Reading config file config.ini
+[2013-07-20 18:42:24.906] [INFO] Reading input file ./0090/random_in_square_0090_0949_040.json ...
+[2013-07-20 18:42:24.983] [TIME] generating segments=50ms
+[2013-07-20 18:42:24.984] points=90 segments=4005 convex hull=11
+[2013-07-20 18:42:24.984] [INFO] shortest input segment: 0:(611,297)->(597,299) (len^2=200)
+[2013-07-20 18:42:25.341] [INFO] shortest non-crossing segment: 75:(943,-738)->(935,-584) (len^2=23780)
+[2013-07-20 18:42:25.341] separators=2337
+[2013-07-20 18:42:43.659] [TIME] intersection graph=18675ms
+[2013-07-20 18:42:43.659] [INFO] shortest triangulation segment: 0:(611,297)->(597,299) (len^2=200)
+[2013-07-20 18:42:43.659] [INFO] shortest convex hull segment: 117:(-936,654)->(-915,849) (len^2=38466)
+[2013-07-20 18:42:43.659] [STATS] it=0	lb=0	ub=75
+[2013-07-20 18:42:43.659] [TIME] controller initialization=18754ms
+IBM ILOG License Manager: "university-braunschweig" is accessing CPLEX 12 with option(s): "e m b q use=10 MaintenanceEnd=20110128 ".
+[2013-07-20 19:32:22.985] [ERROR] Solution is infeasible
+[2013-07-20 19:32:23.054] [TIME] iteration 1=2979393ms
+[2013-07-20 19:32:23.054] [STATS] it=1	lb=0	ub=37
+[2013-07-20 19:32:33.843] [TIME] iteration 2=10790ms
+[2013-07-20 19:32:33.843] [STATS] it=2	lb=19	ub=37
+[2013-07-20 19:32:52.929] [TIME] iteration 3=19085ms
+[2013-07-20 19:32:52.929] [STATS] it=3	lb=30	ub=37
+[2013-07-20 19:51:57.681] [ERROR] Solution is infeasible
+[2013-07-20 19:51:57.745] [TIME] iteration 4=1144817ms
+[2013-07-20 19:51:57.745] [STATS] it=4	lb=30	ub=33
+[2013-07-20 19:53:14.252] [ERROR] Solution is infeasible
+[2013-07-20 19:53:14.290] [TIME] iteration 5=76542ms
+[2013-07-20 19:53:14.293] [STATS] it=5	lb=30	ub=31
+[2013-07-20 19:53:26.183] [TIME] iteration 6=11891ms
+[2013-07-20 19:53:26.217] [INFO] shortest constrained triangulation segment: 31:(542,524)->(617,580) (len^2=8761)
+[2013-07-20 19:53:26.217] [STATS] it=6	lb=31	ub=31
+[2013-07-20 19:53:26.217] iterations=6 gap=0
+[2013-07-20 19:53:26.217] [TIME] SAT solving=4242518ms
+[2013-07-20 19:53:26.217] [TIME] total=4261311ms
