@@ -1,0 +1,26 @@
+{
+    "controller" :
+    {
+        "abort_timeout" : 1800000,
+        "max_iterations" : 20
+    },
+
+    "sat" :
+    {
+        "dump_problems" : false
+    },
+
+    "draw" :
+    {
+        "intersections"       : false,
+        "sat_solution"        : false,
+        "segments"            : false,
+        "triangulation"       : false
+    },
+
+    "generator" :
+    {
+        "type" : "random_in_square",
+        "iterations" : 1000
+    }
+}
