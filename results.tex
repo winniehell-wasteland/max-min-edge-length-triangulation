@@ -11,41 +11,74 @@
 
 \section{Segment Lengths}
 
+\newgeometry{margin=1.5cm}
+\begin{landscape}
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.9\textwidth]{results/shortest_length.pdf}
-  \todo[inline]{replace}
-  \caption{Comparison of segment lengths\label{fig:segment_lengths}}
+  \thisfloatpagestyle{empty}
+  \includegraphics[width=\linewidth,keepaspectratio]{results/segment_length.pdf}
+  \caption{\label{fig:segment_lengths}Comparison of segment lengths}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.9\textwidth]{results/shortest_index.pdf}
-  \todo[inline]{replace}
-  \caption{Comparison of segment indices\label{fig:segment_index}}
+  \thisfloatpagestyle{empty}
+  \includegraphics[width=\linewidth,keepaspectratio]{results/segment_index.pdf}
+  \caption{\label{fig:segment_index}Comparison of segment indices}
 \end{figure}
+\end{landscape}
+\restoregeometry
 
 \section{Execution Time}
 
+\newgeometry{margin=1.5cm}
+\begin{landscape}
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.9\textwidth]{results/time_total.pdf}
-  \todo[inline]{replace}
-  \caption{Total execution time\label{fig:total_time}}
+  \thisfloatpagestyle{empty}
+  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{results/time_total.pdf}
+  \caption{\label{fig:time_total}Total execution time}
 \end{figure}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.9\textwidth]{results/time_comparison.pdf}
-  \todo[inline]{replace}
-  \caption{Comparison of execution times\label{fig:times}}
+  \thisfloatpagestyle{empty}
+  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{results/time_comparison.pdf}
+  \caption{\label{fig:time_comparison}Comparison of execution times}
 \end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \thisfloatpagestyle{empty}
+  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{results/time_hist_70.pdf}
+  \caption{\label{fig:times_70}Histogram of execution times for 70 points}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \thisfloatpagestyle{empty}
+  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{results/time_hist_80.pdf}
+  \caption{\label{fig:times_80}Histogram of execution times for 80 points}
+\end{figure}
+\end{landscape}
+\restoregeometry
 
 \section{Aborted instances}
 
+\newgeometry{margin=1.5cm}
+\begin{landscape}
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\textwidth]{img/self_description.png}
-  \todo[inline]{replace}
-  \caption{Number of aborted instances\label{fig:aborted}}
+  \thisfloatpagestyle{empty}
+  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{results/time_hist.pdf}
+  \caption{\label{fig:times_hist}Histogram of finished instances}
 \end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \thisfloatpagestyle{empty}
+  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{results/complete_sat/time_hist.pdf}
+  \caption{Histogram of finished instances (complete SAT)}
+\end{figure}
+\end{landscape}
+\restoregeometry

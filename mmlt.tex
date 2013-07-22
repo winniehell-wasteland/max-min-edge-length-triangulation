@@ -435,38 +435,5 @@ using the resulting segments in a constrained triangulation.
   \KwRet{constrained triangulation \gls{Topt} with \last as constraints}
   \caption{\label{alg:mmlt}\gls{MMLT} algorithm}
 \end{algorithm}
-
-\section{Intersection Graph}\label{sec:mmlt_intersection_graph}
-For a point set \(P\) with \(n\) points in the plane 
-the induced segments (see
-\cref{def:induced_segments}) have \(\Theta(n^4)\) intersections.
-\cite{quadrilaterals_bound} Thus calculating the intersection graph
-takes \(\Omega(n^4)\) time.
-
-\begin{verbatim}
-  - link to sweep line algorithm
-  - sweep line takes O(n^4 \log n) time => brute force is faster
-  - adjacency list, because sparse (experiment? proof?)
-\end{verbatim}
-\todo[inline]{notes}
-
-\begin{algorithm}
-  \DontPrintSemicolon
-  
-  \KwIn{Set of segments \(S\)}
-  \KwOut{Intersection graph \(G=(S,C)\) where \(C \subseteq S^2\) 
-    are the intersections}
-  
-  Set \(C = \emptyset\) \;
-  \ForEach{\(s \in S\)}{
-    \ForEach{\(\gls{scross} \in S\) with \(|s| \leq |\gls{scross}|\)}{
-      \If{\(s\) and \gls{scross} are \gls{cross}}{
-        Add \(\{s, \gls{scross}\}\) to \(C\) \;
-      }
-    }
-  }
-  \KwRet{\(G=(S,C)\)}
-  \caption{intersection algorithm}
-\end{algorithm}
   
 %---------------------------------------------------------------------##########

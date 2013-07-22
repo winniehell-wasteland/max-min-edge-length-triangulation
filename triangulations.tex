@@ -1,5 +1,5 @@
 \chapter{Triangulations}\label{cha:triangulations}
-\ldots\todo[inline]{4 pages}
+\ldots\todo[inline]{4 pages: ||}
 
 \todo[inline]{glue text}
 
@@ -118,6 +118,7 @@
   \(p'=(p_x',p_y')\in P\) with \(p_x=p_x'\) and \(p_y=p_y'\) are allowed.
   Note however that we do not require the points in \(P\) to be in 
   general position as that would forbid some interesting instances.
+  \todo[inline]{do we need this definition at all?}
 \end{definition}
 
 \todo[inline]{glue text}
@@ -186,6 +187,7 @@
 %   represented by the vertices \(v_p\) and \(v_q\), respectively. We
 %   hereby assume that not \((p,q) \in S\) and \((q,p) \in S\) as they
 %   would be represented by the same edge.
+  \todo[inline]{remove comment}
 \end{definition}
 
 \begin{definition}[Point Set Triangulation]
@@ -193,7 +195,7 @@
   The triangulation \(T(P)\) of a point set \(P\) is a triangulation
   \(T(P) = T(V,X)\) where the vertex set
   \(V=V(P)\) represents \(P\), the conflicts \(X\) are all
-  \gls{cross} segments and which contains no \gls{overlap} segments:
+  \gls{cross} segments, and which contains no \gls{overlap} segments:
   \begin{alignat*}{1}
     (p,q), (p',q')~\gls{cross}
     &\iff \left\{ \{v_p,v_q\}, \{v_{p'},v_{q'}\} \right\} \in X \\
@@ -234,6 +236,89 @@
   can be calculated in \(O(n \log n)\) time.
   \cite{constrained_triangulation}
 \end{theorem}
+
+\section{Intersection Graph}
+\label{sec:intersection_graph}
+\todo[inline]{glue text}
+
+\begin{definition}[Intersection Graph]
+  \label{def:intersection_graph}
+  For a set of line segments \(S\) the \emph{intersection graph}
+  \(\gls{Gcross}[(S)] = (V_S,X)\) consists of a vertex \(v_s \in V_S\)
+  for every line segment \(s \in S\) and an edge
+  \(\{v_{s_i}, v_{s_j}\} \in X\) for every pair of \gls{cross}
+  segments \(s_i, s_j \in S\). It is the geometric equivalent of the
+  conflict graph (\cref{def:conflict_graph}).
+\end{definition}
+
+\todo[inline]{glue text}
+
+\begin{theorem}[Computational Complexity of Intersection Graph]
+  \label{thm:sweep_bound}
+  Given a set of line segments \(S\) the intersection graph
+  \(\gls{Gcross}[(S)] = (V_S,X)\) can be calculated in
+  \(O(m \log m + i \log m)\) time where \(m = |V_S| = |S|\) 
+  and \(i = |X|\) is the number of intersections in \(S\).
+  \cite[Lemma 2.3]{deberg_compgeom}
+\end{theorem}
+
+\todo[inline]{glue text}
+
+\begin{theorem}[Complexity of Point Set Intersections]
+  \label{thm:point_set_intersections}
+  For a point set \(P\) with \(n\) points the set of all line 
+  segments \(S\) with endpoints in \(P\) has \(\Theta(n^4)\) 
+  intersections. \cite{quadrilaterals_bound} Thus calculating the
+  intersection graph for \(S\)  takes \(\Omega(n^4)\) time.
+\end{theorem}
+
+\todo[inline]{glue text}
+
+\begin{theorem}[Non-Optimality of Sweep Algorithm for Point Sets]
+  The sweep algorithm presented in \cite[Section 2.1]{deberg_compgeom}
+  with the time complexity of \cref{thm:sweep_bound} is not optimal
+  for calculating the intersections of all line segments with
+  endpoints in a given point set \(P\) as it takes \(O(n^4 \log n)\)
+  time.
+\end{theorem}
+
+\todo[inline]{glue text}
+
+\begin{algorithm}
+  \DontPrintSemicolon
+  
+  \KwIn{Set of segments \(S\)}
+  \KwOut{Intersection graph \(\gls{Gcross}[(S)] = (V_S,X)\)}
+  
+  Set \(V_S = \{v_s : s \in S\} \) \;
+  Set \(X = \emptyset\) \;
+  \ForEach{\(s \in S\)}{
+    \ForEach{\(\gls{scross} \in S\) with \(|s| \leq |\gls{scross}|\)}{
+      \If{\(s\) and \gls{scross} are \gls{cross}}{
+        Add \(\{v_s, v_{\gls{scross}}\}\) to \(X\) \;
+      }
+    }
+  }
+  \KwRet{\(\gls{Gcross}[(S)] = (V_S,X)\)}
+  \caption{\label{alg:naive_intersection}Naive Intersection Algorithm}
+\end{algorithm}
+
+\todo[inline]{glue text}
+
+\begin{theorem}[Complexity and Correctness of \Cref{alg:naive_intersection}]
+  \Cref{alg:naive_intersection} finds all intersecting line segments
+  in \(O(m^2)\) time with \(m = |S|\).  
+\end{theorem}
+
+\todo[inline]{glue text}
+
+\begin{theorem}[Optimality of \Cref{alg:naive_intersection} for Point Set]
+  \Cref{alg:naive_intersection} is asymptotically optimal for finding
+  the intersections of all line segments with endpoints in a given
+  point set \(P\) as it takes \(O(n^4)\) time for \(n = |P|\).
+\end{theorem}
+
+%---------------------------------------------------------------------##########
 
 % One day Greg had art class and the children were given sheets of
 % paper with points on them. The task was to connect all the points 
@@ -285,18 +370,88 @@
 % \todo[inline]{notes}
 
 \section{Polygon Triangulations}
-\todo[inline]{definitions (and related work?)}
 
-%---------------------------------------------------------------------##########
+\todo[inline]{glue text}
+
+\begin{definition}[Polygon Triangulation]
+  A triangulation \(T(P)\) of a polygon \(P\) bounded by line segments
+  are all boundary and interior edges of \(P\) in a constrained point
+  set triangulation of the polygon vertices with the polygon boundary
+  as constraints.
+\end{definition}
+
+\todo[inline]{glue text}
+
+\begin{theorem}[Generalization of Point Set Triangulation]
+  Given a point set \(P\), a triangulation \(T(\conv(P) \cup P)\) of
+  the polygon bounded by the convex hull \(\conv(P)\) of \(P\) and
+  containing all inner points of \(P\) is a triangulation of \(P\).
+\end{theorem}
 
 \section{Edge Flipping}
+
+\todo[inline]{glue text}
+
+\begin{definition}[Edge Flip]
+  \label{def:edge_flip}
+  Given a triangulation \(T(V,X)\) for a vertex set \(V\) with respect
+  to a set of conflicts \(X\), \((e, f)\) with \(e \in T(V,X)\) and
+  \(f \not\in T(V,X)\) is an \emph{edge flip} iff
+  \(T(V,X) \setminus \{e\} \cup \{f\}\) is a triangulation for \(V\)
+  with respect to \(X\).
+\end{definition}
+
+\todo[inline]{glue text}
+
+\begin{theorem}[Edge Flips are Conflicts]
+  Given a triangulation \(T(V,X)\) for a vertex set \(V\) with respect
+  to a set of conflicts \(X\), every edge flip \((e,f)\) is a
+  conflict: \(\{e,f\} \in X\).
+\end{theorem}
+
+\begin{proof}
+  Assume \(\{e,f\} \not\in X\). Further assume that
+  \[ \lnot\exists e' \in T(V,X)\setminus\{e\}: \{e', f\} \in X. \]
+  Then \(f\) can be added to \(T(V,X)\) (without removing \(e\)) and
+  therefore \(T(V,X)\) is no triangulation---which is a 
+  contradiction. Now let \(e' \in T(V,X)\setminus\{e\}\) such that
+  \(\{e', f\} \in X\). Then \(e' \in T(V,X)\setminus\{e\} \cup f\)
+  ---which contradicts that \(T(V,X)\setminus\{e\} \cup f\) is a
+  triangulation. Therefore every edge flip \((e,f)\) is a conflict.
+\end{proof}
+
+\todo[inline]{glue text}
+
+\begin{definition}[Flip Graph]
+  \label{def:flip_graph}
+  The flip graph \(\gls{Gflip}[(V,X)] = (V_T,\gls{Eflip})\) for a
+  vertex set \(V\) and edge conflicts \(X\) contains a vertex
+  \(v \in V_T\) for every triangulation of \(V\) with respect to
+  \(X\) and edges \(e \in \gls{Eflip}\) for every possible edge flip.
+\end{definition}
+
+\todo[inline]{glue text}
+
+\begin{theorem}[Connectivity of the Flip Graph]
+  The flip graph \(\gls{Gflip}[(V,X)]\) is connected in two dimensions
+  \cite[Behauptung 4]{flip_graph_connected} and has a diameter of
+  at most \(6n - 30\) for \(n = |V|\).~\cite{flip_graph_diameter}
+  Therefore every triangulation \(T(V,X)\) of a vertex set \(V\)
+  with respect to edge conflicts \(X\) can be transformed into any
+  other triangulation of \(V\) with respect to \(X\) in \(O(n)\)
+  time.
+  
+  For three dimensions, it is still an open problem whether
+  the flip graph is connected.~\cite{flip_graph_3d}
+\end{theorem}
+
 \begin{verbatim}
-  - what is a flip?
-  - flip graph complexity
   - local vs. global optimal
   - hint to edge flipping paper
 \end{verbatim}
 \todo[inline]{notes}
+
+%---------------------------------------------------------------------##########
 
 \section{Related Work}
 After class was over, Greg asked Mrs. Minerva if there are different

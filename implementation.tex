@@ -1,5 +1,7 @@
-\chapter{Implementation}\label{cha:implementation}
+\chapter{Implementation}
+\label{cha:implementation}
 \ldots\todo[inline]{2 pages}
+\todo[inline]{glue text}
 To get his algorithm implemented Greg asked Winfried Hellmann, a
 friend of his who studied computer science. He instantly agreed and
 started to plan the structure. There were two main components:
@@ -12,12 +14,13 @@ readability) stumbled over the non-readiness of the CGAL bindings and
 the lack of good alternatives.
 
 \section{Geometry}
-The geometry part consists now of the basics like number, point, and
-segment types, data structures for triangulation and convex hull, and
-the intersection algorithm. For most of it Winfried made extensive use
-of CGAL, which will be introduced in \cref{sec:CGAL}.
+The geometry part consists of number, point, and segment types, 
+data structures for triangulation, convex hull, and bounding box, 
+and it also handles the segment intersection. For most of it Winfried 
+made extensive use of CGAL, which will be introduced in \cref{sec:CGAL}.
 
-\subsection{CGAL}\label{sec:CGAL}
+\subsection{CGAL}
+\label{sec:CGAL}
 CGAL \cite{cgal} is an Open Source library (mainly) for computational
 geometry written in C++. It includes most of the common algorithms in
 the field and also offers efficient data structures. Through the use
@@ -33,11 +36,10 @@ angle calculations, or comparisons are also part of it.
 In our application we use the built-in 
 \verb|Exact_predicates_inexact_constructions_kernel|%
 \footnote{Thanks to Michael Hemmer for making me aware that I should
-use it!} \cite{cgal_manual_epick}, which uses double as a number type
-and is not capable of
-constructing new objects from existing ones accurately. Both
-properties lead to faster execution time yet do not produce wrong
-results in our case.
+use it!}~\cite{cgal_manual_epick}, which uses double as a number type
+and is not capable of constructing new geometric objects from existing
+ones accurately. Both properties lead to faster execution time yet do 
+not produce wrong results in our case.
 
 On top of the CGAL kernel there are two modifications: One is for
 printing points and segments without the need to use streams, the
@@ -66,12 +68,23 @@ For the algorithm this class is not necessary as its bound is worse
 than the one of the SAT solution. It is left in the implementation
 though as a measure of quality for the other bound.
 
+\subsection{Intersection Algorithm}
+To find all pairs of intersecting segments we use 
+\cref{alg:naive_intersection}. For the intersection check itself
+we make use of the CGAL function \verb|do_intersect|%
+~\cite{cgal_manual_do_intersect}. In contrast to the
+\verb|intersecttion| function~\cite{cgal_manual_intersection}, it
+does not actually compute the intersection and therefore performs
+much better.\footnote{Thanks again to Michael Hemmer!}
+
 \subsection{Intersection Graph}
-\begin{verbatim}
-  - crossing segments as conflict edges
-  - adjacency list
-  - maybe later replaced by boost graph?
-\end{verbatim}
+The intersection graph (as defined in \cref{def:intersection_graph})
+stores for every segment the indices of all intersecting segments.
+This graph data structure (adjacency list) performs well for few
+edges (in this case intersections) per vertex (in this case line
+segment)---which we assume here. It may however in future versions
+of the implementation be replaced by a sparse adjacency matrix from
+the \cref{sec:boost} library.
 
 \section{Optimization}
 The optimization part itself consists mainly of data structures for
@@ -124,42 +137,69 @@ output and assertions, test case generation, and drawing certain
 states of the algorithm to SVG.
 
 \subsection{Boost}
-\url{https://www.boost.org/}
-\begin{verbatim}
-  - boost spirit for JSON parsing
-  - maybe later: boost datetime and format for logging, 
-    boost graph for intersection graph and SVG output
-\end{verbatim}
+\label{sec:boost}
+Boost~\cite{boost} is a collection of free (as in freedom) C++
+libraries containing tools for various tasks. It makes extensive use
+of the C++ pre-processor (mostly templates) and aims to extend the
+C++ standard library (STL).
 
-\subsection{Qt}\label{sec:Qt}
-\url{https://qt-project.org/}
-\begin{verbatim}
-  - event-based programming framework
-  - logging
-  - SVG output
-  - simplified build system and IDE
-\end{verbatim}
+In our implementation, we use the Spirit~\cite{boost_spirit} library
+for parsing the JSON input files (see \cref{sec:json_parser}), and
+the Program Options library~\cite{boost_program_options} for parsing
+command line arguments and configuration files. Later versions of the
+implementation may as well use the Boost Graph
+Library~\cite{boost_graph} for the intersection graph, and the
+Geometry library~\cite{boost_geometry} for creating SVG images
+(see \cref{sec:svg_painter}).
+
+\subsection{Qt}
+\label{sec:Qt}
+Qt~\cite{qt} is a framework for cross-platform application development
+written in C++. It features some enhancements to the C++ standard
+library including an own string class
+\verb|QString|~\cite{qt_manual_qstring} which supports
+a different formatting syntax than the \verb|std::string|, offers
+a UI description format with integration into a even processing
+framework, and also comes with a simplified built system qmake which
+wraps platform dependent tools such as GNU make.
+
+We make use of \verb|QString| for our logger class
+(\cref{sec:logger}), generate SVG images through the \verb|QPainter|
+class, and build our applications using qmake (which also allows
+for integration in the C++ IDE Qtcreator).
 
 \subsection{JSON Parser}
-\begin{verbatim}
-  - JSON spirit (url!)
-  - built-in JSON of Qt 5 has bug => no STL/boost/CGAL compatibility
-\end{verbatim}
+\label{sec:json_parser}
+JSON Spirit \cite{json_spirit} uses the Boost Spirit
+library~\cite{boost_spirit} for parsing the input point files in
+JSON (JavaScript Object Notation)~\cite{json} format. As of writing,
+the built-in JSON support of Qt unfortunately has a
+bug~\cite{json_bug} such that it is not compatible with the C++
+standard library (and therefore also neither with CGAL nor with
+Boost). After parsing the input file, all points are stored in a
+sorted set to allow for fast lookup.
 
 \subsection{Logger}
-\begin{verbatim}
-  - conditional output of different information
-  - used for evaluation of algorithm output
-\end{verbatim}
+\label{sec:logger}
+Our logger class supports different levels of verbosity
+(debug, info, error, print) and adds the current timestamp to each
+of them. Additionally, there are shortcut methods for output of
+measured times, and the current status of the algorithm. Debug output
+is only included in the programs if they are compiled in debug mode.
+For convenience, all methods accept \verb|QString|.
 
 \subsection{Point Generator}
-\begin{verbatim}
-  - CGAL point generator
-  - evenly distributed points in (unit) square
-\end{verbatim}
+For testing and analyzing the algorithm, we generated different
+instances of point sets and stored them for repeated runs. We hereby
+rely on the \verb|Random_points_in_square_2| 
+class~\cite{cgal_manual_random_points} in combination with the
+\verb|Creator_uniform_2| class~\cite{cgal_manual_creator_uniform}---both
+part of CGAL (\cref{sec:CGAL}).
 
-\subsection{SVG Painter}\label{sec:svg_painter}
-\begin{verbatim}
-  - conditional algorithm state output
-  - example?
-\end{verbatim}
+\subsection{SVG Painter}
+\label{sec:svg_painter}
+Mainly for debugging purposes and to visualize different steps of the
+algorithm, we included the possibility to draw certain data structures
+to SVG using the \verb|QPainter| class~\cite{qt_manual_qpainter}.
+
+%---------------------------------------------------------------------##########
