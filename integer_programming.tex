@@ -1,5 +1,5 @@
 \chapter{Integer Programming}
-\todo[inline]{8 pages: \cancel{||||}~|}
+\todo[inline]{8 pages: \cancel{||||}~||}
 
 \todo[inline]{glue text}
 
@@ -37,17 +37,73 @@
   NP-hard.
 \end{proof}
 
-% \section{SAT}
-% \todo[inline]{glue text}
-% 
-% \begin{definition}[SAT]
-%   \ldots\todo[inline]{definition}
-% \end{definition}
-% \todo[inline]{glue text}
-% 
-% \begin{problem}[IP formulation of SAT]
-%   \ldots\todo[inline]{problem}
-% \end{problem}
+\section{SAT}
+\todo[inline]{glue text}
+
+\begin{problem}[3-SAT]
+  \label{prob:3SAT}\hfill
+  \begin{labeling}{\hspace{4em}}
+    \item[\textbf{Given:}]
+      Set of boolean literals \(x_i \in X\), a formula in conjunctive 
+      normal form consisting of clauses \(c \in C\) each involving 
+      exactly three literals (or their negations)
+    \item[\textbf{Sought:}]
+      An assignment for \(X\) which lets all clauses in \(C\) evaluate
+      to ``true''
+  \end{labeling}
+\end{problem}
+
+\todo[inline]{glue text}
+
+\begin{theorem}[NP-completeness of 3-SAT]
+  \Cref{prob:3SAT} is NP-complete.~\cite[Satisfiability with at most %
+  3 Literals per Clause]{karp_np_complete}
+\end{theorem}
+
+\todo[inline]{glue text}
+
+\begin{problem}[IP formulation of 3-SAT]
+  \begin{alignat*}{3}
+    &(\text{minimize } & 1) \\
+    &\text{subject to } & \forall c \in C : &~
+    & \sum\limits_{x_i \in c} x_i + \sum\limits_{\lnot x_i \in c} (1 - x_i) &= 1 \\
+    && \forall x_i \in X : &~& x_i &\in \{0,1\}
+  \end{alignat*}
+\end{problem}
+
+\todo[inline]{glue text}
+
+\begin{problem}[Planar 3-SAT]
+  \label{prob:planar_3SAT}
+  An instance of the 3-SAT problem with literals \(X\) and
+  clauses \(C\) which can be represented by a planar graph
+  \(G = (V,E)\) such that
+  \begin{alignat*}{1}
+    V &= \{v : v \in X \cup C\} \\
+    E &= \{ \{x, c\} :
+      x \in X,~
+      c \in C,~
+      (x \in c) \lor (\lnot x \in c)
+    \}
+  \end{alignat*}
+\end{problem}
+
+\todo[inline]{glue text}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.75\textwidth]{img/example_planar_3SAT.png}
+  \todo[inline]{replace}
+  \caption{\label{fig:example_planar_3SAT}Example for Planar 3SAT}
+\end{figure}
+
+\todo[inline]{glue text}
+
+\begin{theorem}[NP-completeness of Planar 3-SAT]
+  \Cref{prob:planar_3SAT} is still NP-complete.~\cite{planar_3SAT}
+\end{theorem}
+
+%---------------------------------------------------------------------##########
 
 \section{Vertex Cover}
 \todo[inline]{glue text}

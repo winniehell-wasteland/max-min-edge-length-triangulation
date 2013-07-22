@@ -3,10 +3,11 @@
 
 \newglossary{ignored}{ignored.gls}{ignored.glo}{Ignored Glossary}
 
+\newacronym{CDS}{CDS}{Covering by Disjoint Segments}
 \newacronym{IP}{IP}{Integer Program}
+\newacronym{MELT}{MELT}{MaxMin Edge Length Index Triangulation}
 \newacronym{MMLT}{MMLT}{MaxMin Length Triangulation}
-\newacronym{NCS}{NCS}{Non-Conflicting Separators}
-\newacronym{MMELIT}{MMELIT}{MaxMin Edge Length Index Triangulation}
+\newacronym{NOCS}{NOCS}{Non-Conflicting Separators}
 
 \newglossaryentry{wlog}{
   name={w.l.o.g.},
@@ -93,6 +94,13 @@
   type={set}
 }
 
+\newglossaryentry{Eopt}
+{
+  name={\ensuremath{E_\textnormal{opt}}},
+  description={optimal edge set},
+  type={ignored}
+}
+
 \newglossaryentry{Gconf}
 {
   name={\ensuremath{G_\textnormal{conf}}},
@@ -164,6 +172,20 @@
 }
 
 % variables
+\newglossaryentry{econf}
+{
+  name={\ensuremath{e_{\times}}},
+  description={conflicting edge},
+  type={ignored}
+}
+
+\newglossaryentry{emin}
+{
+  name={\ensuremath{e_\textnormal{min}}},
+  description={minimum edge},
+  type={ignored}
+}
+
 \newglossaryentry{enose}
 {
   name={\ensuremath{e_\textnormal{nose}}},
