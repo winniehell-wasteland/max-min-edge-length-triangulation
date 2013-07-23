@@ -6,8 +6,11 @@ import matplotlib.pyplot as plt
 from matplotlib import rc as mpl_rc
 import numpy as np
 
+# paper sizes in inch
+DIN_A4 = (11.6929, 8.2677)
+DIN_A5 = (8.2677, 5.8268)
 
-FIG_SIZE = (14, 10)
+FIG_SIZE = DIN_A5
 X_TICK_STEP = 10
 
 # use LaTeX for matplotlib
