@@ -47,11 +47,13 @@ def output_time_comparison(data, instances):
     fig = plt.figure(figsize=results.FIG_SIZE)
     axes = fig.add_subplot(111)
 
-    width = 0.25
-    offset = 0.0
+    width = 10
+    #offset = 0.0
+    bottom = 0
 
-    for key, label in columns.iteritems():
+    for key in columns.keys()[:-1]:
         column = data[key]
+        label = columns[key]
 
         min_err = np.minimum(
             column[aggregations[1].__name__],
@@ -59,14 +61,31 @@ def output_time_comparison(data, instances):
         )
 
         axes.bar(
-            data.index + offset,
+            data.index,
             column[aggregations[0].__name__],
             width,
             yerr=[min_err, column[aggregations[1].__name__]],
-            label=label
+            label=label,
+            bottom=bottom
         )
 
-        offset += width
+        bottom = column[aggregations[0].__name__]
+        #offset += width
+
+    column = data['time/total']
+    label = columns['time/total']
+
+    min_err = np.minimum(
+        column[aggregations[1].__name__],
+        column[aggregations[0].__name__]
+    )
+    axes.bar(
+        data.index,
+        column[aggregations[0].__name__],
+        width,
+        yerr=[min_err, column[aggregations[1].__name__]],
+        label=label
+    )
 
     axes.set_xlabel(data.index.name)
     axes.set_ylabel('time in milliseconds')
