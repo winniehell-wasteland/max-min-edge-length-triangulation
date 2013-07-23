@@ -47,13 +47,16 @@ def output_time_comparison(data, instances):
     fig = plt.figure(figsize=results.FIG_SIZE)
     axes = fig.add_subplot(111)
 
-    width = 10
-    #offset = 0.0
+    COLORS = list('bgrcmy')
+    WIDTH = 10
+
     bottom = 0
 
-    for key in columns.keys()[:-1]:
+    for key, label in columns.iteritems():
+        if key == 'time/total':
+            continue
+
         column = data[key]
-        label = columns[key]
 
         min_err = np.minimum(
             column[aggregations[1].__name__],
@@ -63,14 +66,14 @@ def output_time_comparison(data, instances):
         axes.bar(
             data.index,
             column[aggregations[0].__name__],
-            width,
+            WIDTH,
             yerr=[min_err, column[aggregations[1].__name__]],
             label=label,
+            color=COLORS.pop(),
             bottom=bottom
         )
 
         bottom = column[aggregations[0].__name__]
-        #offset += width
 
     column = data['time/total']
     label = columns['time/total']
@@ -82,9 +85,10 @@ def output_time_comparison(data, instances):
     axes.bar(
         data.index,
         column[aggregations[0].__name__],
-        width,
+        WIDTH,
         yerr=[min_err, column[aggregations[1].__name__]],
-        label=label
+        label=label,
+        color=COLORS.pop()
     )
 
     axes.set_xlabel(data.index.name)
