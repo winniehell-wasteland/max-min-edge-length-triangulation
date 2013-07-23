@@ -130,13 +130,13 @@ def plot_axes(data, axes, log_scale, x_min=None, y_min=None):
 
     if log_scale:
         y_range = (10 ** int(np.log10(y_min)), 10 ** int(np.log10(y_range[1]) + 1))
-        y_ticks = [10 ** i for i in np.arange(np.log10(y_range[0]), np.log10(y_range[1]) + 1)]
+        #y_ticks = [10 ** i for i in np.arange(np.log10(y_range[0]), np.log10(y_range[1]) + 1)]
     else:
         y_range = (y_min, int(np.ceil(y_range[1] + 1)))
-        y_ticks = np.arange(max(0, y_range[0]), y_range[1] + 1, max(1, (y_range[1] - y_range[0]) / FIG_SIZE[1]))
+        #y_ticks = np.arange(max(0, y_range[0]), y_range[1] + 1, max(1, (y_range[1] - y_range[0]) / FIG_SIZE[1]))
 
     axes.set_ylim(y_range)
-    axes.set_yticks(y_ticks)
+    #axes.set_yticks(y_ticks)
 
     # mirror y-axes
     ax2 = axes.twinx()
@@ -147,7 +147,7 @@ def plot_axes(data, axes, log_scale, x_min=None, y_min=None):
     ax2.set_xlim(x_range)
     ax2.set_xticks(x_ticks, minor=True)
     ax2.set_ylim(y_range)
-    ax2.set_yticks(y_ticks)
+    #ax2.set_yticks(y_ticks)
 
 
 def plot_error(data, columns, aggregations):
