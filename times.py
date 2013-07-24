@@ -49,11 +49,11 @@ def output_time_comparison(data, instances):
 
     COLORS = [
         '#FF0000',
-#        '#990000',
+        #'#990000',
         '#00FF00',
-#        '#009900',
+        #'#009900',
         '#0000FF',
-#        '#000099'
+        #'#000099'
     ]
     WIDTH = 10
 
@@ -74,10 +74,10 @@ def output_time_comparison(data, instances):
             data.index,
             column[aggregations[0].__name__],
             WIDTH,
-#            yerr=[min_err, column[aggregations[1].__name__]],
+            #yerr=[min_err, column[aggregations[1].__name__]],
             label=label,
             color=COLORS.pop(),
-#            ecolor=COLORS.pop(),
+            #ecolor=COLORS.pop(),
             bottom=bottom
         )
 
@@ -95,10 +95,10 @@ def output_time_comparison(data, instances):
         data.index,
         column[aggregations[0].__name__] - bottom,
         WIDTH,
-#       yerr=[min_err, column[aggregations[1].__name__]],
+        #yerr=[min_err, column[aggregations[1].__name__]],
         label=label,
         color=COLORS.pop(),
-#       ecolor=COLORS.pop(),
+        #ecolor=COLORS.pop(),
         bottom=bottom
     )
 
@@ -151,7 +151,7 @@ def output_time_total(data, instances):
 
         plt.plot(
             data.index, func(data.index, params[0], params[1], params[2]),
-            label=r'\({0:.2f} \cdot n^{{{1:.2f}}} {2:+.2f}\)'
+            label=r'\({0:.2g} \cdot n^{{{1:.2g}}} {2:+.2g}\)'
             .format(*(float(param) for param in params))
         )
     except RuntimeError:

@@ -44,7 +44,8 @@ def output_segment_index(data, instances):
         params = curve_fit(rt4_func, data.index.values, data['shortest/non-crossing/index']['median'])[0]
         axes.plot(
             data.index, rt4_func(data.index, params[0], params[1]),
-            label=r'\( ' + str(params[0]) + '\cdot n^{0.25} + ' + str(params[1]) + '\)'
+            label=r'\( {0:.2g} \cdot n^{{0.25}} {2:+.2g} \)'
+            .format(*(float(param) for param in params))
         )
 
         params = curve_fit(
@@ -54,7 +55,7 @@ def output_segment_index(data, instances):
         )[0]
         axes.plot(
             data.index, func(data.index, params[0], params[1], params[2]),
-            label=r'\( {0:.2f} \cdot n^{{{1:.2f}}} {2:+.2f} \)'
+            label=r'\( {0:.2g} \cdot n^{{{1:.2g}}} {2:+.2g} \)'
             .format(*(float(param) for param in params))
         )
     except RuntimeError:
