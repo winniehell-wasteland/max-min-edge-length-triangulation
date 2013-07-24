@@ -33,18 +33,22 @@
 
 \newgeometry{margin=1.5cm}
 \begin{landscape}
-\begin{figure}[ht]
-  \centering
-  \thisfloatpagestyle{empty}
-  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{results/time_total.pdf}
-  \caption{\label{fig:time_total}Total execution time}
-\end{figure}
 
 \begin{figure}[ht]
   \centering
   \thisfloatpagestyle{empty}
   \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{results/time_comparison.pdf}
   \caption{\label{fig:time_comparison}Comparison of execution times}
+\end{figure}
+\end{landscape}
+\restoregeometry
+
+\begin{figure}[ht]
+  \centering
+  \thisfloatpagestyle{empty}
+  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{results/time_total.pdf}
+  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{results/complete_sat/time_total.pdf}
+  \caption{\label{fig:time_total}Total execution time}
 \end{figure}
 
 \begin{figure}[ht]
@@ -60,25 +64,21 @@
   \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{results/time_hist_80.pdf}
   \caption{\label{fig:times_80}Histogram of execution times for 80 points}
 \end{figure}
-\end{landscape}
-\restoregeometry
 
 \section{Aborted instances}
 
-\newgeometry{margin=1.5cm}
-\begin{landscape}
+%\newgeometry{margin=1.5cm}
+%\begin{landscape}
 \begin{figure}[ht]
   \centering
-  \thisfloatpagestyle{empty}
-  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{results/time_hist.pdf}
-  \caption{\label{fig:times_hist}Histogram of finished instances}
-\end{figure}
-
-\begin{figure}[ht]
-  \centering
-  \thisfloatpagestyle{empty}
-  \includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{results/complete_sat/time_hist.pdf}
+  \includegraphics[width=\linewidth,height=0.4\textheight,keepaspectratio]{results/time_hist.pdf}
+%  \caption{\label{fig:times_hist}Histogram of finished instances}
+%\end{figure}
+%
+%\begin{figure}[ht]
+%  \centering
+  \includegraphics[width=\linewidth,height=0.4\textheight,keepaspectratio]{results/complete_sat/time_hist.pdf}
   \caption{Histogram of finished instances (complete SAT)}
 \end{figure}
-\end{landscape}
-\restoregeometry
+%\end{landscape}
+%\restoregeometry

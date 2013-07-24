@@ -163,17 +163,14 @@
 
 \begin{theorem}[Uniqueness of Optimal \gls{MELT} Solution]
   \label{thm:MELT_uniqueness}
-  \Cref{prob:MELT} has a unique optimal solution.
+  From \Cref{thm:edge_length_index_uniqueness} follows directly that
+  \cref{prob:MELT} has a unique optimal solution.
 \end{theorem}
-
-\begin{proof}
-  \Cref{thm:MELT_uniqueness} follows directly from
-  \cref{thm:edge_length_index_uniqueness}.
-\end{proof}
 
 \todo[inline]{glue text}
 
-\begin{theorem}
+\begin{theorem}[Equality of \gls{MELT} and \gls{MMLT}]
+  \label{def:equality_melt_mmlt}
   Every optimal \gls{MELT} solution is an optimal \gls{MMLT} solution.
 \end{theorem}
 
@@ -186,6 +183,13 @@
     < \idx(\argmin\limits_{s \in \gls{Topt}} |s|) \)---which
     contradicts \gls{Topt} being optimal.
 \end{proof}
+
+\todo[inline]{glue text}
+
+\begin{theorem}[NP-hardness of \gls{MELT}]
+  From \cref{def:equality_melt_mmlt} follows that \gls{MELT} is
+  NP-hard.
+\end{theorem}
 
 \todo[inline]{glue text}
 
@@ -509,7 +513,7 @@
   \gls{enose} be the shortest non-separable edge in \(E\).
   The optimal \gls{MELT} solution \gls{Topt} for \(P\) 
   and the optimal \gls{NOCS} solution \gls{Sopt} for
-  \(\gls{Eshort}[(E,\gls{enose})]\) have the same value:
+  \(\gls{Eshort}[(E,\idx(\gls{enose}))]\) have the same value:
   \[
     \min\limits_{e \in \gls{Topt}} \idx(e)
     = \min\limits_{e \in \gls{Sopt}} \idx(e)
@@ -519,6 +523,14 @@
 \begin{proof}
   \ldots\todo[inline]{proof}
 \end{proof}
+
+\todo[inline]{glue text}
+
+\begin{theorem}[NP-hardness of \gls{NOCS}]
+  For \(\gls{Eshort}[(E,\idx(\gls{enose}))] \cup \gls{enose} = E\),
+  \gls{NOCS} and \gls{MELT} are the same problem. Therefore \gls{NOCS}
+  is also NP-hard.
+\end{theorem}
 
 \todo[inline]{glue text}
 
@@ -551,16 +563,58 @@
 \end{verbatim}
 \todo[inline]{notes}
 
+\todo[inline]{glue text}
+
+\begin{definition}[Completion of \gls{NOCS}]
+  Given an optimal \gls{NOCS} solution \gls{Topt}
+  for a set of short edges \(E\), their separators \gls{Esep}, 
+  and conflicts \(X\), the completion of \gls{Topt} is
+  \[
+    T := \gls{Topt} \cup \left\{
+      \gls{esep} \in \bigcup\limits_{e \in E} \gls{Esep}[(e)]:
+      \lnot\exists e \in T : \{e, \gls{esep}\} \in X
+    \right\}.
+  \]
+  If \(T = \gls{Topt}\), \gls{Topt} is \emph{complete}.
+\end{definition}
+
+\todo[inline]{glue text}
+
+\begin{theorem}[Optimality of \gls{NOCS} Completion]
+  Given an optimal \gls{NOCS} solution \gls{Topt} the completion \(T\)
+  of \gls{Topt} is also an optimal \gls{NOCS} solution.
+\end{theorem}
+
+\begin{proof}
+  \ldots\todo[inline]{proof}
+\end{proof}
+
+\begin{theorem}[Connection of \gls{NOCS} and Independent Set]
+  Every complete optimal \gls{NOCS} solution \gls{Topt} for a set of
+  short edges \(E\), their separators \gls{Esep}, and conflicts
+  \(X \subseteq (E \cup \gls{Esep})^2\) is a maximal independent set
+  (\cref{def:max_independent_set}) for the undirected graph
+  \(G = (E \cup \gls{Esep}, X)\).
+\end{theorem}
+
+\begin{proof}
+  \ldots\todo[inline]{proof}
+\end{proof}
+
 %---------------------------------------------------------------------##########
 
 \section{Algorithm}
-Now that Greg knew all about \gls{MMLT} he could start developing
-\cref{alg:mmlt}. It consists of three main components: Constructing
-the partial intersection graph, running a binary search over the short
-segments and solving the smaller \gls{NOCS} problem in each step, and
-using the resulting segments in a constrained triangulation.
+\ldots\todo[inline]{glue text}
 
-\todo[inline]{mention segment index and introduce notation \protect\ensuremath{S_P[i]}}
+% Now that Greg knew all about \gls{MMLT} he could start developing
+% \cref{alg:mmlt}. It consists of three main components: Constructing
+% the partial intersection graph, running a binary search over the short
+% segments and solving the smaller \gls{NOCS} problem in each step, and
+% using the resulting segments in a constrained triangulation.
+
+%\todo[inline]{mention segment index and introduce notation \protect\ensuremath{S_P[i]}}
+\todo[inline]{update notation in algorithm}
+\todo[inline]{use subroutines?}
 \begin{algorithm}
   \DontPrintSemicolon
   \KwIn{Planar point set \(P\)}
