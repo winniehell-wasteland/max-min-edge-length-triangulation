@@ -44,7 +44,7 @@ def output_segment_index(data, instances):
         params = curve_fit(rt4_func, data.index.values, data['shortest/non-crossing/index']['median'])[0]
         axes.plot(
             data.index, rt4_func(data.index, params[0], params[1]),
-            label=r'\( {0:.2g} \cdot n^{{0.25}} {2:+.2g} \)'
+            label=r'\( {0:.2g} \cdot n^{{0.25}} {1:+.2g} \)'
             .format(*(float(param) for param in params))
         )
 
