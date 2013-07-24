@@ -47,7 +47,14 @@ def output_time_comparison(data, instances):
     fig = plt.figure(figsize=results.FIG_SIZE)
     axes = fig.add_subplot(111)
 
-    COLORS = list('bgrcmy')
+    COLORS = [
+        '#FF0000',
+#        '#990000',
+        '#00FF00',
+#        '#009900',
+        '#0000FF',
+#        '#000099'
+    ]
     WIDTH = 10
 
     bottom = 0
@@ -67,33 +74,37 @@ def output_time_comparison(data, instances):
             data.index,
             column[aggregations[0].__name__],
             WIDTH,
-            yerr=[min_err, column[aggregations[1].__name__]],
+#            yerr=[min_err, column[aggregations[1].__name__]],
             label=label,
             color=COLORS.pop(),
+#            ecolor=COLORS.pop(),
             bottom=bottom
         )
 
-        bottom = column[aggregations[0].__name__]
+        bottom += column[aggregations[0].__name__]
 
     column = data['time/total']
-    label = columns['time/total']
+    label = 'remaining time'
 
     min_err = np.minimum(
         column[aggregations[1].__name__],
         column[aggregations[0].__name__]
     )
+
     axes.bar(
         data.index,
-        column[aggregations[0].__name__],
+        column[aggregations[0].__name__] - bottom,
         WIDTH,
-        yerr=[min_err, column[aggregations[1].__name__]],
+#       yerr=[min_err, column[aggregations[1].__name__]],
         label=label,
-        color=COLORS.pop()
+        color=COLORS.pop(),
+#       ecolor=COLORS.pop(),
+        bottom=bottom
     )
 
     axes.set_xlabel(data.index.name)
     axes.set_ylabel('time in milliseconds')
-    results.plot_axes(data=data, axes=axes, log_scale=True, y_min=(10 ** -1))
+    results.plot_axes(data=data, axes=axes, log_scale=False)
 
     results.output(
         'time_comparison',
@@ -149,7 +160,7 @@ def output_time_total(data, instances):
 
     axes.set_xlabel(data.index.name)
     axes.set_ylabel('time in milliseconds')
-    results.plot_axes(data=data, axes=axes, log_scale=True)
+    results.plot_axes(data=data, axes=axes, log_scale=True, x_max=505)
 
     results.output(
         'time_total',
