@@ -101,7 +101,8 @@ def output(name, data, columns, aggregations, instances):
         html_file.write(data.to_html())
 
 
-def plot_axes(data, axes, log_scale, x_min=None, y_min=None):
+def plot_axes(data, axes, log_scale,
+              x_min=None, x_max=None, y_min=None, y_max=None):
     """
     :type axes: matplotlib.pyplot.Axes
     :type data: pandas.DataFrame
@@ -112,27 +113,33 @@ def plot_axes(data, axes, log_scale, x_min=None, y_min=None):
     legend = axes.legend(loc='best', prop={'size': 10})
     plt.setp(legend.get_texts(), fontsize='large')
 
+    if log_scale:
+        axes.set_yscale('log')
+
     #x_range = axes.get_xlim()
 
     if x_min is None:
         x_min = X_TICK_STEP / 2
 
-    x_range = (x_min, max(data.index) + X_TICK_STEP / 2)
-    x_ticks = np.arange(X_TICK_STEP * np.ceil(x_range[0] / X_TICK_STEP), x_range[1] + 1, X_TICK_STEP)
+    if x_max is None:
+        x_max = max(data.index) + X_TICK_STEP / 2
 
-    y_range = axes.get_ylim()
-
-    if log_scale:
-        axes.set_yscale('log')
+    x_ticks = np.arange(
+        X_TICK_STEP * np.ceil(x_min / X_TICK_STEP),
+        x_max + 1, X_TICK_STEP
+    )
 
     if y_min is None:
         y_min = int(log_scale)
 
+    if y_max is None:
+        y_max = axes.get_ylim()[1]
+
     if log_scale:
-        y_range = (10 ** int(np.log10(y_min)), 10 ** int(np.log10(y_range[1]) + 1))
+        y_range = (10 ** int(np.log10(y_min)), 10 ** int(np.log10(y_max) + 1))
         #y_ticks = [10 ** i for i in np.arange(np.log10(y_range[0]), np.log10(y_range[1]) + 1)]
     else:
-        y_range = (y_min, int(np.ceil(y_range[1] + 1)))
+        y_range = (y_min, int(np.ceil(y_max + 1)))
         #y_ticks = np.arange(max(0, y_range[0]), y_range[1] + 1, max(1, (y_range[1] - y_range[0]) / FIG_SIZE[1]))
 
     axes.set_ylim(y_range)
@@ -144,7 +151,7 @@ def plot_axes(data, axes, log_scale, x_min=None, y_min=None):
     if log_scale:
         ax2.set_yscale('log')
 
-    ax2.set_xlim(x_range)
+    ax2.set_xlim((x_min, x_max))
     ax2.set_xticks(x_ticks, minor=True)
     ax2.set_ylim(y_range)
     #ax2.set_yticks(y_ticks)
