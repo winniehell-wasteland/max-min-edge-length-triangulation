@@ -104,7 +104,7 @@ def output_time_comparison(data, instances):
 
     axes.set_xlabel(data.index.name)
     axes.set_ylabel('time in milliseconds')
-    results.plot_axes(data=data, axes=axes, log_scale=False)
+    results.plot_axes(data=data, axes=axes, log_scale=False, x_max=505)
 
     results.output(
         'time_comparison',
