@@ -252,7 +252,8 @@ def output_time_hist(data, threshold):
 
     axes.set_xlabel(data.index.name)
     axes.set_ylabel('instances < ' + str(threshold) + ' milliseconds')
-    results.plot_axes(data=data, axes=axes, log_scale=False, y_min=0)
+    results.plot_axes(data=data, axes=axes, log_scale=False,
+                      y_min=0, y_max=105, x_min=0, x_max=500)
 
     results.output(
         'time_hist',
