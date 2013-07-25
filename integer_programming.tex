@@ -92,9 +92,13 @@
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.75\textwidth]{img/example_planar_3SAT.png}
-  \todo[inline]{replace}
-  \caption{\label{fig:example_planar_3SAT}Example for Planar 3SAT}
+  \includegraphics[width=0.5\textwidth]{img/example_planar_3SAT.pdf}
+  \caption{\label{fig:example_planar_3SAT}Example of a Planar 3SAT %
+    instance which represents the term \(%
+      \protect\underbrace{(x_1 \lor x_2 \lor x_4)}_{c_1}\land%
+      \protect\underbrace{(\lnot x_2 \lor x_3 \lor \lnot x_4)}_{c_2}\land%
+      \protect\underbrace{(x_1 \lor \lnot x_3 \lor \lnot x_4)}_{c_3}%
+    \)}
 \end{figure}
 
 \todo[inline]{glue text}
@@ -102,8 +106,6 @@
 \begin{theorem}[NP-completeness of Planar 3-SAT]
   \Cref{prob:planar_3SAT} is still NP-complete.~\cite{planar_3SAT}
 \end{theorem}
-
-%---------------------------------------------------------------------##########
 
 \section{Vertex Cover}
 \todo[inline]{glue text}
@@ -140,8 +142,19 @@
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\textwidth]{img/example_vertex_cover.jpg}
-  \todo[inline]{replace}
+  \begin{subfigure}{0.25\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/example_minimal_vertex_cover.pdf}
+    \caption{minimal}
+  \end{subfigure}
+  \hspace{2em}
+  \VRule
+  \hspace{2em}
+  \begin{subfigure}{0.25\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/example_minimum_vertex_cover.pdf}
+    \caption{minimum}
+  \end{subfigure}
   \caption{\label{fig:example_vertex_cover}Example of minimal vs. minimum vertex cover}
 \end{figure}
 
@@ -326,8 +339,8 @@
   from \cref{thm:well_covered_independent_set,thm:greedy_independent_set}.
 \end{proof}
 
-\section{Set Cover}
-\ldots\todo[inline]{evaluate if we really need set cover}
+% \section{Set Cover}
+% \ldots\todo[inline]{evaluate if we really need set cover}
 
 % In the next recess Greg and his friends were discussing again what
 % to play. It was always hard to find games that everybody liked.
@@ -381,24 +394,24 @@
 % The problem Mrs. Lloyd solved is an instance of the minimum weight 
 % set cover problem.
 
-\begin{problem}[Minimum Weight Set Cover]\label{prob:mwsc}
-  \hfill
-  \begin{labeling}{\hspace{4em}}
-    \item[\textbf{Given:}]
-      A ``universe'' (set) of objects \(U\), 
-      subsets \(S = \{S_i\}\)
-      such that \(\bigcup\limits_{S_i \in S} S_i = U\),
-      and a weight function \(c : S \to \gls{R}_+\)
-    \item[\textbf{Sought:}]
-      A set \(R \subseteq S\)
-      which covers the universe, i.e. 
-      \(\bigcup\limits_{S_i \in R} S_i = U\)
-      and minimizes \(\sum\limits_{S_i \in R} c(S_i)\)
-  \end{labeling}
-\end{problem}
-
-\Cref{prob:mwsc} is NP-hard \cite{set_cover} and the related decision 
-problem was already one of the problems Karp has shown to be 
-NP-complete \cite{karp_np_complete}.
+% \begin{problem}[Minimum Weight Set Cover]\label{prob:mwsc}
+%   \hfill
+%   \begin{labeling}{\hspace{4em}}
+%     \item[\textbf{Given:}]
+%       A ``universe'' (set) of objects \(U\), 
+%       subsets \(S = \{S_i\}\)
+%       such that \(\bigcup\limits_{S_i \in S} S_i = U\),
+%       and a weight function \(c : S \to \gls{R}_+\)
+%     \item[\textbf{Sought:}]
+%       A set \(R \subseteq S\)
+%       which covers the universe, i.e. 
+%       \(\bigcup\limits_{S_i \in R} S_i = U\)
+%       and minimizes \(\sum\limits_{S_i \in R} c(S_i)\)
+%   \end{labeling}
+% \end{problem}
+% 
+% \Cref{prob:mwsc} is NP-hard \cite{set_cover} and the related decision 
+% problem was already one of the problems Karp has shown to be 
+% NP-complete \cite{karp_np_complete}.
 
 %---------------------------------------------------------------------##########

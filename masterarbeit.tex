@@ -28,10 +28,12 @@
 	pdflscape,
 	pdfpages,
 	stackengine,
+	subcaption,
 	todonotes,
 	upgreek,
 	url,
 	xfrac,
+	xcolor,
 %	xspace,
 }
 
@@ -124,6 +126,9 @@ Technische Universität Braunschweig}
 \newcommand{\overlap}{\topinset{\hspace{-0.4ex}\rule{0.7ex}{0.15ex}}{\rotatebox{60}{\rule{2ex}{0.15ex}}}{0.5ex}{0.6ex}}
 
 \newcommand{\includeChapter}[1]{\glsresetall\include{#1}\cleardoublepage}
+
+\definecolor{lightgray}{gray}{0.8}
+\newcommand\VRule{\color{lightgray}\vrule width 0.5pt}
 
 \begin{document}
 \selectlanguage{ngerman}

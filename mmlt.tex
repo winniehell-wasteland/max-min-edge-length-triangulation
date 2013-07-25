@@ -28,9 +28,19 @@
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\textwidth]{img/non_unique_optimal.jpg}
-  \todo[inline]{replace}
-  \caption{Example of different optimal solutions for the same point set.\label{fig:non_unique_optimal}}
+  \begin{subfigure}{0.25\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/non_unique_optimal_1.pdf}
+  \end{subfigure}
+  \hspace{2em}
+  \VRule
+  \hspace{2em}
+  \centering
+  \begin{subfigure}{0.25\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/non_unique_optimal_2.pdf}
+  \end{subfigure}
+  \caption{\label{fig:non_unique_optimal}Example of different optimal solutions for the same point set}
 \end{figure}
 
 \section{Complexity}
@@ -96,9 +106,21 @@
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\textwidth]{img/example_nonoptimal_flips.jpg}
-  \todo[inline]{replace}
-  \caption{Example of necessary locally non-optimal flips.\label{fig:nonoptimal_flips}}
+  \begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/nonoptimal_flips_1.pdf}
+  \end{subfigure}
+  \hspace{1em}
+  \VRule
+  \hspace{1em}
+  \centering
+  \begin{subfigure}{0.4\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/nonoptimal_flips_2.pdf}
+  \end{subfigure}
+  \caption{\label{fig:nonoptimal_flips}Example of necessary locally
+    non--optimal flips: The shortest edge needs to be flipped in
+    before the optimal solution can be achieved.}
 \end{figure}
 
 \section{Combinatorial Approach}
@@ -352,13 +374,12 @@
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\textwidth]{img/upper_bound_tightness.jpg}
-  \todo[inline]{replace}
+  \includegraphics[width=0.5\textwidth]{img/upper_bound_tightness.pdf}
   \caption{
     \label{fig:upper_bound_tightness}
     Example where the upper bound from \cref{thm:upper_bound} is not 
     tight. One of the short segments (red) is part of an optimal 
-    \gls{MMLT} solution because their separators (green) cross. Thus
+    \gls{MELT} solution because their separators (green) cross. Thus
     the shortest segment in the solution is shorter than the shortest
     one of all segments without separators (blue).
   }

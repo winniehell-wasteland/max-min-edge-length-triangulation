@@ -46,9 +46,21 @@
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\textwidth]{img/example_conflict_graph.jpg}
-  \todo[inline]{replace}
-  \caption{Example of a conflict graph}
+  \begin{subfigure}{0.4\textwidth}
+          \centering
+          \includegraphics[width=\textwidth]{img/example_conflict_graph_segments.pdf}
+          \caption{segments}
+  \end{subfigure}
+  \hspace{2em}
+  \VRule
+  \hspace{2em}
+  \begin{subfigure}{0.4\textwidth}
+          \centering
+          \includegraphics[width=\textwidth]{img/example_conflict_graph.pdf}
+          \caption{conflict graph}
+  \end{subfigure}  
+  \caption{Example of the conflict graph for a given set of segments %
+    and the conflicts being all intersections}
 \end{figure}
 
 \todo[inline]{glue text}
@@ -168,9 +180,8 @@
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.5\textwidth]{img/example_overlapping.jpg}
-  \todo[inline]{replace}
-  \caption{Examples of overlapping segments.}
+  \includegraphics[width=0.5\textwidth]{img/example_overlapping.pdf}
+  \caption{Examples of overlapping segments (\(\{a,b\}, \{c,e\}, \{d,f\}, \{g,h\}\))}
 \end{figure}
 
 \todo[inline]{glue text}
@@ -434,9 +445,34 @@
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=\textwidth]{img/example_flip_graph.jpg}
-  \caption{Example flip graph}
-  \todo[inline]{replace}
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/example_triangulation_1.pdf}
+    \caption{}
+  \end{subfigure}
+  \hspace{0em}
+  \VRule
+  \hspace{0em}
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/example_triangulation_2.pdf}
+    \caption{}
+  \end{subfigure}
+  \hspace{0em}
+  \VRule
+  \hspace{0em}
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/example_triangulation_3.pdf}
+    \caption{}
+  \end{subfigure}
+  
+  \vspace{2em}
+  \begin{subfigure}{0.7\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/example_flip_graph.pdf}
+  \end{subfigure}
+  \caption{Example triangulations and their flip graph}
 \end{figure}
 
 \todo[inline]{glue text}

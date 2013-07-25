@@ -1,17 +1,13 @@
 \chapter{Implementation}
 \label{cha:implementation}
-\ldots\todo[inline]{2 pages: ||}
-\todo[inline]{glue text}
-To get his algorithm implemented Greg asked Winfried Hellmann, a
-friend of his who studied computer science. He instantly agreed and
-started to plan the structure. There were two main components:
-Geometry and Optimization.
-
+In this chapter, we will briefly describe the program components---%
+roughly split into the geometry and the optimization part.
 To let the program run close to the hardware layer (which usually
 leads to fast execution times), the code was written in C++. First
 attempts to use Python instead (for the sake of clarity and better
 readability) stumbled over the non-readiness of the CGAL bindings and
-the lack of good alternatives.
+the lack of good alternatives. For the technical documentation,
+please refer to \cref{cha:documentation}.
 
 \section{Geometry}
 The geometry part consists of number, point, and segment types, 
