@@ -6,3 +6,11 @@
 [2013-07-21 14:20:36.148] [INFO] shortest input segment: 0:(388,-200)->(390,-200) (len^2=4)
 [2013-07-21 14:20:36.949] [INFO] shortest non-crossing segment: 26:(-1749,-1994)->(-1760,-1953) (len^2=1802)
 [2013-07-21 14:20:36.949] separators=4962
+[2013-07-21 14:22:30.839] [TIME] intersection graph=114692ms
+[2013-07-21 14:22:30.842] [INFO] shortest triangulation segment: 0:(388,-200)->(390,-200) (len^2=4)
+[2013-07-21 14:22:30.842] [INFO] shortest convex hull segment: 96:(1923,-1507)->(1931,-1426) (len^2=6625)
+[2013-07-21 14:22:30.842] [STATS] it=0	lb=0	ub=26
+[2013-07-21 14:22:30.842] [TIME] controller initialization=134819ms
+IBM ILOG License Manager: "university-braunschweig" is accessing CPLEX 12 with option(s): "e m b q use=10 MaintenanceEnd=20110128 ".
+[2013-07-21 14:39:43.348] [TIME] iteration 1=1032505ms
+[2013-07-21 14:39:43.398] [STATS] it=1	lb=17	ub=26
