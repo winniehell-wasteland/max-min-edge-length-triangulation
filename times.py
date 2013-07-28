@@ -17,6 +17,12 @@ data = results.load(
     'shortest/non-crossing/index'
 )
 
+def polynom(degree):
+    def func(n, *args):
+        return sum(args[i] * np.power(n, i) for i in range(degree+1))
+
+    return func
+
 
 def output_time_composition(data, instances):
     print 'Generating time composition...'
@@ -140,24 +146,29 @@ def output_time_total(data, instances):
     )
 
     try:
-        def func(n, *args):
-            return args[0] * np.power(n, args[1]) + args[2] * np.power(n, args[3]) + args[4]
+        fit_data = data[data.index > 10]
+
+        MAX_DEGREE = 4
 
         params = curve_fit(
-            func,
-            data.index.values,
-            data['time/total']['median'],
-            p0=np.ones(5, dtype=np.int),
+            polynom(MAX_DEGREE),
+            fit_data.index.values,
+            fit_data['time/total']['median'],
+            p0=np.zeros(MAX_DEGREE + 1),
+            sigma=fit_data['time/total']['err'],
             maxfev=6000
         )[0]
 
-        print params
-
-        plt.plot(
-            data.index, func(data.index, *params),#params[0], params[1], params[2],),
-            #label=r'\({0:.2g} \cdot n^{{{1:.2g}}} {3:+.2g} \cdot n^{{{4:.2g}}} {2:+.2g}\)'
-            #.format(*(float(param) for param in params))
-            label='fit'
+        axes.plot(
+            fit_data.index.values,
+            polynom(MAX_DEGREE)(fit_data.index.values, *params),
+            label=r'polynomial fit (\( '
+                  + ' '.join((r'{1:+.2g} ' + ('\cdot n^{{{0}}}', '')[i == 0])
+                             .format(i, params[i])
+                             for i
+                             in reversed(range(len(params)))
+                             )
+                  + r' \))'
         )
 
     except RuntimeError, e:
