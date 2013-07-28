@@ -1,0 +1,17 @@
+[2013-07-28 02:26:57.938] [INFO] Running in directory /opt/tmp/hellmann/uniform_distribution
+[2013-07-28 02:26:57.938] [INFO] Reading settings from /opt/tmp/hellmann/uniform_distribution/config.json
+[2013-07-28 02:26:57.938] [INFO] Reading input file ./0470/random_in_square_0470_2168_047.json ...
+[2013-07-28 02:27:12.839] [TIME] generating segments=14873ms
+[2013-07-28 02:27:12.843] points=470 segments=110215 convex hull=19
+[2013-07-28 02:27:12.843] [INFO] shortest input segment: 0:(2099,1498)->(2099,1502) (len^2=16)
+[2013-07-28 02:27:12.870] [INFO] shortest non-crossing segment: 0:(2099,1498)->(2099,1502) (len^2=16)
+[2013-07-28 02:27:12.870] separators=0
+[2013-07-28 02:27:12.870] [TIME] intersection graph=26ms
+[2013-07-28 02:27:12.872] [INFO] shortest triangulation segment: 0:(2099,1498)->(2099,1502) (len^2=16)
+[2013-07-28 02:27:12.872] [INFO] shortest convex hull segment: 130:(2088,2012)->(2014,2051) (len^2=6997)
+[2013-07-28 02:27:12.872] [TIME] controller initialization=14935ms
+[2013-07-28 02:27:12.874] [INFO] shortest constrained triangulation segment: 0:(2099,1498)->(2099,1502) (len^2=16)
+[2013-07-28 02:27:12.874] [STATS] it=0	lb=0	ub=0
+[2013-07-28 02:27:12.874] iterations=0 gap=0
+[2013-07-28 02:27:12.874] [TIME] SAT solving=0ms
+[2013-07-28 02:27:12.874] [TIME] total=14937ms
