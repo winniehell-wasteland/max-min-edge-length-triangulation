@@ -18,8 +18,8 @@ data = results.load(
 )
 
 
-def output_time_comparison(data, instances):
-    print 'Generating time comparison...'
+def output_time_composition(data, instances):
+    print 'Generating time composition...'
 
     columns = {
         'time/total': 'total running time',
@@ -48,18 +48,18 @@ def output_time_comparison(data, instances):
     axes = fig.add_subplot(111)
 
     COLORS = [
-        '#FF0000',
-        #'#990000',
         '#00FF00',
         #'#009900',
         '#0000FF',
         #'#000099'
+        '#FF0000',
+        #'#990000',
     ]
     WIDTH = 10
 
     bottom = 0
 
-    for key, label in columns.iteritems():
+    for key, label in sorted(columns.iteritems(), reverse=True):
         if key == 'time/total':
             continue
 
@@ -107,7 +107,7 @@ def output_time_comparison(data, instances):
     results.plot_axes(data=data, axes=axes, log_scale=False, x_max=505)
 
     results.output(
-        'time_comparison',
+        'time_composition',
         data=data,
         columns=columns,
         aggregations=aggregations,
@@ -140,22 +140,29 @@ def output_time_total(data, instances):
     )
 
     try:
-        def func(n, a, b, c):
-            return a * np.power(n, b) + c
+        def func(n, *args):
+            return args[0] * np.power(n, args[1]) + args[2] * np.power(n, args[3]) + args[4]
 
         params = curve_fit(
             func,
             data.index.values,
-            data['time/total']['median']
+            data['time/total']['median'],
+            p0=np.ones(5, dtype=np.int),
+            maxfev=6000
         )[0]
 
+        print params
+
         plt.plot(
-            data.index, func(data.index, params[0], params[1], params[2]),
-            label=r'\({0:.2g} \cdot n^{{{1:.2g}}} {2:+.2g}\)'
-            .format(*(float(param) for param in params))
+            data.index, func(data.index, *params),#params[0], params[1], params[2],),
+            #label=r'\({0:.2g} \cdot n^{{{1:.2g}}} {3:+.2g} \cdot n^{{{4:.2g}}} {2:+.2g}\)'
+            #.format(*(float(param) for param in params))
+            label='fit'
         )
-    except RuntimeError:
+
+    except RuntimeError, e:
         # could not fit
+        print e
         pass
 
     axes.set_xlabel(data.index.name)
@@ -215,7 +222,7 @@ def output_time_noncrossing(data, instances, threshold):
 
 
 def output_time_hist(data, threshold):
-    print 'Output time histogram...'
+    print 'Generating time histogram...'
 
     def count(a):
         return len(a)
@@ -246,14 +253,14 @@ def output_time_hist(data, threshold):
             data.index,
             column['count'],
             label=label,
-            width=10,
-            align='center'
+            width=10#,
+#            align='center'
         )
 
     axes.set_xlabel(data.index.name)
     axes.set_ylabel('instances < ' + str(threshold) + ' milliseconds')
     results.plot_axes(data=data, axes=axes, log_scale=False,
-                      y_min=0, y_max=105, x_min=0, x_max=500)
+                      y_min=0, y_max=105, x_min=-5, x_max=505)
 
     results.output(
         'time_hist',
@@ -264,21 +271,28 @@ def output_time_hist(data, threshold):
     )
 
 
-def output_time_allhist(data):
-    print 'Output all time histograms...'
+def output_time_allhist(data, num_points_list, x_max=1800000):
+    for num_points in num_points_list: #np.unique(data['file/num_points']):
+        print 'Generating time histogram for {0} points...'.format(num_points)
 
-    for points in np.unique(data['file/num_points']):
-        hist_data = data[data['file/num_points'] == points]
+        hist_data = data[data['file/num_points'] == num_points]
 
         fig = plt.figure(figsize=results.FIG_SIZE)
         axes = fig.add_subplot(111)
 
+        bins = np.arange(0, x_max, 10000)
+        axes.hist(hist_data['time/total'], bins=bins)
+
         axes.set_xlabel('time in milliseconds')
         axes.set_ylabel('number of instances')
+        axes.set_xlim(
+            (1.5 * bins[0] - 0.5 * bins[1],
+             #axes.get_xlim()[1]))
+             x_max)
+        )
+        axes.set_ylim((0,105))
 
-        axes.hist(hist_data['time/total'], bins=50)
-
-        fig.savefig('time_hist_' + str(points) + '.pdf', bbox_inches='tight')
+        fig.savefig('time_hist_{:04d}.pdf'.format(num_points), bbox_inches='tight')
 
 if __name__ == '__main__':
     x_column = 'file/num_points'
@@ -288,7 +302,7 @@ if __name__ == '__main__':
         in data[x_column]
     }
     data = data.groupby(x_column)
-    output_time_comparison(data, instances)
+    #output_time_composition(data, instances)
     output_time_total(data, instances)
     data = data.obj
 
@@ -299,8 +313,8 @@ if __name__ == '__main__':
         in data[x_column]
     }
     data = data.groupby(x_column)
-    output_time_noncrossing(data, instances, threshold=50)
+    #output_time_noncrossing(data, instances, threshold=50)
     data = data.obj
 
-    output_time_hist(data, 30 * 60 * 1000)
-    #output_time_allhist(data)
+    #output_time_hist(data, 1400000) #30 * 60 * 1000)
+    #output_time_allhist(data, [70,80], 600 * 1000)
