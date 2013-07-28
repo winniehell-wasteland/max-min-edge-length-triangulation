@@ -1,7 +1,18 @@
 \chapter{Integer Programming}
-\todo[inline]{8 pages: \cancel{||||}~||}
+This chapter focuses on some preliminaries around integer
+programming---which is a subarea of (mathematical) optimization.
+In that context we introduce three common optimization problems which
+can be solved using integer programming: SAT, Vertex Cover, and
+Independent Set. They will appear later on in this thesis
+(\cref{cha:triangulations,cha:mmlt}) in association with the
+\gls{MMLT} problem.
 
-\todo[inline]{glue text}
+An integer program is basically a problem description as a system
+of (in-)equations involving only variables with integer values. As
+an addition there can be an objection function for modeling
+optimization problems. Throughout this thesis, we assume that all
+of the (in-)equations are linear which is referred to as a
+\emph{linear integer program}.
 
 \begin{definition}[(Linear) \gls{IP}]
   An \gls{IP} is a system of integer variables
@@ -10,21 +21,40 @@
   constraints are linear: \(Ax \leq b\) or \(Ax \geq b\).
 \end{definition}
 
-\todo[inline]{glue text}
+A natural standardized way of formulating (linear) \gls{IP}[s] is the 
+so called \emph{canonical form.} It combines the variable coefficients
+for all (in-)equations in a matrix \(A\), all constant terms are
+summed up to a vector \(b\), and the objective function is represented
+as a multiplication of the variables \(x\) and a constant target
+vector \(c\). For readability, we slightly modify the canonical form,
+e.g. by allowing sums.
 
 \begin{problem}[\gls{IP} in canonical form \cite{combinatorial_optimization}]
-  \begin{alignat*}{2}
-    &\text{maximize } & c^Tx \\
-    &\text{subject to } & Ax &\leq b \\
-    && x &\geq 0 \\
-    && x &\in \gls{Z}
-  \intertext{or}
-    &\text{minimize } & c^Tx \\
-    &\text{subject to } & Ax &\geq b \\
-    && x &\leq 0 \\
-    && x &\in \gls{Z}
-  \end{alignat*}
+  \[
+  \begin{array}{lll}
+    \begin{alignedat}{2}
+      &\text{maximize } & c^Tx \\
+      &\text{subject to } & Ax &\leq b \\
+      && x &\geq 0 \\
+      && x &\in \gls{Z}
+    \end{alignedat}
+    & \text{\hspace{2em}or\hspace{2em}} &
+    \begin{alignedat}{2}
+      &\text{minimize } & c^Tx \\
+      &\text{subject to } & Ax &\geq b \\
+      && x &\leq 0 \\
+      && x &\in \gls{Z}
+    \end{alignedat}
+  \end{array}
+  \]
 \end{problem}
+
+Even though the structure of \gls{IP}[s] looks very simple, it is a
+long known fact that solving them is not easy. Nevertheless the come
+in handy for various optimization problems---especially because there
+are many practical applications involving only integers. A common
+strategy to simplify the problem is leaving out the integrity
+restriction for retrieving bounds of the optimal solution.
 
 \begin{theorem}
   Solving \gls{IP}[s] is NP-hard.
