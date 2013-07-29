@@ -9,16 +9,16 @@ Independent Set. They will appear later on within this thesis
 
 An integer program is basically a problem description as a system
 of (in-)equations involving only variables with integer values. As
-an addition there can be an objection function for modeling
+an addition there can be an objective function for modeling
 optimization problems. Throughout this thesis, we assume that all
 of the (in-)equations are linear which is referred to as a
 \emph{linear integer program}.
 
 \begin{definition}[(Linear) \gls{IP}]
   An \gls{IP} is a system of integer variables
-  \(x \in \gls{Z}^n\) with a set of constraints on them and often an 
-  objective function \(c^T x\). We consider only the case where the 
-  constraints are linear: \(Ax \leq b\) or \(Ax \geq b\).
+  \(x \in \gls{Z}^n\) with a set of constraints on them and optionally
+  an objective function. We consider only the case where the 
+  constraints are linear with respect to \(x\).
 \end{definition}
 
 A natural standardized way of formulating (linear) \gls{IP}[s] is the 
@@ -50,8 +50,8 @@ e.g. by allowing sums.
 \end{problem}
 
 Even though the structure of \gls{IP}[s] looks very simple, it is a
-long known fact that solving them is not easy. Nevertheless the come
-in handy for various optimization problems---especially because there
+long known fact that solving them is not easy. Nevertheless they come
+in useful for various optimization problems---especially because there
 are many practical applications involving only integers. A common
 strategy to simplify the problem is leaving out the integrity
 restriction for retrieving bounds of the optimal solution.
@@ -174,7 +174,7 @@ Cover.
 
 \begin{definition}[Vertex Cover]
   \label{def:vertex_cover}
-  Given an undirected graph \(G=(V,E)\), a vertex cover
+  Given an undirected graph \(G=(V,E)\), a Vertex Cover
   \(\gls{VC} \subseteq V\) for \(G\) is a vertex set such that
   every edge \(e \in E\) is incident to at least one vertex
   \(v \in \gls{VC}\):
@@ -187,13 +187,13 @@ one asks for the covering vertex set to be minimal (roughly speaking
 without unnecessary vertices).
 
 \begin{definition}[Minimal Vertex Cover]
-  A vertex cover \gls{VC} for an undirected graph
+  A Vertex Cover \gls{VC} for an undirected graph
   \(G=(V,E)\) is minimal if there is no vertex
   \(v \in \gls{VC}\) such that
-  \(\gls{VC} \setminus \{v\}\) remains a vertex cover.
+  \(\gls{VC} \setminus \{v\}\) remains a Vertex Cover.
 \end{definition}
 
-Still, \emph{any} minimal Vertex Cover is not always wanted as it
+Still, \emph{any} Minimal Vertex Cover is not always wanted as it
 needs not be unique---hence there can be a much smaller covering
 vertex set. An extreme example is a star-shaped graph where one vertex
 can cover all edges but the set of all other vertices would also be
@@ -203,11 +203,11 @@ a \emph{Minimum} Vertex Cover, i.e. a smallest possible one.
 and Minimum Vertex Cover by example.
 
 \begin{definition}[Minimum Vertex Cover]
-  A vertex cover \gls{VC} for an undirected graph
-  \(G=(V,E)\) is minimum if there is no other vertex cover
+  A Vertex Cover \gls{VC} for an undirected graph
+  \(G=(V,E)\) is minimum if there is no other Vertex Cover
   \(\gls{VC}[']\) for \(G\) which has fewer vertices:
   \[
-    \forall~V_{\text{cover}}'\text{ vertex cover} :
+    \forall~V_{\text{cover}}'\text{ Vertex Cover} :
     |\gls{VC}| \leq |\gls{VC}[']|
   \]
 \end{definition}
@@ -217,7 +217,7 @@ and Minimum Vertex Cover by example.
   \begin{subfigure}{0.25\textwidth}
     \centering
     \includegraphics[width=\textwidth]{img/example_minimal_vertex_cover.pdf}
-    \caption{minimal}
+    \caption{Minimal}
   \end{subfigure}
   \hspace{2em}
   \VRule
@@ -228,7 +228,7 @@ and Minimum Vertex Cover by example.
     \caption{minimum}
   \end{subfigure}
   \caption{\label{fig:example_vertex_cover}%
-    Example of minimal vs. minimum vertex cover, covering vertices %
+    Example of Minimal vs. Minimum Vertex Cover, covering vertices %
     in red
   }
 \end{figure}
@@ -276,8 +276,8 @@ not empty either.
 
 \begin{definition}[\Gls{wcover} Graph]
   \label{def:well_covered}
-  An undirected graph \(G=(V,E)\) is \gls{wcover} iff every minimal
-  vertex cover for \(G\) is also a minimum vertex cover for \(G\).
+  An undirected graph \(G=(V,E)\) is \gls{wcover} iff every Minimal
+  Vertex Cover for \(G\) is also a Minimum Vertex Cover for \(G\).
   \cite{graph_well_covered}
 \end{definition}
 
@@ -294,6 +294,7 @@ contradicts \(G\) being \gls{wcover}.
 \end{theorem}
 
 \section{Independent Set}
+\label{sec:independent_set}
 Another prominent graph problem is the \emph{Independent Set} which
 asks for a vertex set that is ``independent'', meaning that no two
 vertices are adjacent. It can be seen as the counter part of Vertex
@@ -359,7 +360,7 @@ Vertex Cover a Maximal Independent Set. From the \gls{IP} formulations
 \end{theorem}
 
 \begin{proof}
-  Let \gls{VC} be a vertex cover for \(G\). 
+  Let \gls{VC} be a Vertex Cover for \(G\). 
   \begin{alignat*}{1}
     \forall e \in E : \exists v \in \gls{VC} : v \in e
     &\iff \forall \{v,w\} \in E :
@@ -375,10 +376,10 @@ Vertex Cover a Maximal Independent Set. From the \gls{IP} formulations
     &\iff (V \setminus \gls{VC}) \text{ independent set}
   \end{alignat*}
   
-  Assume \gls{VC} is a minimum vertex cover for \(G\) and the
+  Assume \gls{VC} is a Minimum Vertex Cover for \(G\) and the
   independent set \(\gls{IS} = V \setminus \gls{VC}\) is not maximum.
   Then there is an independent \(\gls{IS}['] \subseteq V\) with
-  \(|\gls{IS}| < |\gls{IS}[']|\). But then for the vertex cover
+  \(|\gls{IS}| < |\gls{IS}[']|\). But then for the Vertex Cover
   \(\gls{VC}['] = V \setminus \gls{IS}[']\) the following holds:
   \(|\gls{VC}[']| < |\gls{VC}|\)---which is a contradiction to
   \gls{VC} being minimum. The same argumentation applies in the other
@@ -445,7 +446,7 @@ the solution at any time.
 \end{algorithm}
 
 This simple algorithm performs surprisingly well---to be seen in the
-following \crefname{thm:greedy_independent_set}. The Independent Set
+following \namecref{thm:greedy_independent_set}. The Independent Set
 property can not be ensured without taking all edges into account
 which implies that the running time of
 \cref{alg:greedy_independent_set} is even asymptotically optimal.
