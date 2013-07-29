@@ -3,7 +3,7 @@ This chapter focuses on some preliminaries around integer
 programming---which is a subarea of (mathematical) optimization.
 In that context we introduce three common optimization problems which
 can be solved using integer programming: SAT, Vertex Cover, and
-Independent Set. They will appear later on in this thesis
+Independent Set. They will appear later on within this thesis
 (\cref{cha:triangulations,cha:mmlt}) in association with the
 \gls{MMLT} problem.
 
@@ -68,7 +68,12 @@ restriction for retrieving bounds of the optimal solution.
 \end{proof}
 
 \section{SAT}
-\todo[inline]{glue text}
+The (boolean) satisfiability problem (SAT) asks for a variable
+assignment which fulfills a logical term. It was the first problem to
+be proven NP-complete \cite{np_complete} and has since been a common
+choice for NP-hardness proofs---many times even more restricted such
+as the 3-SAT problem which allows only for three variables in each
+``sub-term'' (clause).
 
 \begin{problem}[3-SAT]
   \label{prob:3SAT}\hfill
@@ -83,16 +88,26 @@ restriction for retrieving bounds of the optimal solution.
   \end{labeling}
 \end{problem}
 
-\todo[inline]{glue text}
+Shortly after the concept of NP-completeness was introduced by 
+\cite{np_complete}, Richard Karp applied the idea to several other
+well-known problems \cite{karp_np_complete}. One of them was the
+3-SAT problem which has more structure than the general boolean
+satisfiability problem and is therefore easier to embed into
+constructive NP-hardness or NP-completeness proofs.
 
 \begin{theorem}[NP-completeness of 3-SAT]
   \Cref{prob:3SAT} is NP-complete.~\cite[Satisfiability with at most %
   3 Literals per Clause]{karp_np_complete}
 \end{theorem}
 
-\todo[inline]{glue text}
+As already mentioned earlier, the 3-SAT problem can be formulated as
+an \gls{IP}. This easily confirms the NP-hardness of solving
+\gls{IP}[s]. Additionally it allows for applying \gls{IP} solvers 
+(such as CPLEX, see also \cref{sec:cplex}) to 3-SAT problems. Usually
+however, SAT solvers are used which take advantage of the problem
+structure better and have therefore less overhead.
 
-\begin{problem}[IP formulation of 3-SAT]
+\begin{problem}[\gls{IP} formulation of 3-SAT]
   \begin{alignat*}{3}
     &(\text{minimize } & 1) \\
     &\text{subject to } & \forall c \in C : &~
@@ -101,7 +116,10 @@ restriction for retrieving bounds of the optimal solution.
   \end{alignat*}
 \end{problem}
 
-\todo[inline]{glue text}
+For geometric and graph problems an even more restricted class of
+3-SAT problem has been established, the \emph{Planar 3-SAT}. It asks
+for the connection graph of all clauses and their variables to be
+embeddable in the plane.
 
 \begin{problem}[Planar 3-SAT]
   \label{prob:planar_3SAT}
@@ -118,7 +136,11 @@ restriction for retrieving bounds of the optimal solution.
   \end{alignat*}
 \end{problem}
 
-\todo[inline]{glue text}
+\Cref{fig:example_planar_3SAT} shows an example of a 3-SAT instance
+with a planar variable-clause-connection graph. There is a vertex for
+every clause (mint colored squares) and every variable (red circles)
+and edges in between if a variable (or its negation) is part of a
+clause.
 
 \begin{figure}[ht]
   \centering
@@ -131,14 +153,24 @@ restriction for retrieving bounds of the optimal solution.
     \)}
 \end{figure}
 
-\todo[inline]{glue text}
+It was shown that even this restricted class of satisfiability
+problems is NP-complete. That way problems can be proven to be
+NP-hard in the plane without having to deal with intersections. This
+result can then be used for higher dimensions (usually, problems
+become harder to solve if they are elevated to higher dimensions).
 
 \begin{theorem}[NP-completeness of Planar 3-SAT]
   \Cref{prob:planar_3SAT} is still NP-complete.~\cite{planar_3SAT}
 \end{theorem}
 
 \section{Vertex Cover}
-\todo[inline]{glue text}
+\label{sec:vertex_cover}
+Another problem in the collection of \cite{karp_np_complete} is
+\emph{Vertex Cover} which aims to cover (all) edges of a graph by
+their incident vertices. It is closely related to other graph problems
+such as Edge Cover, Clique, Independent Set
+(see \cref{sec:independent_set}), Coloring, and the more general Set
+Cover.
 
 \begin{definition}[Vertex Cover]
   \label{def:vertex_cover}
@@ -149,7 +181,10 @@ restriction for retrieving bounds of the optimal solution.
   \[ \forall e \in E: \exists v \in \gls{VC}: v \in e \]
 \end{definition}
 
-\todo[inline]{glue text}
+A trivial Vertex Cover of any graph \(G=(V,E)\) would be the complete
+vertex set \(V\). In general, such a Vertex Cover is not useful but
+one asks for the covering vertex set to be minimal (roughly speaking
+without unnecessary vertices).
 
 \begin{definition}[Minimal Vertex Cover]
   A vertex cover \gls{VC} for an undirected graph
@@ -158,7 +193,14 @@ restriction for retrieving bounds of the optimal solution.
   \(\gls{VC} \setminus \{v\}\) remains a vertex cover.
 \end{definition}
 
-\todo[inline]{glue text}
+Still, \emph{any} minimal Vertex Cover is not always wanted as it
+needs not be unique---hence there can be a much smaller covering
+vertex set. An extreme example is a star-shaped graph where one vertex
+can cover all edges but the set of all other vertices would also be
+minimal. Therefore we distinguish between a Minimal Vertex Cover and
+a \emph{Minimum} Vertex Cover, i.e. a smallest possible one. 
+\Cref{fig:example_vertex_cover} shows the difference between Minimal
+and Minimum Vertex Cover by example.
 
 \begin{definition}[Minimum Vertex Cover]
   A vertex cover \gls{VC} for an undirected graph
@@ -185,10 +227,18 @@ restriction for retrieving bounds of the optimal solution.
     \includegraphics[width=\textwidth]{img/example_minimum_vertex_cover.pdf}
     \caption{minimum}
   \end{subfigure}
-  \caption{\label{fig:example_vertex_cover}Example of minimal vs. minimum vertex cover}
+  \caption{\label{fig:example_vertex_cover}%
+    Example of minimal vs. minimum vertex cover, covering vertices %
+    in red
+  }
 \end{figure}
 
-\todo[inline]{glue text}
+The \gls{IP} formulation of Minimum Vertex Cover can be directly
+deduced from the definition: We minimize the number of covering
+vertices such that for every edge at least one vertex is selected. The
+optimal vertex set \(\gls{VC}\) can then be retrieved from the
+\gls{IP} solution vector by just collecting all selected vertices:
+\( \gls{VC} = \{v \in V \land x_v = 1\} \)
 
 \begin{problem}[\gls{IP} Formulation of Minimum Vertex Cover]
   \begin{alignat*}{3}
@@ -198,13 +248,31 @@ restriction for retrieving bounds of the optimal solution.
   \end{alignat*}
 \end{problem}
 
-\todo[inline]{glue text}
+What follows is that the Minimum Vertex Cover is also NP-complete
+because it is a subset of the Set Cover
+problem~\cite{karp_np_complete} and clearly lies in NP as it can be
+(polynomially) reduced to solving \gls{IP}[s].
 
-\begin{theorem}
-  Vertex Cover is NP-complete. \cite{karp_np_complete}
+\begin{theorem}[NP-completeness of Minimum Vertex Cover]
+  \label{thm:minimum_vertex_cover_complexity}
+  Minimum Vertex Cover is NP-complete.~\cite{karp_np_complete}
 \end{theorem}
 
-\todo[inline]{glue text}
+We now introduce the class of \gls{wcover} graphs which we will need
+in \cref{cha:triangulations}. They combine all graphs in which there
+is no difference between Minimal and Minimum Vertex Cover. Minimal
+Vertex Covers can be calculated with significant less effort (i.e. 
+in polynomial time) than Minimum Vertex Covers (e.g. by just
+iteratively removing vertices from the set until it would destroy the
+covering property). This leads to Minimum Vertex Cover being solvable
+in polynomial time for \gls{wcover} graphs.
+
+A subset of \gls{wcover} graphs are connected bipartite graphs
+\(G=(A \cup B,E \subseteq A \times B)\) with both vertex sets having
+the same size: \(|A|=|B|\). Either one of \(A\) and \(B\) is a Minimal
+and a Minimum Vertex Cover for \(G\). Clearly this graph class is not
+empty which already implies that the class of \gls{wcover} graph is
+not empty either.
 
 \begin{definition}[\Gls{wcover} Graph]
   \label{def:well_covered}
@@ -213,17 +281,26 @@ restriction for retrieving bounds of the optimal solution.
   \cite{graph_well_covered}
 \end{definition}
 
-\todo[inline]{glue text}
+As a logical consequence of \cref{def:well_covered}, every two vertex 
+sets which are a Minimal Vertex Cover for a \gls{wcover} graph \(G\)
+have the same size. If one of them had more vertices than the other
+one, it could not have been a Minimum Vertex Cover for \(G\)---which
+contradicts \(G\) being \gls{wcover}.
 
 \begin{theorem}
   \label{thm:well_covered_vertex_cover}
-  In a \gls{wcover} graph, all minimal vertex covers have the same
+  In a \gls{wcover} graph, all Minimal Vertex Covers have the same
   cardinality. \cite{graph_well_covered}
 \end{theorem}
 
 \section{Independent Set}
-
-\todo[inline]{glue text}
+Another prominent graph problem is the \emph{Independent Set} which
+asks for a vertex set that is ``independent'', meaning that no two
+vertices are adjacent. It can be seen as the counter part of Vertex
+Cover (see \cref{sec:vertex_cover}) because it requires \emph{at most}
+one vertex for every edge while Vertex Cover demands \emph{at least}
+one vertex for every edge. We consider this connection in 
+\cref{thm:independent_set_vertex_cover}.
 
 \begin{definition}[Independent Set]
   \label{def:independent_set}
@@ -238,7 +315,9 @@ restriction for retrieving bounds of the optimal solution.
   \]
 \end{definition}
 
-\todo[inline]{glue text}
+Again we can find a trivial Independent Set for every graph in
+constant time: the empty set. However, similar to Vertex Cover one 
+usually asks for a ``large'' Independent Set as defined below:
 
 \begin{definition}[Maximal/Maximum Independent Set]
   \label{def:max_independent_set}
@@ -250,7 +329,12 @@ restriction for retrieving bounds of the optimal solution.
   larger cardinality.
 \end{definition}
 
-\todo[inline]{glue text}
+The \gls{IP} for Maximum Independent Set maximizes the number of 
+selected vertices such that for every edge only one of the incident 
+vertices is selected. Analogous to the \gls{IP} formulation of Minimum
+Vertex Cover, the optimal \gls{IS} solution can directly be retrieved 
+from the \gls{IP} solution:
+\( \gls{IP} = \{v \in V : x_v = 1\} \)
 
 \begin{problem}[\gls{IP} Formulation of Maximum Independent Set]
   \begin{alignat*}{3}
@@ -260,14 +344,18 @@ restriction for retrieving bounds of the optimal solution.
   \end{alignat*}
 \end{problem}
 
-\todo[inline]{glue text}
+We already mentioned the close connection between Vertex Cover and
+Independent Set earlier. Note that in \cref{fig:example_vertex_cover}
+the Minimal Vertex Cover is a Maximum Independent Set and the Minimum
+Vertex Cover a Maximal Independent Set. From the \gls{IP} formulations
+ it can also been seen that the problems behave the opposite way:
 
 \begin{theorem}[Independent Set and Vertex Cover]
   \label{thm:independent_set_vertex_cover}
   For an undirected graph \(G=(V,E)\), \(\gls{IS} \subseteq V\)
-  is a maximum independent set iff
-  \(\gls{VC} = V \setminus \gls{IS}\) is a minimum vertex
-  cover.
+  is a Maximum Independent Set iff
+  \(\gls{VC} = V \setminus \gls{IS}\)
+  is a Minimum Vertex Cover.
 \end{theorem}
 
 \begin{proof}
@@ -297,9 +385,26 @@ restriction for retrieving bounds of the optimal solution.
   direction.
 \end{proof}
 
-\todo[inline]{glue text}
+Now that the link between both problems is proven, we can apply 
+properties of the Vertex Cover problem to Independent Sets. Firstly,
+it follows that the Maximum Independent Set problem is NP-complete as 
+well because every solution can be transformed into a Minimum Vertex
+Cover and vice versa in polynomial time.
 
-\begin{theorem}[Independent Set in \gls{wcover} Graphs]
+\begin{theorem}[NP-Completeness of Maximum Independent Set]
+  \label{thm:maximum_independent_set_complexity}
+  \Cref{thm:minimum_vertex_cover_complexity,%
+  thm:independent_set_vertex_cover} imply that Maximum Independent Set
+  is NP-complete.
+\end{theorem}
+
+Additionally, we can adapt the concept of \gls{wcover} graphs to
+Independent Sets. The following
+\namecref{thm:well_covered_independent_set} implies that for
+\gls{wcover} graphs, the complexity of finding a Maximum Independent
+Set is reduced to polynomial time.
+
+\begin{theorem}[Independent Set in \Gls{wcover} Graphs]
   \label{thm:well_covered_independent_set}
   For a \gls{wcover} graph \(G=(V,E)\), every maximal independent set
   has the same size and is therefore maximum.
@@ -314,15 +419,20 @@ restriction for retrieving bounds of the optimal solution.
   }.
 \end{proof}
 
-\todo[inline]{examples: \cref{fig:example_vertex_cover}}
-
-\todo[inline]{glue text}
+Now we show a straightforward approach for finding Maximal Independent
+Sets in any undirected graph. It is similar to a method for Minimum
+Vertex Cover mentioned earlier. The idea consists in iteratively
+adding vertices to the set as long as they do not violate the
+Independent Set property until all vertices have been considered. Such
+an approach is called ``greedy'' because it constantly extends the
+solution until this is no longer possible---without removing part of
+the solution at any time.
 
 \begin{algorithm}
   \DontPrintSemicolon
   
   \KwIn{Undirected graph \(G=(V,E)\)}
-  \KwOut{Maximal independent set \(\gls{IS} \subseteq V\) for \(G\)}
+  \KwOut{Maximal Independent Set \(\gls{IS} \subseteq V\) for \(G\)}
   
   Set \(\gls{IS} = \emptyset\) \;
   \ForEach{\(v \in V\)}{
@@ -331,15 +441,19 @@ restriction for retrieving bounds of the optimal solution.
     }
   }
   \KwRet{\gls{IS}}
-  \caption{\label{alg:greedy_independent_set}Greedy algorithm for independent set}
+  \caption{\label{alg:greedy_independent_set}Greedy Algorithm for Independent Set}
 \end{algorithm}
 
-\todo[inline]{glue text}
+This simple algorithm performs surprisingly well---to be seen in the
+following \crefname{thm:greedy_independent_set}. The Independent Set
+property can not be ensured without taking all edges into account
+which implies that the running time of
+\cref{alg:greedy_independent_set} is even asymptotically optimal.
 
 \begin{theorem}[Correctness and Complexity of \Cref{alg:greedy_independent_set}]
   \label{thm:greedy_independent_set}
-  \Cref{alg:greedy_independent_set} always finds a maximal independent
-  set in \(O(|E|)\) time.
+  \Cref{alg:greedy_independent_set} always finds a
+  Maximal Independent Set in \(O(|E|)\) time.
 \end{theorem}
 
 \begin{proof}
@@ -356,12 +470,15 @@ restriction for retrieving bounds of the optimal solution.
   \(O(|E|)\) time.
 \end{proof}
 
-\todo[inline]{glue text}
+Finally, we can take advantage of \gls{wcover} graphs when running
+\cref{alg:greedy_independent_set} on them. It implicitly returns a
+Maximum Independent Set for \gls{wcover} graphs---without even
+comparing it to other Maximal Independent Sets.
 
 \begin{theorem}[\Cref{alg:greedy_independent_set} in \gls{wcover} Graphs]
   \label{thm:well_covered_maximum_independent_set}
   For a \gls{wcover} graph \cref{alg:greedy_independent_set} always
-  finds a maximum independent set in \(O(|E|)\) time.
+  finds a Maximum Independent Set in \(O(|E|)\) time.
 \end{theorem}
 
 \begin{proof}
