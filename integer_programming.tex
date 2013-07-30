@@ -4,30 +4,35 @@ This chapter focuses on some preliminaries around integer
 programming---which is a subarea of (mathematical) optimization.
 In that context we introduce three common optimization problems which
 can be solved using integer programming: SAT, Vertex Cover, and
-Independent Set. They will appear later on within this thesis
+Independent Set. They are discussed later within this thesis
 (\cref{cha:triangulations,cha:mmlt}) in association with the
 \gls{MMLT} problem.
 
 An integer program is basically a problem description as a system
 of (in-)equations involving only variables with integer values. As
 an addition there can be an objective function for modeling
-optimization problems. Throughout this thesis, we assume that all
-of the (in-)equations are linear which is referred to as a
-\emph{linear integer program}.
+optimization problems. Throughout this thesis, we assume that every
+integer program has only linear (in-)equations which is referred to as
+a \emph{linear integer program}.
 
 \begin{definition}[(Linear) \gls{IP}]
   An \gls{IP} is a system of integer variables
-  \(x \in \gls{Z}^n\) with a set of constraints on them and optionally
-  an objective function. We consider only the case where the 
-  constraints are linear with respect to \(x\).
+  \(x \in \gls{Z}^n (n \in \gls{N})\)
+  with a set of constraints on them
+  and optionally an objective function. 
+  We consider only the case
+  where the constraints are linear with respect to \(x\).
 \end{definition}
 
 A natural standardized way of formulating (linear) \gls{IP}[s] is the 
-so called \emph{canonical form.} It combines the variable coefficients
-for all (in-)equations in a matrix \(A\), all constant terms are
-summed up to a vector \(b\), and the objective function is represented
+so called \emph{canonical form.} It combines the coefficients of the
+variable vector \(x \in \gls{Z}^n (n \in \gls{N})\)
+for all \(m \in \gls{N}\) (in-)equations
+in a matrix \(A \in \gls{Z}^{m \times n}\), 
+all constant terms are
+summed up to a vector \(b \in \gls{Z}^m\), and the objective function is represented
 as a multiplication of the variables \(x\) and a constant target
-vector \(c\). For readability, we slightly modify the canonical form,
+vector \(c \in \gls{Z}^n\). For readability, we slightly modify the canonical form,
 e.g. by allowing sums.
 
 \begin{problem}[\gls{IP} in canonical form \cite{combinatorial_optimization}]
@@ -37,17 +42,19 @@ e.g. by allowing sums.
       &\text{maximize } & c^Tx \\
       &\text{subject to } & Ax &\leq b \\
       && x &\geq 0 \\
-      && x &\in \gls{Z}
+      && x &\in \gls{Z}^n
     \end{alignedat}
     & \text{\hspace{2em}or\hspace{2em}} &
     \begin{alignedat}{2}
       &\text{minimize } & c^Tx \\
       &\text{subject to } & Ax &\geq b \\
       && x &\leq 0 \\
-      && x &\in \gls{Z}
+      && x &\in \gls{Z}^n
     \end{alignedat}
   \end{array}
   \]
+  (\(\leq\) and \(\geq\) here denote the row-wise comparison
+  of two vectors)
 \end{problem}
 
 Even though the structure of \gls{IP}[s] looks very simple, it is a
@@ -59,14 +66,13 @@ restriction for retrieving bounds of the optimal solution.
 
 \begin{theorem}
   Solving \gls{IP}[s] is NP-hard.
-\end{theorem}
-
-\begin{proof}
+  \begin{proof}
   Even the special case where there is no objective function, only
   binary variables, and only equality constraints is NP-complete
-  \cite{karp_np_complete}. Therefore the more general problem is
-  NP-hard.
-\end{proof}
+  \cite{karp_np_complete}. 
+  Therefore the more general problem is NP-hard.
+  \end{proof}
+\end{theorem}
 
 \section{SAT}
 The (boolean) satisfiability problem (SAT) asks for a variable
@@ -80,8 +86,8 @@ as the 3-SAT problem which allows only for three variables in each
   \label{prob:3SAT}\hfill
   \begin{labeling}{\hspace{4em}}
     \item[\textbf{Given:}]
-      Set of boolean literals \(x_i \in X\), a formula in conjunctive 
-      normal form consisting of clauses \(c \in C\) each involving 
+      Set of boolean literals \(X\), a formula in conjunctive 
+      normal form consisting of clauses \(C\) each involving 
       exactly three literals (or their negations)
     \item[\textbf{Sought:}]
       An assignment for \(X\) which lets all clauses in \(C\) evaluate
@@ -89,7 +95,7 @@ as the 3-SAT problem which allows only for three variables in each
   \end{labeling}
 \end{problem}
 
-Shortly after the concept of NP-completeness was introduced by 
+Shortly after the concept of NP-completeness was introduced in
 \cite{np_complete}, Richard Karp applied the idea to several other
 well-known problems \cite{karp_np_complete}. One of them was the
 3-SAT problem which has more structure than the general boolean
@@ -110,11 +116,13 @@ structure better and have therefore less overhead.
 
 \begin{problem}[\gls{IP} formulation of 3-SAT]
   \begin{alignat*}{3}
-    &(\text{minimize } & 1) \\
+    &(\text{minimize } & 0^Tx) \\
     &\text{subject to } & \forall c \in C : &~
     & \sum\limits_{x_i \in c} x_i + \sum\limits_{\lnot x_i \in c} (1 - x_i) &= 1 \\
     && \forall x_i \in X : &~& x_i &\in \{0,1\}
   \end{alignat*}
+  (\(x_i \in c\) (or \(\lnot x_i \in c\)) hereby denotes that
+  \(x_i\) (or \(\lnot x_i\)) is part of the clause \(c\))
 \end{problem}
 
 For geometric and graph problems an even more restricted class of
@@ -355,12 +363,10 @@ Vertex Cover a Maximal Independent Set. From the \gls{IP} formulations
 \begin{theorem}[Independent Set and Vertex Cover]
   \label{thm:independent_set_vertex_cover}
   For an undirected graph \(G=(V,E)\), \(\gls{IS} \subseteq V\)
-  is a Maximum Independent Set iff
+  is a Maximum Independent Set if and only if
   \(\gls{VC} = V \setminus \gls{IS}\)
   is a Minimum Vertex Cover.
-\end{theorem}
-
-\begin{proof}
+  \begin{proof}
   Let \gls{VC} be a Vertex Cover for \(G\). 
   \begin{alignat*}{1}
     \forall e \in E : \exists v \in \gls{VC} : v \in e
@@ -385,7 +391,8 @@ Vertex Cover a Maximal Independent Set. From the \gls{IP} formulations
   \(|\gls{VC}[']| < |\gls{VC}|\)---which is a contradiction to
   \gls{VC} being minimum. The same argumentation applies in the other
   direction.
-\end{proof}
+  \end{proof}
+\end{theorem}
 
 Now that the link between both problems is proven, we can apply 
 properties of the Vertex Cover problem to Independent Sets. Firstly,
@@ -410,16 +417,15 @@ Set is reduced to polynomial time.
   \label{thm:well_covered_independent_set}
   For a \gls{wcover} graph \(G=(V,E)\), every maximal independent set
   has the same size and is therefore maximum.
-\end{theorem}
-
-\begin{proof}
+  \begin{proof}
   \Cref{thm:well_covered_independent_set} follows directly from
   \cref{%
     def:well_covered,%
     thm:well_covered_vertex_cover,%
     thm:independent_set_vertex_cover%
   }.
-\end{proof}
+  \end{proof}
+\end{theorem}
 
 Now we show a straightforward approach for finding Maximal Independent
 Sets in any undirected graph. It is similar to a method for Minimum
@@ -456,9 +462,7 @@ which implies that the running time of
   \label{thm:greedy_independent_set}
   \Cref{alg:greedy_independent_set} always finds a
   Maximal Independent Set in \(O(|E|)\) time.
-\end{theorem}
-
-\begin{proof}
+  \begin{proof}
   Because the vertices are processed sequentially, for every edge
   \(\{v,w\} \in E\) at most one of \(v\) and \(w\) is added to
   \gls{IS}. Therefore \gls{IS} is an independent set. Additionally 
@@ -470,7 +474,8 @@ which implies that the running time of
   executed twice for every edge \(e \in E\). Every other statement
   runs in \(O(1)\) time. Thus \cref{alg:greedy_independent_set} needs
   \(O(|E|)\) time.
-\end{proof}
+  \end{proof}
+\end{theorem}
 
 Finally, we can take advantage of \gls{wcover} graphs when running
 \cref{alg:greedy_independent_set} on them. It implicitly returns a
@@ -481,86 +486,10 @@ comparing it to other Maximal Independent Sets.
   \label{thm:well_covered_maximum_independent_set}
   For a \gls{wcover} graph \cref{alg:greedy_independent_set} always
   finds a Maximum Independent Set in \(O(|E|)\) time.
-\end{theorem}
-
-\begin{proof}
+  \begin{proof}
   \Cref{thm:well_covered_maximum_independent_set} follows directly
   from \cref{thm:well_covered_independent_set,thm:greedy_independent_set}.
-\end{proof}
-
-% \section{Set Cover}
-% \ldots\todo[inline]{evaluate if we really need set cover}
-
-% In the next recess Greg and his friends were discussing again what
-% to play. It was always hard to find games that everybody liked.
-% For example, Greg likes to play tables tennis or Duck, Duck, Goose but
-% does not want to play soccer. Suddenly Greg had an idea: What about
-% making a list of everybody's first and second choice and then 
-% finding groups which could play together. His friends agree and
-% you can see the result in \cref{tab:game_voting}.
-% 
-% \begin{table}[ht]
-%   \centering
-%   \begin{tabular}{l|cccc}
-%     & table tennis & Duck, Duck, Goose & soccer & swings \\
-%     \hline
-%     Greg  & 1 &   &   & 2 \\
-%     Joey  & 2 & 1 &   &   \\
-%     Susan & 1 &   & 2 &   \\
-%     Bella &   &   & 2 & 1 \\
-%     Jenny & 1 & 2 &   &   \\
-%     Jason &   &   & 1 & 2 \\
-%     Alice &   & 2 &   & 1 \\
-%     Bob   &   & 1 & 2 &   \\
-%   \end{tabular}
-%   \caption{\label{tab:game_voting}Voting of Greg and his friends}
-% \end{table}
-
-% Then Greg went to Mrs. Lloyd and asked her how they could find the 
-% best solution. Firstly, she made another list
-% (\cref{tab:example_set_cover}) where she put all the children's
-% names for each game and summed up their preferences.%
-% \footnote{Note that I cheated here: Usually you would divide the
-% sum of preferences by the number of children who want to play the
-% game. But Greg did not know yet how to divide, so I made all the
-% groups have equal size.}
-
-% \begin{table}[ht]
-%   \centering
-%   \begin{tabular}{lc}
-%     table tennis (Greg, Joey, Susan, Jenny): & 4 \\
-%     Duck, Duck, Goose (Joey, Jenny, Alice, Bob): & 6 \\
-%     soccer (Susan, Bella, Jason, Bob):       & 7 \\
-%     swings (Greg, Bella, Jason, Alice):      & 6 \\
-%   \end{tabular}
-%   \caption{\label{tab:example_set_cover}Summed up preferences for each game}
-% \end{table}
-
-% Mrs. Lloyd showed the children that there were no two games to cover
-% all of them --- so they needed to split up into at least three groups.
-% The best way to do so was to play table tennis, Duck, Duck, Goose, and
-% on the swings. That was everybody's first choice besides for Jason.
-% The problem Mrs. Lloyd solved is an instance of the minimum weight 
-% set cover problem.
-
-% \begin{problem}[Minimum Weight Set Cover]\label{prob:mwsc}
-%   \hfill
-%   \begin{labeling}{\hspace{4em}}
-%     \item[\textbf{Given:}]
-%       A ``universe'' (set) of objects \(U\), 
-%       subsets \(S = \{S_i\}\)
-%       such that \(\bigcup\limits_{S_i \in S} S_i = U\),
-%       and a weight function \(c : S \to \gls{R}_+\)
-%     \item[\textbf{Sought:}]
-%       A set \(R \subseteq S\)
-%       which covers the universe, i.e. 
-%       \(\bigcup\limits_{S_i \in R} S_i = U\)
-%       and minimizes \(\sum\limits_{S_i \in R} c(S_i)\)
-%   \end{labeling}
-% \end{problem}
-% 
-% \Cref{prob:mwsc} is NP-hard \cite{set_cover} and the related decision 
-% problem was already one of the problems Karp has shown to be 
-% NP-complete \cite{karp_np_complete}.
+  \end{proof}
+\end{theorem}
 
 %---------------------------------------------------------------------##########

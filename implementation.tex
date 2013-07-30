@@ -5,26 +5,26 @@ roughly split into the geometry and the optimization part.
 To let the program run close to the hardware layer (which usually
 leads to fast execution times), the code was written in C++. First
 attempts to use Python instead (for the sake of clarity and better
-readability) stumbled over the non-readiness of the CGAL bindings and
+readability) stumbled over the non-readiness of the \gls{CGAL} bindings and
 the lack of good alternatives. For the technical documentation,
 please refer to \cref{cha:documentation}.
 
 \section{Geometry}
 The geometry part consists of number, point, and segment types, 
 data structures for triangulation, convex hull, and bounding box, 
-and it also handles the segment intersection. For most of it Winfried 
-made extensive use of CGAL, which will be introduced in \cref{sec:CGAL}.
+and it also handles the segment intersection. For most of it we
+made extensive use of \gls{CGAL}, which will be introduced in \cref{sec:CGAL}.
 
 \subsection{CGAL}
 \label{sec:CGAL}
-CGAL \cite{cgal} is an Open Source library (mainly) for computational
+\gls{CGAL} \cite{cgal} is an Open Source library (mainly) for computational
 geometry written in C++. It includes most of the common algorithms in
 the field and also offers efficient data structures. Through the use
 of C++ templates it is flexible and extendable: For example it is
 common to adjust the underlying number types to the application.
 
 \subsection{Kernel}
-A kernel in CGAL is something like a computational geometry operating
+A kernel in \gls{CGAL} is something like a computational geometry operating
 system: It holds the basic type definitions like numbers, points,
 lines, and line segments. Basic operations such as intersection,
 angle calculations, or comparisons are also part of it.
@@ -37,7 +37,7 @@ and is not capable of constructing new geometric objects from existing
 ones accurately. Both properties lead to faster execution time yet do 
 not produce wrong results in our case.
 
-On top of the CGAL kernel there are two modifications: One is for
+On top of the \gls{CGAL} kernel there are two modifications: One is for
 printing points and segments without the need to use streams, the
 other one to output them to SVG (see also
 \cref{sec:Qt,sec:svg_painter}). Additionally segments are indexed by
@@ -45,7 +45,7 @@ length and have the information whether they overlap with other
 segments attached to them.
 
 \subsection{Triangulation}
-CGAL brings along a constrained triangulation already
+\gls{CGAL} brings along a constrained triangulation already
 \cite{cgal_manual_constrained_triangulation}
 which triangulates a point set with respect to a given mandatory set
 of (non-crossing) edges. For this application the class was extended
@@ -53,7 +53,7 @@ to be drawable to SVG and to find the shortest edge which is part of
 the triangulation.
 
 \subsection{Convex Hull}
-This class directly calls the \verb|convex_hull_2| function of CGAL
+This class directly calls the \verb|convex_hull_2| function of \gls{CGAL}
 \cite{cgal_manual_convex_hull} which itself defaults to the algorithm
 of Akl \& Toussaint \cite{convex_hull}. The only extension is that
 the class serves as container
@@ -67,7 +67,7 @@ though as a measure of quality for the other bound.
 \subsection{Intersection Algorithm}
 To find all pairs of intersecting segments we use 
 \cref{alg:naive_intersection}. For the intersection check itself
-we make use of the CGAL function \verb|do_intersect|%
+we make use of the \gls{CGAL} function \verb|do_intersect|%
 ~\cite{cgal_manual_do_intersect}. In contrast to the
 \verb|intersecttion| function~\cite{cgal_manual_intersection}, it
 does not actually compute the intersection and therefore performs
@@ -126,8 +126,9 @@ to access CPLEX. It allows for adding variables and restrictions to
 a model, extracting them to more efficient data structures and then
 running several solving algorithms on it.
 
-\section{Remains}
-And then there is the rest: A controller
+\section{Remaining Components}
+Besides the geometry and optimization parts, our implementation
+contains the following components: A controller
 class for the whole algorithm which combines all the other components
 and utility classes for reading input files, debug
 output and assertions, test case generation, and drawing certain 
@@ -172,7 +173,7 @@ library~\cite{boost_spirit} for parsing the input point files in
 JSON (JavaScript Object Notation)~\cite{json} format. As of writing,
 the built-in JSON support of Qt unfortunately has a
 bug~\cite{json_bug} such that it is not compatible with the C++
-standard library (and therefore also neither with CGAL nor with
+standard library (and therefore also neither with \gls{CGAL} nor with
 Boost). After parsing the input file, all points are stored in a
 sorted set to allow for fast lookup.
 
@@ -191,7 +192,7 @@ instances of point sets and stored them for repeated runs. We hereby
 rely on the \verb|Random_points_in_square_2| 
 class~\cite{cgal_manual_random_points} in combination with the
 \verb|Creator_uniform_2| class~\cite{cgal_manual_creator_uniform}---both
-part of CGAL (\cref{sec:CGAL}).
+part of \gls{CGAL} (\cref{sec:CGAL}).
 
 \subsection{SVG Painter}
 \label{sec:svg_painter}
