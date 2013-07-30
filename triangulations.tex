@@ -386,59 +386,83 @@ those additional requirements later in this
 
 \section{Intersection Graph}
 \label{sec:intersection_graph}
-
-%---------------------------------------------------------------------##########
-\todo[inline]{glue text}
-
+When we defined the Point Set Triangulation
+(\cref{def:point_set_triangulation}), we assumed that the set of 
+conflicts (i.e. all pairs of \gls{cross} line segments) is already
+given---which might not be they case. This
+\namecref{sec:intersection_graph} fills the gap by introducing the
+\emph{Intersection Graph}. For consistency with other definitions, we
+kept the name even though it actually contains only \gls{cross} line
+segments (according to our previous definition of intersection).
 
 \begin{definition}[Intersection Graph]
   \label{def:intersection_graph}
-  For a set of line segments \(S\) the \emph{intersection graph}
-  \(\gls{Gcross}[(S)] = (V_S,X)\) consists of a vertex \(v_s \in V_S\)
-  for every line segment \(s \in S\) and an edge
-  \(\{v_{s_i}, v_{s_j}\} \in X\) for every pair of \gls{cross}
-  segments \(s_i, s_j \in S\). It is the geometric equivalent of the
-  conflict graph (\cref{def:conflict_graph}).
+  For a set of line segments \(S\) the
+  \emph{Intersection Graph} \(\gls{Gcross}[(S)] = (V_S,X)\) consists
+  of a vertex \(v_s \in V_S\) for every line segment \(s \in S\)
+  and an edge \(\{v_{s_i}, v_{s_j}\} \in X\)
+  for every pair of \gls{cross} segments \(s_i, s_j \in S\).
+  It is the geometric equivalent of the Conflict Graph
+  (see \cref{def:conflict_graph}).
 \end{definition}
 
-\todo[inline]{glue text}
+Generating the Intersection Graph for line segments in the plane can
+efficiently be done using an output sensitive sweep line algorithm.
+By output sensitive we refer to the (asymptotic) running time
+depending on the output size, i.e. how many line segments intersect.
 
-\begin{theorem}[Computational Complexity of Intersection Graph]
+\begin{theorem}[Time Complexity of Intersection Graph]
   \label{thm:sweep_bound}
-  Given a set of line segments \(S\) the intersection graph
-  \(\gls{Gcross}[(S)] = (V_S,X)\) can be calculated in
-  \(O(m \log m + i \log m)\) time where \(m = |V_S| = |S|\) 
+  Given a set of line segments \(S\) in the plane,
+  the Intersection Graph \(\gls{Gcross}[(S)] = (V_S,X)\)
+  can be calculated in \(O(m \log m + i \log m)\) time
+  where \(m = |V_S| = |S|\)
   and \(i = |X|\) is the number of intersections in \(S\).
   \cite[Lemma 2.3]{deberg_compgeom}
 \end{theorem}
 
-\todo[inline]{glue text}
+The referenced method performs very well for a small number of
+intersections but fails to do so when there are significantly more
+intersections than line segments. Let us first state how many
+intersections there are when all possible connections in a point set
+are considered:
 
 \begin{theorem}[Complexity of Point Set Intersections]
   \label{thm:point_set_intersections}
-  For a point set \(P\) with \(n\) points the set of all line 
-  segments \(S\) with endpoints in \(P\) has \(\Theta(n^4)\) 
-  intersections. \cite{quadrilaterals_bound} Thus calculating the
-  intersection graph for \(S\)  takes \(\Omega(n^4)\) time.
+  For a planar point set \(P\) with \(n\) points,
+  the set of all line segments \(S\) with endpoints in \(P\)
+  has \(\Theta(n^4)\) intersection points.~\cite{quadrilaterals_bound}
+  Thus calculating the Intersection Graph for \(S\)
+  takes \(\Omega(n^4)\) time.
 \end{theorem}
 
-\todo[inline]{glue text}
+This bound on the number of intersections shows that the sweep line
+approach is not a got choice in our case---especially because it does
+not reach the lower time bound of \(\Omega(n^4)\) (even though we have
+not yet shown that this is possible at all).
 
 \begin{theorem}[Non-Optimality of Sweep Algorithm for Point Sets]
   The sweep algorithm presented in \cite[Section 2.1]{deberg_compgeom}
-  with the time complexity of \cref{thm:sweep_bound} is not optimal
-  for calculating the intersections of all line segments with
-  endpoints in a given point set \(P\) as it takes \(O(n^4 \log n)\)
-  time.
+  with the time complexity of \cref{thm:sweep_bound}
+  is not optimal for finding
+  all \gls{cross} line segments with endpoints in a given
+  planar point set \(P\) of size \(n=|P|\)
+  as it takes \(O(n^4 \log n)\) time.
 \end{theorem}
 
-\todo[inline]{glue text}
+Now let us consider the straightforward approach of simply checking
+all pairs of line segments if they are \gls{cross}. 
+\Cref{alg:naive_intersection} realizes this idea with a small
+optimization: To avoid checking each pair of line segments twice, we
+take the length \(|s|\) of a line segment \(s\) into account. The same
+can be done by using a sorted list instead of a set for the line
+segments (which even works for line segments with the same length).
 
 \begin{algorithm}
   \DontPrintSemicolon
   
-  \KwIn{Set of segments \(S\)}
-  \KwOut{Intersection graph \(\gls{Gcross}[(S)] = (V_S,X)\)}
+  \KwIn{Set of line segments \(S\)}
+  \KwOut{Intersection Graph \(\gls{Gcross}[(S)] = (V_S,X)\)}
   
   Set \(V_S = \{v_s : s \in S\} \) \;
   Set \(X = \emptyset\) \;
@@ -453,94 +477,76 @@ those additional requirements later in this
   \caption{\label{alg:naive_intersection}Naive Intersection Algorithm}
 \end{algorithm}
 
-\todo[inline]{glue text}
+We can directly deduce the asymptotic running time from the algorithm
+and its correctness is implied by the fact that every possible
+combination of potentially \gls{cross} line segments is considered.
 
-\begin{theorem}[Complexity and Correctness of \Cref{alg:naive_intersection}]
-  \Cref{alg:naive_intersection} finds all intersecting line segments
+\begin{theorem}[Time Complexity and Correctness of \Cref{alg:naive_intersection}]
+  \Cref{alg:naive_intersection} finds all \gls{cross} line segments
   in \(O(m^2)\) time with \(m = |S|\).  
 \end{theorem}
 
-\todo[inline]{glue text}
+Again, the most simple approach is indeed asymptotically optimal for
+our application as already for \cref{alg:greedy_independent_set} in
+\cref{cha:integer_programming}. Additionally
+\cref{alg:naive_intersection} does not assume that the set of line
+segments is planar.
 
 \begin{theorem}[Optimality of \Cref{alg:naive_intersection} for Point Set]
-  \Cref{alg:naive_intersection} is asymptotically optimal for finding
-  the intersections of all line segments with endpoints in a given
-  point set \(P\) as it takes \(O(n^4)\) time for \(n = |P|\).
+  \Cref{alg:naive_intersection} is asymptotically optimal
+  for finding all \gls{cross} line segments
+  with endpoints in a given planar point set \(P\)
+  as it takes \(O(n^4)\) time for \(n = |P|\).
 \end{theorem}
 
-%---------------------------------------------------------------------##########
-
-% One day Greg had art class and the children were given sheets of
-% paper with points on them. The task was to connect all the points 
-% such that they have as many bounded areas as possible. Greg 
-% connected all the points taking care that the connections would only 
-% intersect in the given points. He was happy to see that the result 
-% consisted only of triangles filling up the whole space within the 
-% points. Also he had more bounded areas than any other child --- 
-% even more than Joey who filled up his sheet with quadrangles. Greg's
-% teacher, Mrs. Minerva, told him that he made a triangulation.
-% 
-% After seeing Greg's sheet, some of his friends let their connections
-% cross each other to get more areas, but Greg considered that
-% cheating. To stay the winner of the competition he made a new rule
-% that no point connections are allowed to cross.
-% 
-% Joey tried to circumvent Greg's rule by adding new points to his
-% sheet. For each new point he added on the outside he could make
-% several new connections and therefore got soon many more areas. So
-% Greg had to quickly come up with another rule only allowing the
-% existing points to take part of the competition.
-% 
-% \begin{definition}[Induced Segments]\label{def:induced_segments}
-%   The set of induced line segments \(S_P\) of a planar point set \(P\)
-%   consists of all \gls{noverlap} unique line segments having
-%   endpoints in \(P\):
-%   \[
-%     S_P := \{s=(p,q) \in P^2 : (p < q) \land s~\gls{noverlap}\}
-%   \]
-%   Let \(<\) hereby denote the lexicographical order, that is for
-%   \(p = (p_x,p_y)\) and \(q = (q_x,q_y)\):
-%   \[
-%     p < q \iff (p_x < q_x) \lor ((p_x = q_x) \land (p_y < q_y)).
-%   \]
-% \end{definition}
-% 
-% With those two new rules no one could think of a better way to make
-% areas than Greg's triangles. Even Mrs. Minerva said that under those
-% conditions it would not be possible to come up with a subdivision
-% which has more faces than a triangulation.
-% 
-% \begin{verbatim}
-%   - observation: when changing geometry but not topology,
-%     certain properties stay the same
-%   - e.g. angle/area/length preserving transformation
-%     => many optimal triangulations map to one topological
-%     (size doesn't matter)
-% \end{verbatim}
-% \todo[inline]{notes}
-
 \section{Polygon Triangulations}
-
-\todo[inline]{glue text}
+One case where boundary needs to be taken into account is when
+triangulating the interior of a polygon. We can reduce this case to
+the already defined Constrained Point Set Triangulation of the
+previous \cref{sec:point_set_triangulations}:
 
 \begin{definition}[Polygon Triangulation]
-  A triangulation \(T(P)\) of a polygon \(P\) bounded by line segments
-  are all boundary and interior edges of \(P\) in a constrained point
-  set triangulation of the polygon vertices with the polygon boundary
-  as constraints.
+  A Triangulation \(T(P)\) of a polygon \(P\) bounded by line segments
+  are all boundary and interior edges of \(P\)
+  in a Constrained Point Set Triangulation of the polygon vertices
+  with the polygon boundary as constraints.
 \end{definition}
 
-\todo[inline]{glue text}
+We can also reverse the reduction such that a Point Set Triangulation
+can be constructed by finding a Polygon Triangulation first:
 
 \begin{theorem}[Generalization of Point Set Triangulation]
-  Given a point set \(P\), a triangulation \(T(\conv(P) \cup P)\) of
-  the polygon bounded by the convex hull \(\conv(P)\) of \(P\) and
-  containing all inner points of \(P\) is a triangulation of \(P\).
+  Every triangulation of a point set \(P\)
+  is a triangulation \(T(\conv(P) \cup P)\)
+  of the polygon bounded by the convex hull \(\conv(P)\) of \(P\)
+  and containing all inner points of \(P\).
+  \begin{proof}
+  First recall that the Triangulation \(T(\conv(P) \cup P)\)
+  is a Constrained Point Set Triangulation \(T_c(P,C)\) for the point
+  set \(P\) with the constraints \(C = \conv(P)\) being all line
+  segments on the convex hull of \(P\). Now we only need to show that
+  the choice of \(C\) does not exclude any Point Set Triangulation by
+  proving that every line segment \(s \in C\) has to be part of every
+  Point Set Triangulation for \(P\):
+  
+  Assume that there is a Point Set Triangulation \(T'\) for \(P\)
+  which does not contain a line segment \(s \in C\). Because \(T'\)
+  is a maximal set of \gls{ncross} line segments by definition,
+  there has to be a line segment \(s' \in T'\) such that \(s\) and
+  \(s'\) are \gls{cross}. This implies that the endpoints of \(s'\)
+  have to be on opposite sides of \(s\) and since \(s\) is part of
+  the convex hull, one of the endpoints of \(s'\) has to lie outside
+  of the convex hull. This contradicts the definition of the convex
+  hull.
+  \end{proof}
 \end{theorem}
 
 \section{Edge Flipping}
-
-\todo[inline]{glue text}
+Besides the already mentioned sweep algorithms for Triangulations of
+planar point sets there is another common approach called
+\emph{Edge Flipping} which starts with any Triangulation and 
+iteratively replaces an edge by another one until the Triangulation 
+has a certain desired property (e.g. large inner angles).
 
 \begin{definition}[Edge Flip]
   \label{def:edge_flip}
@@ -551,15 +557,15 @@ those additional requirements later in this
   with respect to \(X\).
 \end{definition}
 
-\todo[inline]{glue text}
+An edge flip is not possible with any pair of edges. For planar point
+sets, both edges need to be diagonals of a convex quadrangle. More
+generally, they can only be conflicting edges:
 
 \begin{theorem}[Edge Flips are Conflicts]
-  Given a triangulation \(T(V,X)\) for a vertex set \(V\) with respect
-  to a set of conflicts \(X\), every edge flip \((e,f)\) is a
-  conflict: \(\{e,f\} \in X\).
-\end{theorem}
-
-\begin{proof}
+  Given a Triangulation \(T(V,X)\) for a vertex set \(V\)
+  with respect to a set of conflicts \(X\),
+  every edge flip \((e,f)\) is a conflict: \(\{e,f\} \in X\).
+  \begin{proof}
   Assume \(\{e,f\} \not\in X\). Further assume that
   \[ \lnot\exists e' \in T(V,X)\setminus\{e\}: \{e', f\} \in X. \]
   Then \(f\) can be added to \(T(V,X)\) (without removing \(e\)) and
@@ -568,19 +574,23 @@ those additional requirements later in this
   \(\{e', f\} \in X\). Then \(e' \in T(V,X)\setminus\{e\} \cup f\)
   ---which contradicts that \(T(V,X)\setminus\{e\} \cup f\) is a
   triangulation. Therefore every edge flip \((e,f)\) is a conflict.
-\end{proof}
+  \end{proof}
+\end{theorem}
 
-\todo[inline]{glue text}
+Continuously applying edge flips to a Triangulation can be seen as
+traversing a path within the graph of all Triangulations. Such a graph
+with vertices for every Triangulation and edges for every possible
+edge flip is called the \emph{Flip Graph}. An example can be seen in
+\cref{fig:example_flip_graph}.
 
 \begin{definition}[Flip Graph]
   \label{def:flip_graph}
-  The flip graph \(\gls{Gflip}[(V,X)] = (V_T,\gls{Eflip})\) for a
-  vertex set \(V\) and edge conflicts \(X\) contains a vertex
-  \(v \in V_T\) for every triangulation of \(V\) with respect to
-  \(X\) and edges \(e \in \gls{Eflip}\) for every possible edge flip.
+  The \emph{Flip Graph} \(\gls{Gflip}[(V,X)] = (V_T,\gls{Eflip})\)
+  for a vertex set \(V\) and edge conflicts \(X\)
+  contains a vertex \(v \in V_T\) for every triangulation of \(V\)
+  with respect to \(X\) and edges \(e \in \gls{Eflip}\)
+  for every possible edge flip.
 \end{definition}
-
-\todo[inline]{glue text}
 
 \begin{figure}[ht]
   \centering
@@ -610,41 +620,49 @@ those additional requirements later in this
   \begin{subfigure}{0.7\textwidth}
     \centering
     \includegraphics[width=\textwidth]{img/example_flip_graph.pdf}
+    \caption{Flip Graph}
   \end{subfigure}
-  \caption{Example triangulations and their flip graph}
+  \caption{\label{fig:example_flip_graph}%
+    Example triangulations and their flip graph}
 \end{figure}
 
-\todo[inline]{glue text}
+Changing any Triangulation into any other Triangulation using edge
+flips is only possible if the Flip Graph is connected, i.e. there is
+a path between every two vertices. This is the case for two dimensions
+but not yet completely explored for higher dimensions.
 
 \begin{theorem}[Connectivity of the Flip Graph]
-  The flip graph \(\gls{Gflip}[(V,X)]\) is connected in two dimensions
+  The Flip Graph \(\gls{Gflip}[(V,X)]\) is connected in two dimensions
   \cite[Behauptung 4]{flip_graph_connected} and has a diameter of
   at most \(6n - 30\) for \(n = |V|\).~\cite{flip_graph_diameter}
-  Therefore every triangulation \(T(V,X)\) of a vertex set \(V\)
+  Therefore every Triangulation \(T(V,X)\) of a vertex set \(V\)
   with respect to edge conflicts \(X\) can be transformed into any
-  other triangulation of \(V\) with respect to \(X\) in \(O(n)\)
+  other Triangulation of \(V\) with respect to \(X\) in \(O(n)\)
   time.
   
   For three dimensions, it is still an open problem whether
-  the flip graph is connected.~\cite{flip_graph_3d}
+  the Flip Graph is connected.~\cite{flip_graph_3d}
 \end{theorem}
 
-\begin{verbatim}
-  - local vs. global optimal
-  - hint to edge flipping paper
-\end{verbatim}
-\todo[inline]{notes}
-
-%---------------------------------------------------------------------##########
+Another issue of edge flipping algorithms are Triangulations
+which have additional non-locally restricted objectives. If for every
+two edges in a potential edge flip it can be determined which one
+improves the Triangulation with respect to the objective, the Flip
+Graph can be searched for a Triangulation for which all edge flips
+would worsen the solution with respect to the objective. This is
+possible for optimizing the inner angles of triangles. In
+\cref{cha:mmlt} we show that it is not possible for the \gls{MMLT}.
+Therefore the whole Flip Graph has to be considered---which has
+exponential size.
 
 \section{Related Work}
-After class was over, Greg asked Mrs. Minerva if there are different
-kinds of triangulations. She replied that the problem of 
-triangulating has kept researchers busy for over 100 years already
-\cite{triangulation_hilbert} and that people have found different
-aspects in that a triangulation can be optimal.
+In the following, we briefly mention some results for different kinds
+of Triangulations. These problems have kept researchers busy
+for over 100 years already~\cite{triangulation_hilbert} and several
+books have been written which cover the topic,
+e.g.~\cite{triangulation_book}.
 
-The most famous class is the Delaunay triangulation
+The most famous kind is probably the Delaunay Triangulation
 \cite[Section 9.2]{deberg_compgeom}. It forces every circumcircle
 of a triangle to be empty of other points and therefore maximizes
 the minimum angle \cite[Theorem 9.9]{deberg_compgeom}. There is an
@@ -652,28 +670,28 @@ edge flipping algorithm which calculates it in \(O(n \log n)\)
 expected time using \(O(n)\) space 
 \cite[Theorem 9.12]{deberg_compgeom}.
 
-There are several other triangulations which can be computed in
-polynomial time. Minimizing the maximum edge length in \(O(n^2)\)
-times was one of the first results \cite{triangulation_minmax_length}.
-The counterpart of a Delaunay triangulation, 
+The counterpart of a Delaunay Triangulation, 
 minimizing the maximum angle, takes \(O(n^2 \log n)\) time and
-\(O(n)\) space \cite{triangulation_edge_insertion}. The same
+\(O(n)\) space~\cite{triangulation_edge_insertion}. The same
 approach can also produce triangulations which maximize the minimum 
 height of a triangle. Finally, the same reference shows also that 
 minimizing the maximum slope and minimizing the maximum eccentricity 
-can both be done in \(O(n^3)\) time and \(O(n^2)\) space. A 
-triangulation which minimizes or maximizes the area of triangles can
-be computed in \(O(n^2 \log n)\) time with \(O(n^2)\) space.
-\cite{triangulation_area}
+can both be done in \(O(n^3)\) time and \(O(n^2)\) space.
 
-Other triangulations have been proven NP-hard or NP-complete. One
-of them is to minimize the edge length sum (also known as the minimum
-weight triangulation) which is NP-hard \cite{mwt_complexity}. 
+Optimizing the area of triangles has been studied
+in~\cite{triangulation_area} resulting in \(O(n^2 \log n)\) time
+and \(O(n^2)\) space for minimizing or maximizing the area.
+
+There are several results for optimal edge length Triangulations.
+One of the first publications \cite{triangulation_minmax_length}
+shows that minimizing the maximum edge length can be done in
+\(O(n^2)\) time. Minimizing the edge length sum (also known as the 
+Minimum Weight Triangulation) was proven NP-hard \cite{mwt_complexity}.
 Maximizing the minimum edge length was stated an open problem
 \cite{triangulation_minmax_length} but 20 years later it has been
-shown that it is NP-complete \cite{mmlt_complexity}. The latter one
-remains NP-hard for polygons with holes and interior points
-\cite{mmlt_polygons} but can be solved in \(O(n^3)\) time for simple
+shown that it is NP-complete \cite{mmlt_complexity}. It remains NP-hard
+for polygons with holes and interior points \cite{mmlt_polygons}
+but can be solved in \(O(n^3)\) time for simple
 polygons and even in linear time for convex polygons
 \cite{mmlt_convex_polygons}.
 
