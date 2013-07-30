@@ -1,7 +1,19 @@
-\chapter{Triangulations}\label{cha:triangulations}
-\ldots\todo[inline]{4 pages: |||}
+\chapter{Triangulations}
+\label{cha:triangulations}
+In the following chapter, we introduce triangulations along with some
+of their different variants and mention related work that has been done in
+this field. Many triangulations are usually seen as a part of
+computational geometry---including the most popular one, the Delaunay
+triangulation. However, the underlying structure that they share can
+also be interpreted as a combinatorial problem separated from
+geometric aspects. Thereby, we encounter some of the basics from
+\cref{cha:integer_programming} again.
 
-\todo[inline]{glue text}
+To begin with, we borrow a definition from graph theory: the 
+\emph{complete graph}. It is a simple (undirected) graph with the
+maximum number of edges. Often it is denoted as \(K_n\) where \(n\) is
+the number of vertices. We modify this definition slightly to let the
+graph be induced by a given vertex set:
 
 \begin{definition}[Complete Graph]
   Given a vertex set \(V\), the complete graph \(K_V=(V,E)\) for \(V\)
@@ -10,28 +22,40 @@
   \[ E = \{e=\{v,w\} : v,w \in V \land v\not=w\}) \]
 \end{definition}
 
-\todo[inline]{glue text}
+Next, we develop the term of \emph{conflicts}. This concept
+tries to abstract geometric properties of mutually exclusive objects
+(such as intersecting line segments). That way we can represent (some)
+geometric restrictions in combinatorial problems.
+
+\begin{definition}[Conflicts]
+  \label{def:edge_conflicts}
+  For a set of objects \(O\), conflicts \(X\) are a set of
+  unordered object pairs:
+  \[
+    X \subseteq
+    \{ \{ o_i, o_j \} : o_i, o_j \in O \land o_i \not= o_j \}
+  \]
+\end{definition}
+
+As we defined it, conflicts of objects are indistinguishable from
+edges of a simple graph having the objects as vertices. Below, we call
+such a graph the \emph{conflict graph}:
 
 \begin{definition}[Conflict Graph]
   \label{def:conflict_graph}
-  The conflict graph \(\gls{Gconf}[(E,X)] = (E,X)\) for a set of
-  edges \(E\) and a set of edge conflicts
-  \[
-    X \subseteq
-    \{\{e_i, e_j\} : e_i,e_j \in E \land e_i \not= e_j\}
-  \]
-  is an undirected graph with \(E\) as vertices and \(X\) as edges.
+  The \emph{conflict graph} \(\gls{Gconf}[(O,X)] = (O,X)\)
+  for a set of objects \(O\) and a set of conflicts \(X\)
+  is an undirected graph with \(O\) as vertices and \(X\) as edges.
 \end{definition}
 
-\todo[inline]{glue text}
+Now we can combine the previous definitions to characterize
+triangulations. Note that we start off with a combinatorial
+definition without any geometric components. In the course of this
+chapter, we show how to apply this formulation to geometric problems.
 
 \begin{definition}[Triangulation]
   Given the complete graph \(K_V = (V,E)\) for a vertex set \(V\)
-  and a set of edge conflicts
-  \[
-    X \subseteq
-    \{\{e_i, e_j\} : e_i,e_j \in E \land e_i \not= e_j\}
-  \]
+  and a set of conflicts \(X\) for \(E\)
   such that the conflict graph \(\gls{Gconf}[(E,X)]\) is \gls{wcover}.
   A \emph{triangulation} \(T(V,X) \subseteq E\) of \(V\) with respect
   to \(X\) is a maximum set of non-conflicting edges:
@@ -42,14 +66,16 @@
   \]
 \end{definition}
 
-\todo[inline]{glue text}
+Refer to \cref{fig:example_conflict_graph} for an example of the
+conflict graph with line segments being the objects and their
+conflicts representing all pairwise intersections.
 
 \begin{figure}[ht]
   \centering
   \begin{subfigure}{0.4\textwidth}
           \centering
           \includegraphics[width=\textwidth]{img/example_conflict_graph_segments.pdf}
-          \caption{segments}
+          \caption{Line Segments}
   \end{subfigure}
   \hspace{2em}
   \VRule
@@ -57,11 +83,14 @@
   \begin{subfigure}{0.4\textwidth}
           \centering
           \includegraphics[width=\textwidth]{img/example_conflict_graph.pdf}
-          \caption{conflict graph}
+          \caption{Conflict Graph}
   \end{subfigure}  
-  \caption{Example of the conflict graph for a given set of segments %
+  \caption{\label{fig:example_conflict_graph}Example of the conflict %
+    graph for a given set of line segments %
     and the conflicts being all intersections}
 \end{figure}
+
+%---------------------------------------------------------------------##########
 
 \todo[inline]{glue text}
 
