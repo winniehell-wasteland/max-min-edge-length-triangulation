@@ -3,23 +3,24 @@
 In the following chapter, we introduce triangulations along with some
 of their different variants and mention related work that has been done in
 this field. Many triangulations are usually seen as a part of
-computational geometry---including the most popular one, the Delaunay
-triangulation. However, the underlying structure that they share can
+computational geometry---including the most popular one, the
+Delaunay Triangulation~\cite[Section 9.2]{deberg_compgeom}.
+However, the underlying structure that they share can
 also be interpreted as a combinatorial problem separated from
 geometric aspects. Thereby, we encounter some of the basics from
 \cref{cha:integer_programming} again.
 
 To begin with, we borrow a definition from graph theory: the 
-\emph{complete graph}. It is a simple (undirected) graph with the
+\emph{Complete Graph}. It is a simple (undirected) graph with the
 maximum number of edges. Often it is denoted as \(K_n\) where \(n\) is
 the number of vertices. We modify this definition slightly to let the
 graph be induced by a given vertex set:
 
 \begin{definition}[Complete Graph]
-  Given a vertex set \(V\), the complete graph \(K_V=(V,E)\) for \(V\)
-  contains all possibles undirected edges between two vertices of
-  \(V\):
-  \[ E = \{e=\{v,w\} : v,w \in V \land v\not=w\}) \]
+  Given a vertex set \(V\), the \emph{Complete Graph} \(K_V=(V,E)\)
+  for \(V\) contains all possibles undirected edges between
+  each pair of vertices in \(V\):
+  \[ E = \{ e=\{ v, w \} : v,w \in V \land v\not=w \} \]
 \end{definition}
 
 Next, we develop the term of \emph{conflicts}. This concept
@@ -29,7 +30,7 @@ geometric restrictions in combinatorial problems.
 
 \begin{definition}[Conflicts]
   \label{def:edge_conflicts}
-  For a set of objects \(O\), conflicts \(X\) are a set of
+  For a set of objects \(O\), \emph{conflicts} \(X\) are a set of
   unordered object pairs:
   \[
     X \subseteq
@@ -39,35 +40,17 @@ geometric restrictions in combinatorial problems.
 
 As we defined it, conflicts of objects are indistinguishable from
 edges of a simple graph having the objects as vertices. Below, we call
-such a graph the \emph{conflict graph}:
+such a graph the \emph{Conflict Graph}:
 
 \begin{definition}[Conflict Graph]
   \label{def:conflict_graph}
-  The \emph{conflict graph} \(\gls{Gconf}[(O,X)] = (O,X)\)
+  The \emph{Conflict Graph} \(\gls{Gconf}[(O,X)] = (O,X)\)
   for a set of objects \(O\) and a set of conflicts \(X\)
   is an undirected graph with \(O\) as vertices and \(X\) as edges.
 \end{definition}
 
-Now we can combine the previous definitions to characterize
-triangulations. Note that we start off with a combinatorial
-definition without any geometric components. In the course of this
-chapter, we show how to apply this formulation to geometric problems.
-
-\begin{definition}[Triangulation]
-  Given the complete graph \(K_V = (V,E)\) for a vertex set \(V\)
-  and a set of conflicts \(X\) for \(E\)
-  such that the conflict graph \(\gls{Gconf}[(E,X)]\) is \gls{wcover}.
-  A \emph{triangulation} \(T(V,X) \subseteq E\) of \(V\) with respect
-  to \(X\) is a maximum set of non-conflicting edges:
-  \[
-    e_i \in T(V,X)
-    \iff e_i \in E
-    \land \forall e_j \in T(V,X) : \{e_i,e_j\} \not\in X
-  \]
-\end{definition}
-
 Refer to \cref{fig:example_conflict_graph} for an example of the
-conflict graph with line segments being the objects and their
+Conflict Graph with line segments being the objects and their
 conflicts representing all pairwise intersections.
 
 \begin{figure}[ht]
@@ -85,95 +68,174 @@ conflicts representing all pairwise intersections.
           \includegraphics[width=\textwidth]{img/example_conflict_graph.pdf}
           \caption{Conflict Graph}
   \end{subfigure}  
-  \caption{\label{fig:example_conflict_graph}Example of the conflict %
-    graph for a given set of line segments %
+  \caption{\label{fig:example_conflict_graph}Example of the Conflict %
+    Graph for a given set of line segments %
     and the conflicts being all intersections}
 \end{figure}
 
-%---------------------------------------------------------------------##########
+Now we can combine the previous definitions to characterize
+triangulations. Note that we start off with a combinatorial
+definition without any geometric components. In the course of this
+chapter, we show how to apply this formulation to geometric problems.
 
-\todo[inline]{glue text}
+\begin{definition}[Triangulation]
+  Given the Complete Graph \(K_V = (V,E)\) for a vertex set \(V\)
+  and a set of conflicts \(X\) for \(E\)
+  such that the Conflict Graph \(\gls{Gconf}[(E,X)]\) is \gls{wcover}.
+  A \emph{Triangulation} \(T(V,X) \subseteq E\) of \(V\) with respect
+  to \(X\) is a maximum set of non-conflicting edges:
+  \[
+    e_i \in T(V,X)
+    \iff e_i \in E
+    \land \forall e_j \in T(V,X) : \{e_i,e_j\} \not\in X
+  \]
+\end{definition}
+
+Bringing the Maximum Independent Set from \cref{sec:independent_set}
+back to mind, we can see that a Triangulation is essentially the same
+problem. Apart from Triangulations operating on the Conflict Graph,
+both problems maximize the number of ``independent'' vertices.
 
 \begin{theorem}[Equality of Triangulation and Maximum Independent Set]
   \label{thm:triangulation_independent_set}
-  Every triangulation \(T(V,X)\) of a vertex set \(V\) with respect
-  to conflicts \(X\) is a maximum independent set for the conflict
-  graph \(\gls{Gconf}[(E,X)]\) and vice versa. Hereby \(E\) are the
-  edges of the complete graph \(K_V\).
+  Every Triangulation \(T(V,X)\) of a vertex set \(V\) with respect
+  to conflicts \(X\) is a Maximum Independent Set for the Conflict
+  Graph \(\gls{Gconf}[(E,X)]\) and vice versa. Hereby \(E\) are the
+  edges of the Complete Graph \(K_V\).
+  \begin{proof}
+    \Cref{thm:triangulation_independent_set} follows directly from
+    \cref{def:max_independent_set,thm:well_covered_independent_set}.
+  \end{proof}
 \end{theorem}
 
-\begin{proof}
-  \Cref{thm:triangulation_independent_set} follows directly from
-  \cref{def:max_independent_set,thm:well_covered_independent_set}.
-\end{proof}
+Now we can make use of \cref{alg:greedy_independent_set} from
+\cref{cha:integer_programming} to gain a first bound on the time
+complexity of finding \emph{any} Triangulation (for a given vertex
+set and conflicts). Later, we give more accurate time bounds for
+special classes of Triangulations.
 
-\begin{theorem}
+\begin{theorem}[Time Complexity of Triangulations]
+  \label{thm:time_complexity_triangulations}
   From
   \cref{%
     thm:triangulation_independent_set,%
     thm:well_covered_maximum_independent_set%
   }
-  follows that finding the triangulation \(T(V,X)\) of a vertex set
-  \(V\) with respect to conflicts \(X\) can be calculated in
-  \(O(|X|)\) time.
+  follows that finding a Triangulation \(T(V,X)\) of a vertex set
+  \(V\) with respect to conflicts \(X\) takes \(O(|X|)\) time.
 \end{theorem}
 
-\todo[inline]{glue text}
+One important property of geometric objects has not been considered
+for our definition of Triangulations yet: \emph{forbidden objects}.
+Besides conflicting objects
+from which only one can be part of the same Triangulation, there may
+as well be objects which are not wanted at all---as we consider the
+Complete Graph. This can be the case when a Triangulation is required
+to lie completely within a certain boundary or when one object
+overlaps multiple others.
 
 \begin{definition}[Triangulation with Forbidden Edges]
-  A \emph{triangulation with forbidden edges} \(T(V,X,F)\) is a 
-  triangulation of the vertex set \(V\) with respect to conflicts
+  \label{def:triangulation_forbidden_edges}
+  A \emph{Triangulation with Forbidden Edges} \(T(V,X,F)\) is a 
+  Triangulation of the vertex set \(V\) with respect to conflicts
   \(X\) which does not contain any of the edges in \(F\):
   \[ \forall e \in F : e \not\in T(V,X,F) \]
 \end{definition}
 
-\todo[inline]{glue text}
+Even though this \namecref{def:triangulation_forbidden_edges} models
+geometric triangulation problems better, it is not solvable in
+polynomial time anymore (assuming P\(\not=\)NP). Many geometric
+triangulations are solvable in polynomial time however (as we see
+later)---so this approach is clearly not the best one to solve them.
 
 \begin{theorem}[NP-completeness of Triangulation with Forbidden Edges]
-  The decision problem whether a triangulation with forbidden edges
-  \(T(V,X,F)\) exists is NP-complete.
+  The decision problem whether 
+  a Triangulation with Forbidden Edges \(T(V,X,F)\) exists
+  is NP-complete.
   \cite[triangulation existence problem]{triangulation_forbidden_edges}
 \end{theorem}
 
-\todo[inline]{glue text}
+There is another approach to ensure that boundary is part of a
+Triangulation which we call \emph{constraints}. Basically we require
+a Triangulation to contain certain objects, e.g. the boundary. This
+leaves the problem that objects outside the boundary can be part of
+the Triangulation but those can be removed from the Triangulation
+in polynomial time (because triangulations have polynomial size).
 
 \begin{definition}[Constrained Triangulation]
   \label{def:constrained_triangulation}
-  A \emph{constrained triangulation} \(T(V,X,C)\) is a triangulation
+  A \emph{Constrained Triangulation} \(T(V,X,C)\) is a Triangulation
   of the vertex set \(V\) with respect to conflicts \(X\) which 
   contains the edge constrains \(C\):
   \[ \forall e \in C : e \in T(V,X,C) \]
 \end{definition}
 
+In contrast to the Triangulation with Forbidden Edges, Constrained
+Triangulations can be found in polynomial time. Therefore we slightly
+modify \cref{alg:greedy_independent_set} to begin with the constraints
+as initial Independent Set and then proceed as before. This assumes
+that the constraints themselves are all valid and not conflicting.
+Even without that guarantee, an additional check before running the
+algorithm would require at most quadratic time with respect to the
+constraints---so the whole running time is still polynomial.
+
+\begin{theorem}[Time Complexity of Constrained Triangulations]
+  Using \cref{alg:greedy_independent_set}
+  a Constrained Triangulation \(T(V,X,C)\) of the vertex set \(V\)
+  with respect to conflicts \(X\) and constrains \(C\)
+  can be calculated in \(O(|C|^2 + |X|)\) time.
+  In case \(C\) is guaranteed to have the Independent Set property,
+  running time reduces to \(O(|X|)\).
+\end{theorem}
+
 \section{Point Set Triangulations}
+\label{sec:point_set_triangulations}
+In this \namecref{sec:point_set_triangulations} we present the first
+geometric triangulation problem and draw the connection to our
+previous definition. The difference between a (topological)
+Triangulation as we have defined it earlier and a Point Set
+Triangulation which we get to in this
+\namecref{sec:point_set_triangulations} can be seen as the distinction
+between a graph and its embedding.
 
-\todo[inline]{glue text}
+To make things clear, we start by defining some geometric terms which
+we use in the following. The equivalent of edges in a topological
+triangulation are line segments for a geometric triangulation in the
+plane. Since line segments are not restricted to the plane, we do not
+focus on two dimensions here. However according to some definitions,
+triangulations for higher dimensions contain also geometric objects
+of higher dimension (e.g. tetrahedra in three dimensions). For
+simplicity we consider those objects be implicitly defined by their
+bounding line segments.
 
-\begin{definition}[Planar Points]
-  A \emph{planar set of points} or \emph{set of points in the plane}
-  \(P\) is a set of points with two coordinates:
-  \[ P \subseteq \{p = (p_x,p_y) : p_x,p_y \in F\} \]
-  We do not make any assumptions on the coordinates besides \(F\)
-  being a field, e.g. the real numbers \gls{R}. Furthermore,
-  because \(P\) is a set, no duplicate points \(p=(p_x,p_y)\in P\) and
-  \(p'=(p_x',p_y')\in P\) with \(p_x=p_x'\) and \(p_y=p_y'\) are allowed.
-  Note however that we do not require the points in \(P\) to be in 
-  general position as that would forbid some interesting instances.
-  \todo[inline]{do we need this definition at all?}
-\end{definition}
-
-\todo[inline]{glue text}
+% \begin{definition}[Planar Points]
+%   A \emph{planar set of points} or \emph{set of points in the plane}
+%   \(P\) is a set of points with two coordinates:
+%   \[ P \subseteq \{p = (p_x,p_y) : p_x,p_y \in F\} \]
+%   We do not make any assumptions on the coordinates besides \(F\)
+%   being a field, e.g. the real numbers \gls{R}. Furthermore,
+%   because \(P\) is a set, no duplicate points \(p=(p_x,p_y)\in P\) and
+%   \(p'=(p_x',p_y')\in P\) with \(p_x=p_x'\) and \(p_y=p_y'\) are allowed.
+%   Note however that we do not require the points in \(P\) to be in 
+%   general position as that would forbid some interesting instances.
+%   \todo[inline]{do we need this definition at all?}
+% \end{definition}
 
 \begin{definition}[Line Segments]
   A \emph{line segment} \(s=(p,q)\) is determined by its endpoints
-  \(p,q\in P\) with \(P\) being a point set. For compatibility
-  with other definitions, \(s\) is directed from \(p\) to \(q\), i.e.
-  \((p,q)\not=(q,p)\) and contains all points ``between'' \(p\) and
-  \(q\):
+  \(p,q\in P\) with \(P\) being a point set (of arbitrary dimension). 
+  For compatibility with other definitions,
+  \(s\) is directed from \(p\) to \(q\), i.e. \((p,q)\not=(q,p)\)
+  and contains all points ``between'' \(p\) and \(q\):
   \[ m \in s \iff \exists a\in [0,1] : m = p + a \cdot (q-p) \]
 \end{definition}
 
-\todo[inline]{glue text}
+Clearly, counterpart of conflicting edges are intersecting line
+segments. Nevertheless, depending on the definition, intersection of
+two line segments with the same endpoint is empty or the common endpoint.
+This is why we assume intersection of any geometric objects to be the
+set intersection of all (usually infinitely many) points contained in
+the objects and introduce the already widely used term \gls{cross}:
 
 \begin{definition}[Crossing]\label{def:crossing}
   Two line segments \(s_i=(p_i,q_i)\) and \(s_j=(p_j,q_j)\) with 
@@ -187,19 +249,28 @@ conflicts representing all pairwise intersections.
     (p \not\in \{p_i,q_i,p_j,q_j\})
   \]
 
-  Two segments \(s_i\) and \(s_j\) are \gls{ncross} if they are
-  not \gls{cross}. A set \(S\) of segments is \gls{cross} if at least
-  two segments \(s_i, s_j \in S\) are \gls{cross}. It is \gls{ncross}
-  if each pair \(s_i, s_j \in S\) is \gls{ncross}.
+  Two line segments \(s_i\) and \(s_j\) are \gls{ncross}
+  if they are not \gls{cross}.
+  A set \(S\) of line segments is \gls{cross}
+  if at least two segments \(s_i, s_j \in S\) are \gls{cross}.
+  It is \gls{ncross} if each pair \(s_i, s_j \in S\) is \gls{ncross}.
 \end{definition}
 
-\todo[inline]{glue text}
+We do not require points to be in general position which is why we
+have to deal with degeneracies in the following. General position
+often preempts interesting instances---e.g. those which are heavily
+symmetric. Additionally, many man-made structures aim for
+collinearity, so extra effort has to be expended to make real world
+instances fit the general position requirements. The following
+\namecref{def:overlapping_segments} identifies all unwanted line
+segments in case of collinear points. Refer to
+\cref{fig:overlapping_segments} for examples of such degeneracies.
 
-\begin{definition}[Overlapping Segments]
+\begin{definition}[Overlapping Line Segments]
   \label{def:overlapping_segments}
   Given a point set \(P\) and a line segment \(s = (p,q)\) with
-  \(p,q \in P\). \(s\) is \gls{overlap} in \(P\) iff there is a point
-  \(p' \in P\) which lies in its interior:
+  \(p,q \in P\). \(s\) is \gls{overlap} in \(P\) if and only if
+  there is a point \(p' \in P\) which lies in its interior:
   \[
     s~\gls{overlap}
     \iff  \exists p' \in P : (p' \in s) \land (p' \not\in \{p,q\})
@@ -210,13 +281,20 @@ conflicts representing all pairwise intersections.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.5\textwidth]{img/example_overlapping.pdf}
-  \caption{Examples of overlapping segments (\(\{a,b\}, \{c,e\}, \{d,f\}, \{g,h\}\))}
+  \caption{\label{fig:overlapping_segments}%
+    Examples of overlapping line segments %
+    (\(\{a,b\}, \{c,e\}, \{d,f\}, \{g,h\}\))%
+  }
 \end{figure}
 
-\todo[inline]{glue text}
+Earlier in this \namecref{sec:point_set_triangulations}, we already
+mentioned the connection between topological and geometric
+triangulations---and here comes the formal definition. Note that
+we distinguish between points (which have a geometry, i.e.
+coordinates) and vertices (which are solely topological objects).
 
 \begin{definition}[Topological Representation]
-  A vertex set \(V(P)\) represents a point set \(P\) iff there
+  A vertex set \(V(P)\) \emph{represents} a point set \(P\) if there
   is exactly one vertex \(v_p \in V(P)\) for each point \(p \in P\)
   and \(v_p\) can be identified by \(p\) and vice versa.
 %   
@@ -227,15 +305,31 @@ conflicts representing all pairwise intersections.
 %   represented by the vertices \(v_p\) and \(v_q\), respectively. We
 %   hereby assume that not \((p,q) \in S\) and \((q,p) \in S\) as they
 %   would be represented by the same edge.
-  \todo[inline]{remove comment}
 \end{definition}
+
+After having all basic terms at hand, we now proceed with
+\emph{Point Set Triangulations}. They are the geometric equivalent
+of topological triangulations for point sets. To emphasize that
+Point Set Triangulations without further restrictions can be 
+calculated in polynomial time (compare
+\cref{thm:time_complexity_triangulations,%
+  thm:time_complexity_planar_point_set_triangulations}),
+we avoid the definition to be based on 
+Triangulations with Forbidden Edges (see
+\cref{def:triangulation_forbidden_edges})---despite the fact that
+overlapping line segments are forbidden edges. Note in this case that
+finding a Triangulation involving overlapping line segments takes
+polynomial time. Afterwards they can be replaced by the line segments
+that they include in polynomial time (because there are polynomially
+many line segments).
 
 \begin{definition}[Point Set Triangulation]
   \label{def:point_set_triangulation}
-  The triangulation \(T(P)\) of a point set \(P\) is a triangulation
-  \(T(P) = T(V,X)\) where the vertex set
-  \(V=V(P)\) represents \(P\), the conflicts \(X\) are all
-  \gls{cross} segments, and which contains no \gls{overlap} segments:
+  The Triangulation \(T(P)\) of a point set \(P\)
+  is a triangulation \(T(P) = T(V,X)\)
+  where the vertex set \(V=V(P)\) represents \(P\), 
+  the conflicts \(X\) are all \gls{cross} line segments, 
+  and which contains no \gls{overlap} line segments:
   \begin{alignat*}{1}
     (p,q), (p',q')~\gls{cross}
     &\iff \left\{ \{v_p,v_q\}, \{v_{p'},v_{q'}\} \right\} \in X \\
@@ -244,42 +338,58 @@ conflicts representing all pairwise intersections.
   \end{alignat*}
 
   For convenience we define \(s=(p,q) \equiv e=\{v_p,v_q\}\) such
-  that \(s \in T(P) \iff e \in T(P)\). For a slightly different yet
-  equivalent definition of a point set triangulation see also
-  \cite[Section 9.1]{deberg_compgeom}.
+  that \(s \in T(P) \iff e \in T(P)\). See also
+  \cite[Section 9.1]{deberg_compgeom} for a slightly different yet
+  equivalent definition of Point Set Triangulations.
 \end{definition}
 
-\todo[inline]{glue text}
+The asymptotic time complexity of finding a Triangulation can be 
+improved for the special case of Point Set Triangulations. For example
+by making use of sweep line algorithms which exploit that
+Triangulation properties can be ensured locally, the running time
+drops to \(O(n \log n)\)---as in \cite{fortunes_algorithm}.
 
-\begin{theorem}[Time for Planar Point Set Triangulation]
-  A point set \(P \subseteq \gls{R}\) can be triangulated
+\begin{theorem}[Time Complexity of Planar Point Set Triangulation]
+  \label{thm:time_complexity_planar_point_set_triangulations}
+  A planar point set \(P \subseteq \gls{R}[^2]\) can be triangulated
   in \(O(n \log n)\) time with \(n = |P|\).
   \cite[Theorem 9.12]{deberg_compgeom}
 \end{theorem}
 
-\todo[inline]{glue text}
+In \cref{def:constrained_triangulation} we already showed a way to
+force certain objects (e.g. boundaries) to be part of a Triangulation.
+The same concept can be transferred to Point Set Triangulations as in
+the following \namecref{def:constrained_point_set_triangulation}:
 
 \begin{definition}[Constrained Point Set Triangulation]
   \label{def:constrained_point_set_triangulation}
-  Analogous to the Constrained Triangulation
-  (\cref{def:constrained_triangulation}), a 
-  \emph{constrained point set triangulation} \(T(P,C)\) of a point
-  set \(P\) with line segment constraints \(C\) is a point set
-  triangulation \(T(P,C) = T(P)\) such that \(C \subseteq T(P, C)\).
+  A \emph{Constrained Point Set Triangulation} \(T(P,C)\)
+  of a point set \(P\) with line segment constraints \(C\)
+  is a Point Set Triangulation \(T(P,C) = T(P)\)
+  such that \(C \subseteq T(P, C)\).
 \end{definition}
 
-\todo[inline]{glue text}
+The same time bound holds in the presence of constraints. Sweep line 
+algorithms can be modified for taking constraints into account. Note
+that constraints can destroy desired properties of a Point Set
+Triangulation (such as large inner angles)---we come back to some of
+those additional requirements later in this
+\namecref{cha:triangulations}.
 
-\begin{theorem}
-  A constrained point set triangulation \(T(P, C)\) for a point set
-  \(P \subseteq R\) and line segment constraints \(C \subseteq P^2\)
+\begin{theorem}[Constrained Point Set Triangulation]
+  A \emph{Constrained Point Set Triangulation} \(T(P, C)\)
+  for a planar point set \(P \subseteq \gls{R}^2\)
+  and line segment constraints \(C \subseteq P^2\)
   can be calculated in \(O(n \log n)\) time.
   \cite{constrained_triangulation}
 \end{theorem}
 
 \section{Intersection Graph}
 \label{sec:intersection_graph}
+
+%---------------------------------------------------------------------##########
 \todo[inline]{glue text}
+
 
 \begin{definition}[Intersection Graph]
   \label{def:intersection_graph}
