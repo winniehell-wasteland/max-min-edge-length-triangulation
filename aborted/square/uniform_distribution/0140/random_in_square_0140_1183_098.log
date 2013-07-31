@@ -1,0 +1,29 @@
+Build: 2013-07-19 16:30:18+02:00 by winniehell (last commit: 4db829e21bf3f4afd6088fb814ff065ec189c5e0 by winniehell)
+[2013-07-24 10:08:16.040] [INFO] Running in directory /opt/tmp/hellmann/aborted
+[2013-07-24 10:08:16.040] [INFO] Reading config file config.ini
+[2013-07-24 10:08:16.058] [INFO] Reading input file ./0140/random_in_square_0140_1183_098.json ...
+[2013-07-24 10:08:16.267] [TIME] generating segments=172ms
+[2013-07-24 10:08:16.268] points=140 segments=9730 convex hull=12
+[2013-07-24 10:08:16.268] [INFO] shortest input segment: 0:(678,-968)->(707,-955) (len^2=1010)
+[2013-07-24 10:08:16.674] [INFO] shortest non-crossing segment: 53:(1009,-1047)->(928,-981) (len^2=10917)
+[2013-07-24 10:08:16.674] separators=3337
+[2013-07-24 10:08:57.053] [TIME] intersection graph=40785ms
+[2013-07-24 10:08:57.053] [INFO] shortest triangulation segment: 0:(678,-968)->(707,-955) (len^2=1010)
+[2013-07-24 10:08:57.054] [INFO] shortest convex hull segment: 149:(1130,713)->(1104,882) (len^2=29237)
+[2013-07-24 10:08:57.054] [STATS] it=0	lb=0	ub=53
+[2013-07-24 10:08:57.054] [TIME] controller initialization=40996ms
+IBM ILOG License Manager: "university-braunschweig" is accessing CPLEX 12 with option(s): "e m b q use=10 MaintenanceEnd=20110128 ".
+[2013-07-24 10:14:06.178] [TIME] iteration 1=309124ms
+[2013-07-24 10:14:06.233] [STATS] it=1	lb=27	ub=53
+[2013-07-24 10:24:56.176] [TIME] iteration 2=649942ms
+[2013-07-24 10:24:56.241] [STATS] it=2	lb=40	ub=53
+[2013-07-24 10:38:39.654] [TIME] iteration 3=823410ms
+[2013-07-24 10:38:39.694] [STATS] it=3	lb=48	ub=53
+[2013-07-24 10:52:10.528] [TIME] iteration 4=810833ms
+[2013-07-24 10:52:10.579] [STATS] it=4	lb=51	ub=53
+[2013-07-24 11:00:11.403] [TIME] iteration 5=480819ms
+[2013-07-24 11:00:11.505] [INFO] shortest constrained triangulation segment: 53:(1009,-1047)->(928,-981) (len^2=10917)
+[2013-07-24 11:00:11.508] [STATS] it=5	lb=53	ub=53
+[2013-07-24 11:00:11.509] iterations=5 gap=0
+[2013-07-24 11:00:11.510] [TIME] SAT solving=3074126ms
+[2013-07-24 11:00:11.512] [TIME] total=3115454ms

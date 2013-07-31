@@ -13,3 +13,23 @@ Build: 2013-07-19 16:30:18+02:00 by winniehell (last commit: 4db829e21bf3f4afd60
 [2013-07-21 14:18:12.947] [STATS] it=0	lb=0	ub=76
 [2013-07-21 14:18:12.947] [TIME] controller initialization=62205ms
 IBM ILOG License Manager: "university-braunschweig" is accessing CPLEX 12 with option(s): "e m b q use=10 MaintenanceEnd=20110128 ".
+[2013-07-21 14:47:31.413] [TIME] iteration 1=1758463ms
+[2013-07-21 14:47:31.453] [STATS] it=1	lb=42	ub=76
+[2013-07-21 15:15:55.072] [ERROR] Solution is infeasible
+[2013-07-21 15:15:55.201] [TIME] iteration 2=1703747ms
+[2013-07-21 15:15:55.209] [STATS] it=2	lb=42	ub=58
+[2013-07-21 15:25:40.714] [ERROR] Solution is infeasible
+[2013-07-21 15:25:40.807] [TIME] iteration 3=585590ms
+[2013-07-21 15:25:40.819] [STATS] it=3	lb=42	ub=49
+[2013-07-21 15:34:29.612] [ERROR] Solution is infeasible
+[2013-07-21 15:34:29.723] [TIME] iteration 4=528891ms
+[2013-07-21 15:34:29.731] [STATS] it=4	lb=42	ub=45
+[2013-07-21 15:40:53.940] [TIME] iteration 5=384201ms
+[2013-07-21 15:40:53.949] [STATS] it=5	lb=44	ub=45
+[2013-07-21 15:46:31.378] [ERROR] Solution is infeasible
+[2013-07-21 15:46:31.598] [TIME] iteration 6=337638ms
+[2013-07-21 15:46:31.937] [INFO] shortest constrained triangulation segment: 44:(-1018,248)->(-1021,329) (len^2=6570)
+[2013-07-21 15:46:31.938] [STATS] it=6	lb=44	ub=44
+[2013-07-21 15:46:31.938] iterations=6 gap=0
+[2013-07-21 15:46:31.938] [TIME] SAT solving=5298520ms
+[2013-07-21 15:46:31.938] [TIME] total=5361195ms

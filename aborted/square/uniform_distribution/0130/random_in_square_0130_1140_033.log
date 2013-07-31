@@ -1,17 +1,35 @@
-[2013-07-20 13:35:00.775] [INFO] Running in directory /opt/tmp/hellmann/aborted
-[2013-07-20 13:35:00.775] [INFO] Reading settings from /opt/tmp/hellmann/aborted/config.json
-[2013-07-20 13:35:00.775] [INFO] Reading input file ./0130/random_in_square_0130_1140_033.json ...
-[2013-07-20 13:35:00.944] [TIME] generating segments=142ms
-[2013-07-20 13:35:00.944] points=130 segments=8385 convex hull=9
-[2013-07-20 13:35:00.945] [INFO] shortest input segment: 0:(-314,207)->(-310,208) (len^2=17)
-[2013-07-20 13:35:01.458] [INFO] shortest non-crossing segment: 72:(1079,-973)->(988,-902) (len^2=13322)
-[2013-07-20 13:35:01.458] separators=3771
-[2013-07-20 13:35:50.004] [TIME] intersection graph=49059ms
-[2013-07-20 13:35:50.005] [INFO] shortest triangulation segment: 0:(-314,207)->(-310,208) (len^2=17)
-[2013-07-20 13:35:50.005] [INFO] shortest convex hull segment: 760:(692,-1108)->(1079,-973) (len^2=167994)
-[2013-07-20 13:35:50.005] [TIME] controller initialization=49230ms
-[2013-07-20 13:35:50.006] [INFO] shortest constrained triangulation segment: 0:(-314,207)->(-310,208) (len^2=17)
-[2013-07-20 13:35:50.006] [STATS] it=0	lb=0	ub=72
-[2013-07-20 13:35:50.006] iterations=0 gap=72
-[2013-07-20 13:35:50.006] [TIME] SAT solving=0ms
-[2013-07-20 13:35:50.006] [TIME] total=49230ms
+Build: 2013-07-19 16:30:18+02:00 by winniehell (last commit: 4db829e21bf3f4afd6088fb814ff065ec189c5e0 by winniehell)
+[2013-07-21 15:46:40.540] [INFO] Running in directory /opt/tmp/hellmann/aborted
+[2013-07-21 15:46:40.540] [INFO] Reading config file config.ini
+[2013-07-21 15:46:40.559] [INFO] Reading input file ./0130/random_in_square_0130_1140_033.json ...
+[2013-07-21 15:46:40.737] [TIME] generating segments=142ms
+[2013-07-21 15:46:40.737] points=130 segments=8385 convex hull=9
+[2013-07-21 15:46:40.737] [INFO] shortest input segment: 0:(-314,207)->(-310,208) (len^2=17)
+[2013-07-21 15:46:41.248] [INFO] shortest non-crossing segment: 72:(1079,-973)->(988,-902) (len^2=13322)
+[2013-07-21 15:46:41.248] separators=3771
+[2013-07-21 15:47:29.823] [TIME] intersection graph=49085ms
+[2013-07-21 15:47:29.824] [INFO] shortest triangulation segment: 0:(-314,207)->(-310,208) (len^2=17)
+[2013-07-21 15:47:29.824] [INFO] shortest convex hull segment: 760:(692,-1108)->(1079,-973) (len^2=167994)
+[2013-07-21 15:47:29.824] [STATS] it=0	lb=0	ub=72
+[2013-07-21 15:47:29.824] [TIME] controller initialization=49265ms
+IBM ILOG License Manager: "university-braunschweig" is accessing CPLEX 12 with option(s): "e m b q use=10 MaintenanceEnd=20110128 ".
+[2013-07-21 16:21:23.804] [ERROR] Solution is infeasible
+[2013-07-21 16:21:23.892] [TIME] iteration 1=2034064ms
+[2013-07-21 16:21:23.904] [STATS] it=1	lb=0	ub=35
+[2013-07-21 16:22:29.174] [TIME] iteration 2=65256ms
+[2013-07-21 16:22:29.174] [STATS] it=2	lb=18	ub=35
+[2013-07-21 16:23:57.066] [TIME] iteration 3=87890ms
+[2013-07-21 16:23:57.110] [STATS] it=3	lb=28	ub=35
+[2013-07-21 16:34:50.943] [ERROR] Solution is infeasible
+[2013-07-21 16:34:51.014] [TIME] iteration 4=653900ms
+[2013-07-21 16:34:51.025] [STATS] it=4	lb=28	ub=31
+[2013-07-21 16:39:07.020] [ERROR] Solution is infeasible
+[2013-07-21 16:39:07.094] [TIME] iteration 5=256057ms
+[2013-07-21 16:39:07.101] [STATS] it=5	lb=28	ub=29
+[2013-07-21 16:41:26.612] [ERROR] Solution is infeasible
+[2013-07-21 16:41:26.661] [TIME] iteration 6=139550ms
+[2013-07-21 16:41:26.740] [INFO] shortest constrained triangulation segment: 28:(-365,908)->(-414,947) (len^2=3922)
+[2013-07-21 16:41:26.741] [STATS] it=6	lb=28	ub=28
+[2013-07-21 16:41:26.741] iterations=6 gap=0
+[2013-07-21 16:41:26.741] [TIME] SAT solving=3236713ms
+[2013-07-21 16:41:26.741] [TIME] total=3286181ms

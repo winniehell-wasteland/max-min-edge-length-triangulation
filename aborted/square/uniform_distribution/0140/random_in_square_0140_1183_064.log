@@ -1,0 +1,18 @@
+Build: 2013-07-19 16:30:18+02:00 by winniehell (last commit: 4db829e21bf3f4afd6088fb814ff065ec189c5e0 by winniehell)
+[2013-07-22 20:50:28.208] [INFO] Running in directory /opt/tmp/hellmann/aborted
+[2013-07-22 20:50:28.208] [INFO] Reading config file config.ini
+[2013-07-22 20:50:28.233] [INFO] Reading input file ./0140/random_in_square_0140_1183_064.json ...
+[2013-07-22 20:50:28.481] [TIME] generating segments=176ms
+[2013-07-22 20:50:28.482] points=140 segments=9730 convex hull=15
+[2013-07-22 20:50:28.482] [INFO] shortest input segment: 0:(326,-689)->(332,-681) (len^2=100)
+[2013-07-22 20:50:29.345] [INFO] shortest non-crossing segment: 102:(-1038,-1054)->(-1169,-985) (len^2=21922)
+[2013-07-22 20:50:29.346] separators=5851
+[2013-07-22 20:52:22.535] [TIME] intersection graph=114054ms
+[2013-07-22 20:52:22.536] [INFO] shortest triangulation segment: 0:(326,-689)->(332,-681) (len^2=100)
+[2013-07-22 20:52:22.536] [INFO] shortest convex hull segment: 102:(-1038,-1054)->(-1169,-985) (len^2=21922)
+[2013-07-22 20:52:22.536] [STATS] it=0	lb=0	ub=102
+[2013-07-22 20:52:22.536] [TIME] controller initialization=114304ms
+IBM ILOG License Manager: "university-braunschweig" is accessing CPLEX 12 with option(s): "e m b q use=10 MaintenanceEnd=20110128 ".
+[2013-07-23 07:21:08.487] [TIME] iteration 1=37725949ms
+[2013-07-23 07:21:08.552] [STATS] it=1	lb=53	ub=102
+terminate called after throwing an instance of 'IloCplex::Exception'
