@@ -46,6 +46,7 @@ See also \cref{fig:non_unique_optimal} for an example.
 \end{figure}
 
 \section{Complexity}
+\label{sec:mmlt_complexity}
 As already mentioned in \cref{sec:related_work}, the \gls{MMLT}
 problem was stated as an open problem by Edelsbrunner and Tan in
 1991~\cite{triangulation_minmax_length} and has recently been proven
@@ -154,24 +155,27 @@ Now we can proceed with the \gls{MMLT} problem:
 \end{theorem}
 
 \section{Geometric Approaches}
+In \cref{cha:triangulations} we mentioned two efficient methods for
+finding Triangulations: sweep algorithms and edge flipping. Here we
+shortly explain why these approaches can not directly be applied to
+the \gls{MMLT} problem.
 
-%---------------------------------------------------------------------##########
+Sweep algorithms compute solutions for geometric problems (usually in
+the plan) gradually and rely on the assumption that every part of the
+solution ``behind'' the current position of the sweep line is fixed
+and needs not to be changed anymore. For the \gls{MMLT} problem, the
+last line segment reached by the sweep line may change for every line
+segment it crosses whether it is part of the solution---which may then
+force itself an update of other line segments. Therefore no part of
+the solution can be fixed until all line segments are considered which
+does not comply with the idea of sweep algorithms.
 
-% When playing around with some small instances \footnote{Greg drew them
-% on napkins in the cafeteria.}, Greg discovered two 
-% properties of \gls{MMLT}[s]. An optimal solution need not be unique as
-% \cref{fig:non_unique_optimal} shows. Additionally 
-% \cref{fig:nonoptimal_flips} is an example where an edge flip
-% \todo{explain edge flips} is necessary in a local optimum to gain 
-% global optimality. Therefore it is not always possible to retrieve an
-% optimal \gls{MMLT} solution by starting with an arbitrary
-% triangulation and applying locally optimal edge flips.
-
-\begin{verbatim}
-  - sweep line does not work (non-local segments)
-  - flip does not work (locally non-optimal flip necessary)
-\end{verbatim}
-\todo[inline]{notes}
+For the edge flipping strategy (traversing a path in the Flip Graph)
+we show an example in \cref{fig:nonoptimal_flips} which requires an
+edge flip to worsen the \gls{MMLT} before the optimal solution can be
+reached. This essentially requires that every edge flip of the whole
+Flip Graph has to be considered---which leads to exponential running
+time.
 
 \begin{figure}[ht]
   \centering
@@ -193,8 +197,16 @@ Now we can proceed with the \gls{MMLT} problem:
 \end{figure}
 
 \section{Combinatorial Approach}
+\label{sec:combinatorial_approach}
+In this \namecref{sec:combinatorial_approach}, we demonstrate an
+alternative way of finding optimal \gls{MMLT} solutions based on the
+underlying combinatorial problem. We come up with another problem, the
+\gls{MELT}, which is similar to \gls{MMLT} yet solely combinatorial.
 
-\todo[inline]{glue text}
+First of all, we define a new strict total order on the potential
+edges of a triangulation to circumvent the fact that two different
+line segments can have the same length which implies that two optimal
+\gls{MMLT} solutions may have a different shortest line segment.
 
 \begin{definition}[Edge Length Order]
   \label{def:edge_length_order}
@@ -202,8 +214,8 @@ Now we can proceed with the \gls{MMLT} problem:
   \(S\) and two edges \(e_{s_i}, e_{s_j} \in E\) representing two
   line segments \(s_i,s_j \in S\), respectively. Let \(|s|\) for
   \(s \in S\) be the segment length and \( s_i < s_j \) the
-  lexicographical order of \(s_i, s_j \in S\). The edge length
-  order is defined as  
+  lexicographical order of \(s_i, s_j \in S\). The \emph{Edge Length
+  Order} is defined as  
   \[
     e_{s_i} < e_{s_j}
     \iff |s_i| < |s_j|
@@ -211,78 +223,99 @@ Now we can proceed with the \gls{MMLT} problem:
   \]
 \end{definition}
 
-\todo[inline]{glue text}
+Furthermore, we define a short cut for the position that an edge has
+in a set sorted by the Edge Length Order which can be seen as a
+higher level length function.
 
 \begin{definition}[Edge Length Index]
   \label{def:edge_length_index}
   Given a set of edges \(E\) representing a set of line segments
-  \(S\) and an edge \(e \in E\). The \emph{edge length index}
+  \(S\) and an edge \(e \in E\). The \emph{Edge Length Index}
   \(\idx(e)\) is the index of \(e\) in \(E\) sorted by 
-  edge length order.
+  Edge Length Order.
 \end{definition}
 
-\todo[inline]{glue text}
+As a side effect of the Edge Length Order, we can now address every
+edge in a set uniquely by its Edge Length Index which we state in the
+following \namecref{thm:edge_length_index_uniqueness}.
 
 \begin{theorem}[Uniqueness of Edge Length Index]
   \label{thm:edge_length_index_uniqueness}
   For a set of edges \(E\) representing line segments \(S\),
-  there can be no two edges \(e, e' \in E\)
-  with the same edge length index.
-\end{theorem}
-
-\begin{proof}
+  there can be no two different edges \(e, e' \in E\)
+  with the same Edge Length Index.
+  \begin{proof}
   For two two segments \(s, s' \in S\) the lexicographical order is
   unique---i.e. either \(s < s'\) or \(s > s'\) but not both. The
-  same holds for the edge length order.
-\end{proof}
+  same holds for the Edge Length Order.
+  \end{proof}
+\end{theorem}
 
-\todo[inline]{glue text}
+Using the Edge Length Index for the Triangulation edges instead of
+the line segment length, we can now formulated the combinatorial
+equivalent of the \gls{MMLT} problem:
 
 \begin{problem}[\gls{MELT}]
-  \label{prob:MELT}\hfill
+  \label{prob:melt}\hfill
   \begin{labeling}{\hspace{4em}}
     \item[\textbf{Given:}]
       Set of points \(P\)
     \item[\textbf{Sought:}]
       Point Set Triangulation \(\gls{Topt} = T(P)\) of \(P\)
-      which maximizes the minimum edge length index
+      which maximizes the minimum Edge Length Index
       \(\min\limits_{e\in \gls{Topt}} \idx(e)\).
   \end{labeling}
 \end{problem}
 
-\todo[inline]{glue text}
+Even though, there can still be arbitrary many optimal \gls{MELT}
+solutions (as for \gls{MMLT}) at least the ``shortest'' edge (meaning
+the one with minimum Edge Length Index) is the same in all of them.
+Because neither the \gls{MMLT} nor the \gls{MELT} problem ask for the
+whole vector of edges to be maximum, there can still be different
+combinations of edges with higher Edge Length Index.
 
-\begin{theorem}[Uniqueness of Optimal \gls{MELT} Solution]
-  \label{thm:MELT_uniqueness}
+\begin{theorem}[Uniqueness of Optimal \gls{MELT} Solutions]
+  \label{thm:melt_uniqueness}
   From \Cref{thm:edge_length_index_uniqueness} follows directly that
-  \cref{prob:MELT} has a unique optimal solution.
+  every optimal solution for \cref{prob:melt} (\gls{MELT}) has the
+  same edge with minimum Edge Length Index.
 \end{theorem}
 
-\todo[inline]{glue text}
+Even though the link between \gls{MMLT} and \gls{MELT} may be obvious,
+the proof is yet to come and covered by the following
+\namecref{thm:equality_melt_mmlt}.
 
 \begin{theorem}[Equality of \gls{MELT} and \gls{MMLT}]
-  \label{def:equality_melt_mmlt}
+  \label{thm:equality_melt_mmlt}
   Every optimal \gls{MELT} solution is an optimal \gls{MMLT} solution.
-\end{theorem}
-
-\begin{proof}
-  Let \gls{Topt} be the optimal \gls{MELT} solution for a point set
-  \(P\) and assume that that there is a \gls{MMLT} solution \(T\) with
+  \begin{proof}
+  Let \gls{Topt} be an optimal \gls{MELT} solution
+  for a point set \(P\) and assume that that
+  there is a \gls{MMLT} solution \(T\) with
   \(\min\limits_{s \in T} |s| < \min\limits_{s \in \gls{Topt}} |s|\).
   By \cref{def:edge_length_index,def:edge_length_order}
   \( \idx(\argmin\limits_{s \in T} |s|)
     < \idx(\argmin\limits_{s \in \gls{Topt}} |s|) \)---which
     contradicts \gls{Topt} being optimal.
-\end{proof}
-
-\todo[inline]{glue text}
-
-\begin{theorem}[NP-hardness of \gls{MELT}]
-  From \cref{def:equality_melt_mmlt} follows that \gls{MELT} is
-  NP-hard.
+  \end{proof}
 \end{theorem}
 
-\todo[inline]{glue text}
+Now the complexity of \gls{MELT} is straightforward as a reduction
+from \gls{MMLT} can easily be done considering
+\cref{thm:equality_melt_mmlt}. Compare also \cref{sec:mmlt_complexity}
+for further details of the complexity of the \gls{MMLT} problem.
+
+\begin{theorem}[NP-hardness of \gls{MELT}]
+  From \cref{thm:equality_melt_mmlt} follows
+  that \gls{MELT} is NP-hard.
+\end{theorem}
+
+Despite the fact that \gls{MMLT} instances can be solved through the
+corresponding \gls{MELT} problem, there is one important difference
+between both problems that we will exploit in the following: Making
+use of the Edge Length Index, \gls{MELT} instances contain only
+integers. This allows us to transform the problem into an \gls{IP}
+(see also \cref{cha:integer_programming}).
 
 \begin{problem}[\gls{IP} Formulation of \gls{MELT}]
   \hfill
@@ -300,14 +333,7 @@ Now we can proceed with the \gls{MMLT} problem:
   \end{alignat*}
 \end{problem}
 
-\begin{verbatim}
-  IP:
-  - maximize min. edge index
-  - no conflicting edges
-  - for every edge: either edge or crossing edge picked
-  - n^2 variables, O(n^4) restrictions
-\end{verbatim}
-\todo[inline]{notes}
+%   - n^2 variables, O(n^4) restrictions
 
 \section{Separators}
 % He tried to identify the good, the bad, and the ugly edges. Bad are

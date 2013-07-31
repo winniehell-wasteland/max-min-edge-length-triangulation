@@ -1,184 +1,156 @@
 \setglossarysection{section}
 \renewcommand*{\glspostdescription}{}
-
 \newglossary{ignored}{ignored.gls}{ignored.glo}{Ignored Glossary}
-
 \newacronym{CDS}{CDS}{Covering by Disjoint Segments}
 \newacronym{CGAL}{CGAL}{Computational Geometry Algorithms Library}
 \newacronym{IP}{IP}{Integer Program}
 \newacronym{MELT}{MELT}{MaxMin Edge Length Index Triangulation}
 \newacronym{MMLT}{MMLT}{MaxMin Length Triangulation}
 \newacronym{NOCS}{NOCS}{Non-Conflicting Separators}
-
 \newglossaryentry{wlog}{
   name={w.l.o.g.},
   description={without loss of generality},
   type={ignored}
 }
-
 % properties
 \newglossary{prop}{prop.gls}{prop.glo}{Properties}
 \DeclareRobustCommand{\glspropstyle}[1]{\textit{#1}}
 \defglsdisplay[prop]{\glspropstyle{#1#4}}
 \defglsdisplayfirst[prop]{\glspropstyle{#1#4}}
-
 \newglossaryentry{conf}
 {
   name={conflicting},
   description={see \cref{def:conflicting}},
   type={prop}
 }
-
 \newglossaryentry{nconf}
 {
   name={non-conflicting},
   description={see \cref{def:conflicting}},
   type={prop}
 }
-
 \newglossaryentry{cross}
 {
   name={crossing},
   description={see \cref{def:crossing}},
   type={prop}
 }
-
 \newglossaryentry{ncross}
 {
   name={non-crossing},
   description={see \cref{def:crossing}},
   type={prop}
 }
-
 \newglossaryentry{overlap}
 {
   name={overlapping},
   description={see \cref{def:overlapping_segments}},
   type={prop}
 }
-
 \newglossaryentry{noverlap}
 {
   name={non-overlapping},
   description={see \cref{def:overlapping_segments}},
   type={prop}
 }
-
 \newglossaryentry{wcover}
 {
   name={well-covered},
   description={see \cref{def:well_covered}},
   type={prop}
 }
-
 % sets
 \newglossary{set}{sets.gls}{sets.glo}{Sets}
-
 \newglossaryentry{N}
 {
   name={\ensuremath{\mathbb{N}}},
   description={non-negative integers},
   type={ignored}
 }
-
 \newglossaryentry{R}
 {
   name={\ensuremath{\mathbb{R}}},
   description={real numbers},
   type={ignored}
 }
-
 \newglossaryentry{Z}
 {
   name={\ensuremath{\mathbb{Z}}},
   description={integer numbers},
   type={ignored}
 }
-
 \newglossaryentry{Eflip}
 {
   name={\ensuremath{E_\textnormal{flip}}},
   description={set of edge flips (see \cref{def:edge_flip})},
   type={set}
 }
-
 \newglossaryentry{Eopt}
 {
   name={\ensuremath{E_\textnormal{opt}}},
   description={optimal edge set},
   type={ignored}
 }
-
 \newglossaryentry{Gconf}
 {
   name={\ensuremath{G_\textnormal{conf}}},
   description={conflict graph (see \cref{def:conflict_graph})},
   type={set}
 }
-
 \newglossaryentry{Gcross}
 {
   name={\ensuremath{G_\textnormal{cross}}},
   description={intersection graph (see \cref{def:intersection_graph})},
   type={set}
 }
-
 \newglossaryentry{Gflip}
 {
   name={\ensuremath{G_\textnormal{flip}}},
   description={flip graph (see \cref{def:flip_graph})},
   type={set}
 }
-
 \newglossaryentry{Sconf}
 {
   name={\ensuremath{S_\textnormal{conf}}},
   description={set of potentially conflicting separators (see \cref{thm:tight_upper_bound})},
   type={set}
 }
-
 \newglossaryentry{Sopt}
 {
   name={\ensuremath{S_\textnormal{opt}}},
   description={an optimal set of segments},
   type={set}
 }
-
 \newglossaryentry{Esep}
 {
   name={\ensuremath{E_\textnormal{sep}}},
   description={set of separators (see \cref{def:separators})},
   type={set}
 }
-
 \newglossaryentry{Eshort}
 {
   name={\ensuremath{E_\textnormal{short}}},
   description={set of short edges (see \cref{def:short_edges})},
   type={set}
 }
-
 \newglossaryentry{IS}
 {
   name={\ensuremath{V_\textnormal{IS}}},
   description={independent set (see \cref{def:independent_set})},
   type={set}
 }
-
 \newglossaryentry{Topt}
 {
   name={\ensuremath{T_\textnormal{opt}}},
   description={an optimal triangulation},
   type={set}
 }
-
 \newglossaryentry{VC}
 {
   name={\ensuremath{V_\textnormal{cover}}},
   description={vertex cover (see \cref{def:vertex_cover})},
   type={set}
 }
-
 % variables
 \newglossaryentry{econf}
 {
@@ -186,32 +158,27 @@
   description={conflicting edge},
   type={ignored}
 }
-
 \newglossaryentry{emin}
 {
   name={\ensuremath{e_\textnormal{min}}},
   description={minimum edge},
   type={ignored}
 }
-
 \newglossaryentry{enose}
 {
   name={\ensuremath{e_\textnormal{nose}}},
   description={shortest non-separable edge}
 }
-
 \newglossaryentry{esep}
 {
   name={\ensuremath{e_\textnormal{sep}}},
   description={separating edge}
 }
-
 \newglossaryentry{snc}
 {
   name={\ensuremath{s_\textnormal{nc}}},
   description={shortest \gls{ncross} segment}
 }
-
 \newglossaryentry{scross}
 {
   name={\ensuremath{s_{\times}}},
