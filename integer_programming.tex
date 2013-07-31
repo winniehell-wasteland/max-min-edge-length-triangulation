@@ -247,7 +247,7 @@ deduced from the definition: We minimize the number of covering
 vertices such that for every edge at least one vertex is selected. The
 optimal vertex set \(\gls{VC}\) can then be retrieved from the
 \gls{IP} solution vector by just collecting all selected vertices:
-\( \gls{VC} = \{v \in V \land x_v = 1\} \)
+\( \gls{VC} = \{v \in V : x_v = 1\} \)
 
 \begin{problem}[\gls{IP} Formulation of Minimum Vertex Cover]
   \begin{alignat*}{3}
