@@ -55,7 +55,7 @@ conflicts representing all pairwise intersections.
 
 \begin{figure}[ht]
   \centering
-  \begin{subfigure}{0.4\textwidth}
+  \begin{subfigure}[b]{0.4\textwidth}
           \centering
           \includegraphics[width=\textwidth]{img/example_conflict_graph_segments.pdf}
           \caption{Line Segments}
@@ -63,7 +63,7 @@ conflicts representing all pairwise intersections.
   \hspace{2em}
   \VRule
   \hspace{2em}
-  \begin{subfigure}{0.4\textwidth}
+  \begin{subfigure}[b]{0.4\textwidth}
           \centering
           \includegraphics[width=\textwidth]{img/example_conflict_graph.pdf}
           \caption{Conflict Graph}
@@ -100,7 +100,7 @@ both problems maximize the number of ``independent'' vertices.
   \label{thm:triangulation_independent_set}
   Every Triangulation \(T(V,X)\) of a vertex set \(V\) with respect
   to conflicts \(X\) is a Maximum Independent Set for the Conflict
-  Graph \(\gls{Gconf}[(E,X)]\) and vice versa. Hereby \(E\) are the
+  Graph \(\gls{Gconf}[(E,X)]\) and vice versa. Herein \(E\) are the
   edges of the Complete Graph \(K_V\).
   \begin{proof}
     \Cref{thm:triangulation_independent_set} follows directly from
@@ -142,7 +142,7 @@ overlaps multiple others.
   \[ \forall e \in F : e \not\in T(V,X,F) \]
 \end{definition}
 
-Even though this \namecref{def:triangulation_forbidden_edges} models
+Even though \cref{def:triangulation_forbidden_edges} models
 geometric triangulation problems better, it is not solvable in
 polynomial time anymore (assuming P\(\not=\)NP). Many geometric
 triangulations are solvable in polynomial time however (as we see
@@ -226,13 +226,13 @@ bounding line segments.
   \(p,q\in P\) with \(P\) being a point set (of arbitrary dimension). 
   For compatibility with other definitions,
   \(s\) is directed from \(p\) to \(q\), i.e. \((p,q)\not=(q,p)\)
-  and contains all points ``between'' \(p\) and \(q\):
+  and contains all points \(m\) ``between'' \(p\) and \(q\):
   \[ m \in s \iff \exists a\in [0,1] : m = p + a \cdot (q-p) \]
 \end{definition}
 
-Clearly, counterpart of conflicting edges are intersecting line
+Clearly, the counterpart of conflicting edges are intersecting line
 segments. Nevertheless, depending on the definition, intersection of
-two line segments with the same endpoint is empty or the common endpoint.
+two line segments with the same endpoint is either empty or the common endpoint.
 This is why we assume intersection of any geometric objects to be the
 set intersection of all (usually infinitely many) points contained in
 the objects and introduce the already widely used term \gls{cross}:
@@ -303,7 +303,7 @@ coordinates) and vertices (which are solely topological objects).
 %   line segment \(s = (p,q) \in S\) and \(e_s\) can be identified by
 %   \(s\) and vice versa. The endpoints \(p\) and \(q\) of \(s\) are 
 %   represented by the vertices \(v_p\) and \(v_q\), respectively. We
-%   hereby assume that not \((p,q) \in S\) and \((q,p) \in S\) as they
+%   herein assume that not \((p,q) \in S\) and \((q,p) \in S\) as they
 %   would be represented by the same edge.
 \end{definition}
 
@@ -656,6 +656,7 @@ Therefore the whole Flip Graph has to be considered---which has
 exponential size.
 
 \section{Related Work}
+\label{sec:related_work}
 In the following, we briefly mention some results for different kinds
 of Triangulations. These problems have kept researchers busy
 for over 100 years already~\cite{triangulation_hilbert} and several
@@ -687,9 +688,9 @@ One of the first publications \cite{triangulation_minmax_length}
 shows that minimizing the maximum edge length can be done in
 \(O(n^2)\) time. Minimizing the edge length sum (also known as the 
 Minimum Weight Triangulation) was proven NP-hard \cite{mwt_complexity}.
-Maximizing the minimum edge length was stated an open problem
+Maximizing the minimum edge length was stated as an open problem~%
 \cite{triangulation_minmax_length} but 20 years later it has been
-shown that it is NP-complete \cite{mmlt_complexity}. It remains NP-hard
+shown that it is NP-complete~\cite{mmlt_complexity}. It remains NP-hard
 for polygons with holes and interior points \cite{mmlt_polygons}
 but can be solved in \(O(n^3)\) time for simple
 polygons and even in linear time for convex polygons

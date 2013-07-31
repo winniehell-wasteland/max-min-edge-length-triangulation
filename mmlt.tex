@@ -1,15 +1,11 @@
-\chapter{\texorpdfstring{\glsdesc{MMLT}}{MMLT}}\label{cha:mmlt}
-\ldots\todo[inline]{2 pages}
-
-% During lunch, Greg thought about the different types of triangles
-% Mrs. Minerva had told him about (\cref{cha:triangulations}) and which ones
-% he liked the most. On one hand he liked triangles with long edges,
-% on the other hand Greg was very interested in NP-complete problems.
-% Therefore he decided to find out more about \gls{MMLT}, which forces
-% the shortest edge to be as long as possible and was proven 
-% NP-complete \cite{mmlt_complexity}.
-
-\todo[inline]{glue text}
+\chapter{\texorpdfstring{\glsdesc{MMLT}}{MMLT}}
+\label{cha:mmlt}
+Subsequently, we get on to the main problem of this thesis: the
+\gls{MMLT}. This \namecref{cha:mmlt} covers its complexity, mentions
+different potential approaches, and finally presents an algorithm
+for solving it. Let us begin with a formal definition of the problem
+by reducing it to the Point Set Triangulation
+(\cref{def:point_set_triangulation}):
 
 \begin{problem}[\gls{MMLT}]
   \label{prob:mmlt}\hfill
@@ -24,7 +20,10 @@
   \end{labeling}
 \end{problem}
 
-\todo[inline]{glue text}
+A first observation being made is that an optimal solution for
+\gls{MMLT} needs not be unique, i.e. there can be multiple solutions
+\gls{Topt} with the same value for the shortest segment in \gls{Topt}.
+See also \cref{fig:non_unique_optimal} for an example.
 
 \begin{figure}[ht]
   \centering
@@ -40,12 +39,22 @@
     \centering
     \includegraphics[width=\textwidth]{img/non_unique_optimal_2.pdf}
   \end{subfigure}
-  \caption{\label{fig:non_unique_optimal}Example of different optimal solutions for the same point set}
+  \caption{\label{fig:non_unique_optimal}%
+    Example of different optimal \gls{MMLT} solutions %
+    for the same point set using Euclidean distance of the endpoints %
+    as length for each line segment}
 \end{figure}
 
 \section{Complexity}
+As already mentioned in \cref{sec:related_work}, the \gls{MMLT}
+problem was stated as an open problem by Edelsbrunner and Tan in
+1991~\cite{triangulation_minmax_length} and has recently been proven
+to be NP-hard by Fekete~\cite{mmlt_complexity}. In the following, we
+briefly sketch the proof.
 
-\todo[inline]{glue text \cite{mmlt_complexity}}
+Firstly, we adopt the definition of the \gls{CDS} problem which has
+been part of~\cite{mmlt_complexity} and which we will need
+afterwards:
 
 \begin{problem}[\gls{CDS}]
   \label{prob:cds}\hfill
@@ -61,28 +70,88 @@
   \end{labeling}
 \end{problem}
 
-\todo[inline]{glue text}
+It can be shown that \gls{CDS} is NP-complete---which we will skip at
+this point:
 
-\begin{theorem}
-  \Cref{prob:cds} is NP-complete.
+\begin{theorem}[NP-completeness of \gls{CDS}]
+  \label{thm:complexity_cds}
+  \Cref{prob:cds} (\gls{CDS}) is NP-complete.
+  \begin{proof}
+  \gls{CDS} can be reduced to Planar 3-SAT (\cref{prob:planar_3SAT})
+  and vice-versa. Therefore we construct a \gls{CDS} instance from
+  the planar variable-clause-connection graph of a Planar 3-SAT
+  instance. Each variable vertex gets replaced by a cycle of target
+  points which are connected by line segments which alternating
+  represent assigning either true or false to the variable.
+  Additionally, the target points contain all clause vertices which
+  are the intersection point of three long segments intersecting
+  the respective assignment line segment of the variables taking
+  part in the clause. See \cref{fig:example_CDS} for an example of
+  such a construction. Note that this construction can be done in
+  polynomial time and the \gls{CDS} can be solved if and
+  only if there is an assignment to the Planar 3-SAT variables which
+  lets all clauses evaluate to ``true''.
+  For further details of the proof refer to~\cite{mmlt_complexity}.
+  \end{proof}
 \end{theorem}
 
-\begin{proof}
-  \gls{CDS} can be reduced to Planar 3-SAT (\cref{prob:planar_3SAT})
-  and vice-versa. For further details of the proof refer
-  to~\cite{mmlt_complexity}.
-\end{proof}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.5\textwidth]{img/example_CDS.pdf}
+  \caption{\label{fig:example_CDS}Example of a \gls{CDS} construction 
+    for the Planar 3-SAT instance from \cref{fig:example_planar_3SAT}, 
+    bold line segments represent assignment of variables to ``true'',
+    dashed line segments represent ``false'', and long line segments
+    connected clauses with the respective variable assignments}
+\end{figure}
 
-\todo[inline]{glue text}
+Now we can proceed with the \gls{MMLT} problem:
 
-\begin{theorem}[NP-hardness of \Cref{prob:mmlt}]
+\begin{theorem}[NP-hardness of \gls{MMLT}]
   \Cref{prob:mmlt} (\gls{MMLT}) is NP-hard---even for the case
   where \(P\) is planar.
+  \begin{proof}
+  We summarize the reduction from \gls{CDS} to \gls{MMLT}
+  of~\cite{mmlt_complexity}. Let us continue from the construction of
+  the proof for \cref{thm:complexity_cds}. We assume that three points
+  are collinear only if they correspond to the endpoints of a line
+  segment \(s\) and a target point covered by \(s\) (this can be
+  achieved by perturbation). Furthermore, let \(\delta\) be the
+  minimum distance of any point to a line segment it is not part of
+  and assume that every line segment has at least length \(\delta\)
+  (can be achieved by appropriate scaling). We now replace every
+  target point of the \gls{CDS} instance by a tuple of points with
+  distance \(\epsilon\) such that \(\epsilon \ll \delta\).
+  
+  The shortest line segment in an optimal \gls{MMLT} solution for the
+  constructed instance has length \(\epsilon\) if and only if the
+  initial \gls{CDS} has a solution. This is due to the fact that the
+  only line segments of length \(\epsilon\) are those which replaced
+  the target points and every other line segment is longer. From the
+  definition of \gls{MMLT} follows, that every \(\epsilon\)-segment
+  is part of the solution if and only if there is no \gls{cross}
+  line segment in the solution. 
+  
+  For the \(\epsilon\)-segments which
+  replaced the clause vertices, only the long line segments connecting
+  a clause with its variables are \gls{cross}. This implies that the
+  \(\epsilon\)-segment for a clause it part of an optimal \gls{MMLT} 
+  solution if and only if the clause can satisfied in the 3-SAT
+  problem (or the target point at that position can be covered in the
+  \gls{CDS} problem).
+  
+  In a variable cycle, \(\epsilon\)-segments are only picked if
+  neither all line segment representing an assignment to ``true'' nor
+  all of those representing ``false'' can be part of the \gls{MMLT}
+  solution. This is the case when two clauses of the 3-SAT problem
+  require the variable to have conflicting assignments.
+  
+  Finally, let us point out that the above transformation of a
+  \gls{CDS} instance into a \gls{MMLT} instance can be done in
+  polynomial time such that we reduced \gls{CDS} to \gls{MMLT}---which
+  implies \gls{MMLT} being NP-hard.
+  \end{proof}
 \end{theorem}
-
-\begin{proof}
-  \ldots\todo[inline]{proof}
-\end{proof}
 
 \section{Geometric Approaches}
 
@@ -677,5 +746,5 @@
   \KwRet{constrained triangulation \gls{Topt} with \last as constraints}
   \caption{\label{alg:mmlt}\gls{MMLT} algorithm}
 \end{algorithm}
-  
+
 %---------------------------------------------------------------------##########
