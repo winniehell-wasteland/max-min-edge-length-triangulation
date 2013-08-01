@@ -1,6 +1,7 @@
 \documentclass[
 	a4paper,
 	abstracton,
+	bibtotoc,
 	english,
   ngerman,
 	twoside
@@ -41,26 +42,26 @@
 \renewcommand{\algorithmcfname}{Algorithm}
 
 \usepackage[alldates=iso8601,backend=biber]{biblatex}
+\usepackage[acronym,style=listdotted]{glossaries}
 \usepackage[amsmath,framed,hyperref]{ntheorem}
 \usepackage[section]{placeins}
  
 % after hyperref
 \usepackage{
-	cleveref,
-	glossaries
+	cleveref
 }
 
 % meta data
 \newcommand{\docadvisor}{Prof.~Dr.~Sándor Fekete}
 \newcommand{\docauthor}{Winfried Hellmann}
-\renewcommand{\docdate}{2013-07-11}
+\renewcommand{\docdate}{2013-08-01}
 \newcommand{\docsubject}{Masterarbeit}
 \newcommand{\doctitle}{\foreignlanguage{english}{Computational Aspects of%
 \texorpdfstring{\linebreak}{} MaxMin Triangulations}}
 
 \author{\docauthor}
-%\date{\isodate{\docdate}}
-\date{\today~(DRAFT)}
+\date{\isodate{\docdate}}
+%\date{\today~(DRAFT)}
 \publishers{\small\textbf{Betreuer: }\docadvisor}
 \subject{\docsubject}
 \title{\doctitle}
@@ -82,7 +83,7 @@ Technische Universität Braunschweig}
   pdfborderstyle={/S/U/W 1}
 }
 
-%\hypersetup{hidelinks}
+\hypersetup{hidelinks}
 
 %\bibliography{masterarbeit}
 \addbibresource{masterarbeit.bib}
@@ -155,6 +156,7 @@ Experimenten sind keine unbeteiligten Dreiecke zu Schaden gekommen.
 
 \vspace{2em}
 
+Winfried Hellmann\hfill\\
 Braunschweig, den {\origdate\printdate{\docdate}}
 \vspace{5em}
 \cleardoublepage
@@ -163,12 +165,22 @@ Braunschweig, den {\origdate\printdate{\docdate}}
 \begin{minipage}{\textwidth}
 	\selectlanguage{english}
 	\begin{abstract}
-	Maxmin length triangulations are just awesome.
+	This thesis studies the \gls{MMLT} problem which has recently be proven
+	to be NP-hard, which implies that there is no polynomial time algorithm
+	for finding an optimal \gls{MMLT} solution unless P\(=\)NP. We verify
+	that instances with randomly distributed points can be solved in polynomial
+	time on average, however.
 	\end{abstract}
 
+  \glsreset{MMLT}
 	\selectlanguage{ngerman}
 	\begin{abstract}
-	Maxmin Triangulationen sind einfach super.
+	In dieser Arbeit beschäftigen wir uns mit dem \gls{MMLT} Problem, von
+	dem kürzlich bewiesen wurde, dass es NP-schwer ist. Folglich gib es
+	keinen Algorithmus, der immer eine optimale \gls{MMLT} Lösung in
+	polynomieller Laufzeit findet, es sei denn P\(=\)NP. Wir überprüfen,
+	dass Instanzen mit zufällig verteilten Punkten dennoch im Durchschnitt
+	in polynomieller Zeit gelöst werden können.
 	\end{abstract}
 \end{minipage}
 \thispagestyle{plain}
@@ -197,13 +209,24 @@ Braunschweig, den {\origdate\printdate{\docdate}}
 \end{appendix}
 
 \addchap{Glossary}
-\printglossary[style=listdotted,type=main]
-\printglossary[style=listdotted,type=prop]
-\printglossary[style=listdotted,type=set]
+\renewcommand*{\glossaryname}{Other Symbols}
+\deftranslation{Glossary}{Other Symbols}
+\printglossary[type=\acronymtype]
+\printglossary[type=prop]
+\printglossary[type=set]
+\printglossary[type=main]
 
 \printbibliography
-\cleardoublepage
+%\cleardoublepage
 
-\listoftodos
+%\listoftodos
+
+\thispagestyle{empty}
+\vspace*{\fill}
+%\hspace*{\fill}\\
+\noindent{\scriptsize
+With the \gls{MMLT} algorithm at hand, Greg, who loves triangles \cite{greg}, finally
+made his way to world domination.
+}
 
 \end{document}

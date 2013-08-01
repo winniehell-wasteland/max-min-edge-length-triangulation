@@ -1,16 +1,53 @@
+\newgeometry{margin=3.5cm}
 \chapter{Conclusion}
-% \ldots\todo[inline]{2 pages}
-% With the \gls{MMLT} algorithm at hand Greg made his way to world domination.
-% \todo[inline]{be conclusive}
-% 
-% \begin{verbatim}
-%   - other distributions
-%     * larger grids / true uniform
-%     * gaussian
-%     * cluster
-%   - find patterns / graph classes
-%     * longest edge of each clique?
-%   - polygons
-%   - greedy independent set as lower bound 
-% \end{verbatim}
-% \todo[inline]{notes}
+The claim of this thesis was that even though the \gls{MMLT} problem
+was proven to be NP-hard, instances with randomly distributed points can
+still be solved in polynomial time. Therefore we explored some properties
+of the problem and consequently presented an algorithm. Its implementation
+was run on uniformly distributed random points in the unit square, and
+we compared its running time to solving the complete \gls{IP} representing
+the \gls{MMLT} problem. The results show that indeed we can achieve a polynomial
+running time on average, and that our approach is significantly better than
+simply working with the \gls{IP}.
+
+As a side effect of analyzing our algorithm, we found out that given randomly
+distributed points \(P\), the shortest line segment \(s \in S\) of all line
+segments \(S\) with endpoints in \(P\) that does not cross any longer line
+segment \(\gls{scross} \in S\) (\(|s| < |\gls{scross}|\)) has a sub-linear
+index in \(S\) sorted by length with respect to the number of points in \(P\).
+We verified this assumption in our experiments but the proof is still open,
+and we could not find any publications on that topic.
+
+There are several motivations for future work on the \gls{MMLT} problem:
+We have not shown that our algorithm is the best approach by giving a lower
+bound for the running time on \gls{MMLT} instances with randomly distributed
+points, such that there may be other algorithms with better asymptotic running
+time. Additionally, our implementation can be improved by using heuristics
+such as applying a greedy algorithm for Weighted Independent Set on the
+Intersection Graph with the line segment lengths as weights. It is also
+possible that the use of SAT solvers instead of \gls{IP} solvers leads to
+better results as the SAT problem is more restricted.
+
+Another way of improving our results would be to consider different
+distributions for random point sets or other underlying geometries.
+Common choices for random point sets are grids, clusters, and Gaussian
+distribution. Instead of selecting all points from the unit square
+one may as well consider rectangles, circles or geometric objects
+of higher dimensions. Besides, the resulting data may benefit from using
+accurate number types instead of double precision floats. In general,
+it might also be of interest to run our algorithm on real world
+instances---even though we could not find any applications for the the
+\gls{MMLT} problem.
+
+Furthermore, our algorithm may exploit certain structures (which we
+do not know of yet) in the input or the Intersection Graph to avoid
+solving the \gls{IP} at all. For instances with \(\idx(\gls{enose}) = 0\)
+we do so already. Strategies like blue rule and red rule for
+Minimum Spanning Trees may have analogies for the \gls{MMLT} problem.
+
+Finally, some of our constructions and results can be applied to
+Polygon Triangulations. The \gls{MMLT} problem is also NP-hard for
+general polygons such that adapting our algorithm may lead to new
+insights. In general only few things have to be changed to forbid
+line segments crossing the boundary, and forcing the boundary to
+be part of the solution.
