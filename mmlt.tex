@@ -71,9 +71,6 @@ afterwards:
   \end{labeling}
 \end{problem}
 
-It can be shown that \gls{CDS} is NP-complete---which we will skip at
-this point:
-
 \begin{theorem}[NP-completeness of \gls{CDS}]
   \label{thm:complexity_cds}
   \Cref{prob:cds} (\gls{CDS}) is NP-complete.
@@ -161,7 +158,7 @@ shortly explain why these approaches can not directly be applied to
 the \gls{MMLT} problem.
 
 Sweep algorithms compute solutions for geometric problems (usually in
-the plan) gradually and rely on the assumption that every part of the
+the plane) gradually and rely on the assumption that every part of the
 solution ``behind'' the current position of the sweep line is fixed
 and needs not to be changed anymore. For the \gls{MMLT} problem, the
 last line segment reached by the sweep line may change for every line
@@ -252,7 +249,7 @@ following \namecref{thm:edge_length_index_uniqueness}.
 \end{theorem}
 
 Using the Edge Length Index for the Triangulation edges instead of
-the line segment length, we can now formulated the combinatorial
+the line segment length, we can now formulate the combinatorial
 equivalent of the \gls{MMLT} problem:
 
 \begin{problem}[\gls{MELT}]
@@ -290,7 +287,7 @@ the proof is yet to come and is covered by the following
   Every optimal \gls{MELT} solution is an optimal \gls{MMLT} solution.
   \begin{proof}
   Let \gls{Topt} be an optimal \gls{MELT} solution
-  for a point set \(P\) and assume that that
+  for a point set \(P\) and assume that
   there is a \gls{MMLT} solution \(T\) with
   \(\min\limits_{s \in T} |s| < \min\limits_{s \in \gls{Topt}} |s|\).
   By \cref{def:edge_length_index,def:edge_length_order}
@@ -300,7 +297,7 @@ the proof is yet to come and is covered by the following
   \end{proof}
 \end{theorem}
 
-Now the complexity of \gls{MELT} is straightforward as a reduction
+Determining the complexity of \gls{MELT} is straightforward as a reduction
 from \gls{MMLT} can easily be done considering
 \cref{thm:equality_melt_mmlt}. Compare also \cref{sec:mmlt_complexity}
 for further details of the complexity of the \gls{MMLT} problem.
@@ -367,7 +364,7 @@ Short Edges.
 \end{definition}
 
 The preceding \cref{def:short_edges,def:separators} allow us to
-restrict the edges that may influences an optimal \gls{MELT} solution
+restrict the edges that may influence an optimal \gls{MELT} solution
 \gls{Topt} such that we can formulate an upper bound on the minimum
 Edge Length Index in \gls{Topt}.
 
@@ -377,7 +374,7 @@ Edge Length Index in \gls{Topt}.
   for a point set \(P\), let \(E\) be all \gls{noverlap} line segments
   contained in the Complete Graph \(K_{V(P)}\)
   where \(V(P)\) represents \(P\),
-  and let \(X\) all conflicts in the Intersection Graph of \(P\).
+  and let \(X\) be all conflicts in the Intersection Graph of \(P\).
   Every edge \(e \in E\) without Separators
   is an upper bound for \gls{Topt}:
   \[
@@ -489,7 +486,7 @@ problem.
 \end{problem}
 
 An essential observation at this point is that \gls{MELT} and
-\gls{NOCS} pursue the same objective an lead to the same result---only
+\gls{NOCS} pursue the same objective and lead to the same result---only
 that the \gls{NOCS} solution does not contain edges which do not
 influence the minimum Edge Length Index. Therefore those
 ``irrelevant'' edges have to be added to any optimal \gls{NOCS}

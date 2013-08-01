@@ -62,14 +62,14 @@ shortest segment within.
 
 For the algorithm this class is not necessary as its bound is worse
 than the one of the SAT solution. It is left in the implementation
-however, as it is a measure of quality for the other bound.
+however, as it is a measure of quality for our algorithm.
 
 \subsection{Intersection Algorithm}
 To find all pairs of intersecting segments we use 
 \cref{alg:naive_intersection}. For the intersection check itself
 we make use of the \gls{CGAL} function \verb|do_intersect|%
 ~\cite{cgal_manual_do_intersect}. In contrast to the
-\verb|intersecttion| function~\cite{cgal_manual_intersection}, it
+\verb|intersection| function~\cite{cgal_manual_intersection}, it
 does not actually compute the intersection and therefore performs
 much better.\footnote{Thanks again to Michael Hemmer!}
 
@@ -119,7 +119,7 @@ is a commercial optimization suite written in C. It contains a
 standalone tool for solving optimization problems and also includes
 libraries for being used in other programs or even other programming
 languages. According to \cite{cplex_benchmark}
-CPLEX is one of the two fastest MILP solvers.
+CPLEX is one of the two fastest \gls{IP} solvers.
 
 In our application we use the Concert API for C++ \cite{cplex_concert}
 to access CPLEX. It allows for adding variables and restrictions to
@@ -164,7 +164,7 @@ wraps platform dependent tools such as GNU make.
 We make use of \verb|QString| for our logger class
 (\cref{sec:logger}), generate SVG images through the \verb|QPainter|
 class, and build our applications using qmake (which also allows
-for integration in the C++ IDE Qtcreator).
+for integration in the C++ IDE Qt Creator).
 
 \subsection{JSON Parser}
 \label{sec:json_parser}
