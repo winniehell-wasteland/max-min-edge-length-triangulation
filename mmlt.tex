@@ -20,7 +20,7 @@ by reducing it to the Point Set Triangulation
   \end{labeling}
 \end{problem}
 
-A first observation being made is that an optimal solution for
+A first observation that can be made is that an optimal solution for
 \gls{MMLT} needs not be unique, i.e. there can be multiple solutions
 \gls{Topt} with the same value for the shortest segment in \gls{Topt}.
 See also \cref{fig:non_unique_optimal} for an example.
@@ -29,7 +29,7 @@ See also \cref{fig:non_unique_optimal} for an example.
   \centering
   \begin{subfigure}{0.25\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{img/non_unique_optimal_1.pdf}
+    \includegraphics[width=\textwidth,keepaspectratio]{img/non_unique_optimal_1.pdf}
   \end{subfigure}
   \hspace{2em}
   \VRule
@@ -37,7 +37,7 @@ See also \cref{fig:non_unique_optimal} for an example.
   \centering
   \begin{subfigure}{0.25\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{img/non_unique_optimal_2.pdf}
+    \includegraphics[width=\textwidth,keepaspectratio]{img/non_unique_optimal_2.pdf}
   \end{subfigure}
   \caption{\label{fig:non_unique_optimal}%
     Example of different optimal \gls{MMLT} solutions %
@@ -82,7 +82,7 @@ this point:
   and vice-versa. Therefore we construct a \gls{CDS} instance from
   the planar variable-clause-connection graph of a Planar 3-SAT
   instance. Each variable vertex gets replaced by a cycle of target
-  points which are connected by line segments which alternating
+  points connected by line segments which alternating
   represent assigning either true or false to the variable.
   Additionally, the target points contain all clause vertices which
   are the intersection point of three long segments intersecting
@@ -129,7 +129,7 @@ Now we can proceed with the \gls{MMLT} problem:
   initial \gls{CDS} has a solution. This is due to the fact that the
   only line segments of length \(\epsilon\) are those which replaced
   the target points and every other line segment is longer. From the
-  definition of \gls{MMLT} follows, that every \(\epsilon\)-segment
+  definition of \gls{MMLT} it follows, that every \(\epsilon\)-segment
   is part of the solution if and only if there is no \gls{cross}
   line segment in the solution. 
   
@@ -149,7 +149,7 @@ Now we can proceed with the \gls{MMLT} problem:
   
   Finally, let us point out that the above transformation of a
   \gls{CDS} instance into a \gls{MMLT} instance can be done in
-  polynomial time such that we reduced \gls{CDS} to \gls{MMLT}---which
+  polynomial time such that we reduce \gls{CDS} to \gls{MMLT}---which
   implies \gls{MMLT} being NP-hard.
   \end{proof}
 \end{theorem}
@@ -165,7 +165,7 @@ the plan) gradually and rely on the assumption that every part of the
 solution ``behind'' the current position of the sweep line is fixed
 and needs not to be changed anymore. For the \gls{MMLT} problem, the
 last line segment reached by the sweep line may change for every line
-segment it crosses whether it is part of the solution---which may then
+segment it crosses whether it is part of the solution, which may then
 force itself an update of other line segments. Therefore no part of
 the solution can be fixed until all line segments are considered which
 does not comply with the idea of sweep algorithms.
@@ -205,7 +205,7 @@ underlying combinatorial problem. We come up with another problem, the
 
 First of all, we define a new strict total order on the potential
 edges of a triangulation to circumvent the fact that two different
-line segments can have the same length which implies that two optimal
+line segments can have the same length, which implies that two optimal
 \gls{MMLT} solutions may have a different shortest line segment.
 
 \begin{definition}[Edge Length Order]
@@ -224,7 +224,7 @@ line segments can have the same length which implies that two optimal
 \end{definition}
 
 Furthermore, we define a short cut for the position that an edge has
-in a set sorted by the Edge Length Order which can be seen as a
+in a set sorted by the Edge Length Order, which can be seen as a
 higher level length function.
 
 \begin{definition}[Edge Length Index]
@@ -236,7 +236,7 @@ higher level length function.
 \end{definition}
 
 As a side effect of the Edge Length Order, we can now address every
-edge in a set uniquely by its Edge Length Index which we state in the
+edge in a set uniquely by its Edge Length Index, which we state in the
 following \namecref{thm:edge_length_index_uniqueness}.
 
 \begin{theorem}[Uniqueness of Edge Length Index]
@@ -245,7 +245,7 @@ following \namecref{thm:edge_length_index_uniqueness}.
   there can be no two different edges \(e, e' \in E\)
   with the same Edge Length Index.
   \begin{proof}
-  For two two segments \(s, s' \in S\) the lexicographical order is
+  For two segments \(s, s' \in S\) the lexicographical order is
   unique---i.e. either \(s < s'\) or \(s > s'\) but not both. The
   same holds for the Edge Length Order.
   \end{proof}
@@ -282,7 +282,7 @@ combinations of edges with higher Edge Length Index.
 \end{theorem}
 
 Even though the link between \gls{MMLT} and \gls{MELT} may be obvious,
-the proof is yet to come and covered by the following
+the proof is yet to come and is covered by the following
 \namecref{thm:equality_melt_mmlt}.
 
 \begin{theorem}[Equality of \gls{MELT} and \gls{MMLT}]
@@ -476,7 +476,7 @@ problem.
       Set of Short Edges \(E\) and their Separators \gls{Esep},
       edge conflicts \(X \subseteq (E \cup \gls{Esep})^2\)
     \item[\textbf{Sought:}]
-      Set of non-conflicting edges
+      Set of non-conflicting edges:
       \[
         \gls{Eopt} \subseteq E
         \cup \bigcup\limits_{e \in E} \gls{Esep}[(e)]

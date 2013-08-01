@@ -1,6 +1,6 @@
 \chapter{Implementation}
 \label{cha:implementation}
-In this chapter, we will briefly describe the program components---%
+In this chapter, we will briefly describe the program components
 roughly split into the geometry and the optimization part.
 To let the program run close to the hardware layer (which usually
 leads to fast execution times), the code was written in C++. First
@@ -10,9 +10,9 @@ the lack of good alternatives. For the technical documentation,
 please refer to \cref{cha:documentation}.
 
 \section{Geometry}
-The geometry part consists of number, point, and segment types, 
-data structures for triangulation, convex hull, and bounding box, 
-and it also handles the segment intersection. For most of it we
+The geometry part consists of number, point and segment types, 
+data structures for triangulation, convex hull, bounding box, 
+and segment intersection. For most of it we
 made extensive use of \gls{CGAL}, which will be introduced in \cref{sec:CGAL}.
 
 \subsection{CGAL}
@@ -20,14 +20,14 @@ made extensive use of \gls{CGAL}, which will be introduced in \cref{sec:CGAL}.
 \gls{CGAL} \cite{cgal} is an Open Source library (mainly) for computational
 geometry written in C++. It includes most of the common algorithms in
 the field and also offers efficient data structures. Through the use
-of C++ templates it is flexible and extendable: For example it is
+of C++ templates it is flexible and extendable: for example it is
 common to adjust the underlying number types to the application.
 
 \subsection{Kernel}
 A kernel in \gls{CGAL} is something like a computational geometry operating
-system: It holds the basic type definitions like numbers, points,
+system: it holds the basic type definitions like numbers, points,
 lines, and line segments. Basic operations such as intersection,
-angle calculations, or comparisons are also part of it.
+angle calculations, and comparisons are also part of it.
 
 In our application we use the built-in 
 \verb|Exact_predicates_inexact_constructions_kernel|%
@@ -37,16 +37,16 @@ and is not capable of constructing new geometric objects from existing
 ones accurately. Both properties lead to faster execution time yet do 
 not produce wrong results in our case.
 
-On top of the \gls{CGAL} kernel there are two modifications: One is for
+On top of the \gls{CGAL} kernel there are two modifications. One is for
 printing points and segments without the need to use streams, the
 other one to output them to SVG (see also
-\cref{sec:Qt,sec:svg_painter}). Additionally segments are indexed by
+\cref{sec:Qt,sec:svg_painter}). Additionally, segments are indexed by
 length and have the information whether they overlap with other
 segments attached to them.
 
 \subsection{Triangulation}
-\gls{CGAL} brings along a constrained triangulation already
-\cite{cgal_manual_constrained_triangulation}
+\gls{CGAL} brings along a constrained triangulation already~%
+\cite{cgal_manual_constrained_triangulation},
 which triangulates a point set with respect to a given mandatory set
 of (non-crossing) edges. For this application the class was extended
 to be drawable to SVG and to find the shortest edge which is part of
@@ -62,7 +62,7 @@ shortest segment within.
 
 For the algorithm this class is not necessary as its bound is worse
 than the one of the SAT solution. It is left in the implementation
-though as a measure of quality for the other bound.
+however, as it is a measure of quality for the other bound.
 
 \subsection{Intersection Algorithm}
 To find all pairs of intersecting segments we use 
@@ -88,28 +88,28 @@ SAT problems and solutions, an interface for SAT solvers and the
 solvers themselves (currently only CPLEX).
 
 Only segment indices and intersections are passed to the SAT problem.
-This is because geometry does not influence the problem, but only
-topology. Also it is easier that way to keep track of which segments
+This is because geometry does not influence the problem, only
+topology. Also, it is easier that way to keep track of which segments
 take part in the restrictions.
 
 \subsection{SAT problem}
-This class serves two purposes: To grant an interface to the relevant
-data for the SAT (i.e. segments and intersections) and to set the
+This class serves two purposes: to grant an interface to the relevant
+data for the SAT (i.e. segments and intersections), and to set the
 short segment range.
 
 \subsection{SAT solution}
 The SAT solution class mainly just stores the segment indices derived
-from solving the SAT problem --- which can be none if no feasible
+from solving the SAT problem---which can be none if no feasible
 solution is found. Additionally it offers methods for drawing short
 segments and separators and for finding the shortest segment of the
 solution.
 
 \subsection{SAT solver}
 To unify the way solving the SAT problem is done, there are three
-interfaces: The base SAT solver and two derived interfaces for
+interfaces: the base SAT solver and two derived interfaces for
 decision and optimization problems. They all share methods for adding
 forbidden segments, intersection and separation restrictions and for
-running the actual solving. Furthermore there is a method for binding
+running the actual solving. Furthermore, there is a method for binding
 short segments to the objective function for optimization problems.
 
 \subsection{CPLEX}
@@ -128,7 +128,7 @@ running several solving algorithms on it.
 
 \section{Remaining Components}
 Besides the geometry and optimization parts, our implementation
-contains the following components: A controller
+contains the following components: a controller
 class for the whole algorithm which combines all the other components
 and utility classes for reading input files, debug
 output and assertions, test case generation, and drawing certain 
@@ -145,7 +145,7 @@ In our implementation, we use the Spirit~\cite{boost_spirit} library
 for parsing the JSON input files (see \cref{sec:json_parser}), and
 the Program Options library~\cite{boost_program_options} for parsing
 command line arguments and configuration files. Later versions of the
-implementation may as well use the Boost Graph
+implementation may also use the Boost Graph
 Library~\cite{boost_graph} for the intersection graph, and the
 Geometry library~\cite{boost_geometry} for creating SVG images
 (see \cref{sec:svg_painter}).

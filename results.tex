@@ -7,7 +7,7 @@ This chapter covers the results from running our implementation on a
 fine grid. Random sample points are uniformly selected within a
 square of side length \(100 \sqrt{n}\) where \(n\) is the number of
 points. This guarantees the same point density for all sample sizes
-and seemed to be a sufficient accuracy for real world instances.
+and seemed to be sufficiently accurate for real world instances.
 All coordinates are integer and transformed back to the unit
 square for analysis. For calculations (i.e. within the implementation
 itself) we use \verb|double| however.
@@ -25,7 +25,7 @@ and JSON Spirit 4.06.
 \Cref{fig:segment_length,fig:segment_index} show the trend of
 the shortest non-separable segment in comparison with the shortest
 segment overall and the shortest segment of the \gls{MELT} solution.
-For each data point 100 instances were run--though some of them have
+For each data point 100 instances were run, though some of them have
 been aborted after 30 minutes (refer to \cref{sec:aborted_instances,%
 tab:segment_index,tab:segment_length}).
 
@@ -33,7 +33,7 @@ Even though the specific progression of the shortest non-separable
 segment index is not clear from \cref{fig:segment_index}, it can be
 assumed that it is sub-linear. From \cref{fig:segment_length}, we can
 also see that the shortest segment length significantly drops below
-the shortest non-separable segment length---which results in more
+the shortest non-separable segment length, which results in more
 segments being in between for a uniform distribution.
 
 \begin{landscape}

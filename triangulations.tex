@@ -129,7 +129,7 @@ One important property of geometric objects has not been considered
 for our definition of Triangulations yet: \emph{forbidden objects}.
 Besides conflicting objects
 from which only one can be part of the same Triangulation, there may
-as well be objects which are not wanted at all---as we consider the
+also be objects which are not wanted at all as we consider the
 Complete Graph. This can be the case when a Triangulation is required
 to lie completely within a certain boundary or when one object
 overlaps multiple others.
@@ -146,7 +146,7 @@ Even though \cref{def:triangulation_forbidden_edges} models
 geometric triangulation problems better, it is not solvable in
 polynomial time anymore (assuming P\(\not=\)NP). Many geometric
 triangulations are solvable in polynomial time however (as we see
-later)---so this approach is clearly not the best one to solve them.
+later) so this approach is clearly not the best one to solve them.
 
 \begin{theorem}[NP-completeness of Triangulation with Forbidden Edges]
   The decision problem whether 
@@ -156,10 +156,10 @@ later)---so this approach is clearly not the best one to solve them.
 \end{theorem}
 
 There is another approach to ensure that boundary is part of a
-Triangulation which we call \emph{constraints}. Basically we require
+Triangulation which we call \emph{constraints}. Basically, we require
 a Triangulation to contain certain objects, e.g. the boundary. This
 leaves the problem that objects outside the boundary can be part of
-the Triangulation but those can be removed from the Triangulation
+the Triangulation, but those can be removed from the Triangulation
 in polynomial time (because triangulations have polynomial size).
 
 \begin{definition}[Constrained Triangulation]
@@ -205,21 +205,8 @@ plane. Since line segments are not restricted to the plane, we do not
 focus on two dimensions here. However according to some definitions,
 triangulations for higher dimensions contain also geometric objects
 of higher dimension (e.g. tetrahedra in three dimensions). For
-simplicity we consider those objects be implicitly defined by their
+simplicity, we consider those objects be implicitly defined by their
 bounding line segments.
-
-% \begin{definition}[Planar Points]
-%   A \emph{planar set of points} or \emph{set of points in the plane}
-%   \(P\) is a set of points with two coordinates:
-%   \[ P \subseteq \{p = (p_x,p_y) : p_x,p_y \in F\} \]
-%   We do not make any assumptions on the coordinates besides \(F\)
-%   being a field, e.g. the real numbers \gls{R}. Furthermore,
-%   because \(P\) is a set, no duplicate points \(p=(p_x,p_y)\in P\) and
-%   \(p'=(p_x',p_y')\in P\) with \(p_x=p_x'\) and \(p_y=p_y'\) are allowed.
-%   Note however that we do not require the points in \(P\) to be in 
-%   general position as that would forbid some interesting instances.
-%   \todo[inline]{do we need this definition at all?}
-% \end{definition}
 
 \begin{definition}[Line Segments]
   A \emph{line segment} \(s=(p,q)\) is determined by its endpoints
@@ -297,14 +284,6 @@ coordinates) and vertices (which are solely topological objects).
   A vertex set \(V(P)\) \emph{represents} a point set \(P\) if there
   is exactly one vertex \(v_p \in V(P)\) for each point \(p \in P\)
   and \(v_p\) can be identified by \(p\) and vice versa.
-%   
-%   An edge set \(E(S)\) represents a set of line segments \(S\) iff
-%   there is exactly one edge \(e_s = \{v_p, v_q\} \in E(S)\) for each 
-%   line segment \(s = (p,q) \in S\) and \(e_s\) can be identified by
-%   \(s\) and vice versa. The endpoints \(p\) and \(q\) of \(s\) are 
-%   represented by the vertices \(v_p\) and \(v_q\), respectively. We
-%   herein assume that not \((p,q) \in S\) and \((q,p) \in S\) as they
-%   would be represented by the same edge.
 \end{definition}
 
 After having all basic terms at hand, we now proceed with
@@ -314,10 +293,9 @@ Point Set Triangulations without further restrictions can be
 calculated in polynomial time (compare
 \cref{thm:time_complexity_triangulations,%
   thm:time_complexity_planar_point_set_triangulations}),
-we avoid the definition to be based on 
-Triangulations with Forbidden Edges (see
+we avoid a definition based on Triangulations with Forbidden Edges (see
 \cref{def:triangulation_forbidden_edges})---despite the fact that
-overlapping line segments are forbidden edges. Note in this case that
+overlapping line segments are forbidden edges. Note that in this case that
 finding a Triangulation involving overlapping line segments takes
 polynomial time. Afterwards they can be replaced by the line segments
 that they include in polynomial time (because there are polynomially
@@ -347,7 +325,7 @@ The asymptotic time complexity of finding a Triangulation can be
 improved for the special case of Point Set Triangulations. For example
 by making use of sweep line algorithms which exploit that
 Triangulation properties can be ensured locally, the running time
-drops to \(O(n \log n)\)---as in \cite{fortunes_algorithm}.
+drops to \(O(n \log n)\) as in \cite{fortunes_algorithm}.
 
 \begin{theorem}[Time Complexity of Planar Point Set Triangulation]
   \label{thm:time_complexity_planar_point_set_triangulations}
@@ -372,7 +350,7 @@ the following \namecref{def:constrained_point_set_triangulation}:
 The same time bound holds in the presence of constraints. Sweep line 
 algorithms can be modified for taking constraints into account. Note
 that constraints can destroy desired properties of a Point Set
-Triangulation (such as large inner angles)---we come back to some of
+Triangulation (such as large inner angles). We come back to some of
 those additional requirements later in this
 \namecref{cha:triangulations}.
 
@@ -389,7 +367,7 @@ those additional requirements later in this
 When we defined the Point Set Triangulation
 (\cref{def:point_set_triangulation}), we assumed that the set of 
 conflicts (i.e. all pairs of \gls{cross} line segments) is already
-given---which might not be they case. This
+given, which might not be they case. This
 \namecref{sec:intersection_graph} fills the gap by introducing the
 \emph{Intersection Graph}. For consistency with other definitions, we
 kept the name even though it actually contains only \gls{cross} line
@@ -407,7 +385,7 @@ segments (according to our previous definition of intersection).
 \end{definition}
 
 Generating the Intersection Graph for line segments in the plane can
-efficiently be done using an output sensitive sweep line algorithm.
+be done efficiently using an output sensitive sweep line algorithm.
 By output sensitive we refer to the (asymptotic) running time
 depending on the output size, i.e. how many line segments intersect.
 
@@ -421,7 +399,7 @@ depending on the output size, i.e. how many line segments intersect.
   \cite[Lemma 2.3]{deberg_compgeom}
 \end{theorem}
 
-The referenced method performs very well for a small number of
+The referenced method works well for a small number of
 intersections but fails to do so when there are significantly more
 intersections than line segments. Let us first state how many
 intersections there are when all possible connections in a point set
@@ -437,7 +415,7 @@ are considered:
 \end{theorem}
 
 This bound on the number of intersections shows that the sweep line
-approach is not a got choice in our case---especially because it does
+approach is not a good choice in our case---especially because it does
 not reach the lower time bound of \(\Omega(n^4)\) (even though we have
 not yet shown that this is possible at all).
 
@@ -487,7 +465,7 @@ combination of potentially \gls{cross} line segments is considered.
 \end{theorem}
 
 Again, the most simple approach is indeed asymptotically optimal for
-our application as already for \cref{alg:greedy_independent_set} in
+our application as for \cref{alg:greedy_independent_set} in
 \cref{cha:integer_programming}. Additionally
 \cref{alg:naive_intersection} does not assume that the set of line
 segments is planar.
@@ -543,8 +521,8 @@ can be constructed by finding a Polygon Triangulation first:
 
 \section{Edge Flipping}
 Besides the already mentioned sweep algorithms for Triangulations of
-planar point sets there is another common approach called
-\emph{Edge Flipping} which starts with any Triangulation and 
+planar point sets, there is another common approach called
+\emph{Edge Flipping}, which starts with any Triangulation and 
 iteratively replaces an edge by another one until the Triangulation 
 has a certain desired property (e.g. large inner angles).
 
@@ -627,9 +605,9 @@ edge flip is called the \emph{Flip Graph}. An example can be seen in
 \end{figure}
 
 Changing any Triangulation into any other Triangulation using edge
-flips is only possible if the Flip Graph is connected, i.e. there is
+flips is only possible if the Flip Graph is connected; i.e. there is
 a path between every two vertices. This is the case for two dimensions
-but not yet completely explored for higher dimensions.
+but is not yet completely explored for higher dimensions.
 
 \begin{theorem}[Connectivity of the Flip Graph]
   The Flip Graph \(\gls{Gflip}[(V,X)]\) is connected in two dimensions
@@ -641,7 +619,7 @@ but not yet completely explored for higher dimensions.
   time.
   
   For three dimensions, it is still an open problem whether
-  the Flip Graph is connected.~\cite{flip_graph_3d}
+  or not the Flip Graph is connected.~\cite{flip_graph_3d}
 \end{theorem}
 
 Another issue of edge flipping algorithms are Triangulations
@@ -652,14 +630,14 @@ Graph can be searched for a Triangulation for which all edge flips
 would worsen the solution with respect to the objective. This is
 possible for optimizing the inner angles of triangles. In
 \cref{cha:mmlt} we show that it is not possible for the \gls{MMLT}.
-Therefore the whole Flip Graph has to be considered---which has
+Therefore the whole Flip Graph has to be considered, which has
 exponential size.
 
 \section{Related Work}
 \label{sec:related_work}
 In the following, we briefly mention some results for different kinds
 of Triangulations. These problems have kept researchers busy
-for over 100 years already~\cite{triangulation_hilbert} and several
+for over 100 years~\cite{triangulation_hilbert} and several
 books have been written which cover the topic,
 e.g.~\cite{triangulation_book}.
 
